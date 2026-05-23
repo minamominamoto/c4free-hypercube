@@ -1,113 +1,93 @@
 # C4-Free Subgraphs of Hypercubes
 
-Supplementary data, paper, and code for:
+Supplementary data, code, and papers accompanying work by **Minamo Minamoto** (2026)
+on quadrilateral-free (C4-free) subgraphs of the hypercubes Q6, Q7, and Q8.
 
-**Minamo Minamoto** (2026).
-*New Lower Bounds for C4-Free Subgraphs of the Hypercubes Q6, Q7, and Q8:
-Constructions, Structure, and Computational Method.*
-arXiv:[2603.29127](https://arxiv.org/abs/2603.29127) [math.CO]
+Preprint: **arXiv:2603.29127** — *New Lower Bounds for C4-Free Subgraphs of the
+Hypercubes Q6, Q7, and Q8: Constructions, Structure, and Computational Method.*
 
-## Main Results
+## Main results
 
 | n | \|E(Qn)\| | ex(Qn, C4) | Source |
-|---|--------|------------|--------|
-| 6 | 192 | = 132 | Harborth–Nienborg 1994 (reproduced) |
-| 7 | 448 | ≥ **304** | This work (new) |
-| 8 | 1024 | ≥ **680** | This work (new) |
+|---|-----------|------------|--------|
+| 6 | 192 | **= 132** | Harborth–Nienborg 1994 (reproduced here by independent ILP) |
+| 7 | 448 | **≥ 304** | This work (new lower bound) |
+| 8 | 1024 | **≥ 680** | This work (new lower bound) |
 
-## Paper
+The lower bounds for Q7 and Q8 are theorems, witnessed by the explicit edge lists
+in this repository. The corresponding **equalities** ex(Q7,C4)=304 and ex(Q8,C4)=680
+are stated as **conjectures**, supported by simulated-annealing and integer-programming
+search; they are experimental evidence, not upper-bound proofs.
 
-| File | Description |
-|------|-------------|
-| `c4free_hypercube_v2.pdf` | Full paper (7 pages): constructions, 20-type classification, SA method, ILP proof |
+## Reproducibility: one command
 
-## Code
-
-### `c4free_sa.py` — Two-phase Simulated Annealing
-
-Python implementation of the algorithm. Requires only the standard library.
+Every C4-free claim is independently re-checkable with a dependency-free script
+(standard library only, no third-party packages, no network):
 
 ```bash
-# Reproduce the Q7 result (304-edge C4-free subgraph)
-python c4free_sa.py --n 7 --target 304 --trials 10 --seed 42
-
-# Reproduce the Q8 result (680-edge C4-free subgraph)
-python c4free_sa.py --n 8 --target 680 --trials 5 --seed 0
-
-# Q6 (known exact value: 132)
-python c4free_sa.py --n 6 --target 132 --trials 5 --seed 1
+python3 verify.py
 ```
 
-**Algorithm:**
-- **Phase 1 (Penalty SA):** Minimise `-|E| + λ·V` where `V` = C4 violations.
-- **Phase 2 (Swap SA):** Fix `|E|`, drive violations to zero via swap moves.
-- **Diversification:** Apply random elements of Aut(Qn) between trials.
+`verify.py` reads each solution, checks that every edge is a valid Q_n edge with
+no loops or duplicates and exactly the claimed edge count, certifies C4-freeness by
+**exhaustively enumerating all four-cycles** of Q_n, and prints the SHA-256 of each
+data file as a fixed-version certificate. It exits 0 iff every check passes.
 
-## Data Files
+Four-cycles enumerated per solution ( C(n,2) · 2^(n-2) ):
+
+* Q6: 240   * Q7: 672 (for all 19,866 solutions)   * Q8: 1,792
+
+## Papers
 
 | File | Description |
-|------|-------------|
-| `q6_edges_132.jsonl` | 132-edge C4-free subgraph of Q6 |
-| `q6_ilp.mps` | ILP in MPS format (192 variables, 240 constraints) for ex(Q6,C4)≤132 |
-| `q7_edges_304.jsonl.part1` | 304-edge C4-free subgraph of Q7 — part 1 of 3 |
-| `q7_edges_304.jsonl.part2` | 19,866 distinct 304-edge solutions for Q7 — part 2 of 3 |
-| `q7_edges_304.jsonl.part3` | 19,866 distinct 304-edge solutions for Q7 — part 3 of 3 |
+| --- | --- |
+| `c4free_hypercube.pdf` | New lower bounds ex(Q7,C4) ≥ 304 and ex(Q8,C4) ≥ 680 |
+| `c4free_q7_structure.pdf` | Structural classification of 304-edge C4-free subgraphs of Q7 (20 dimension-profile types, 19,866 solutions) |
+| `q8_structure.pdf` | Structural analysis of the 680-edge construction for Q8 and the 681-edge barrier |
+| `sa_method.pdf` | Two-phase simulated-annealing method for lower bounds of ex(Qn,C4) |
+| `q6_proof.pdf` | Computational proof that ex(Q6,C4) = 132 |
+
+## Data files
+
+| File | Description |
+| --- | --- |
+| `q6_edges_132.jsonl` | 132-edge C4-free subgraph of Q6 (lower-bound witness) |
+| `q6_ilp.mps` | ILP in MPS format (192 variables, 240 constraints) for the Q6 upper bound |
+| `q7_edges_304.jsonl.part{1,2,3}` | The 19,866 distinct 304-edge C4-free subgraphs of Q7 (split into 3 parts) |
 | `q8_edges_680.jsonl` | Two distinct 680-edge C4-free subgraphs of Q8 |
 
-Reconstruct the full Q7 solution set:
+Each line is a JSON object `{"edges": [[u, v], ...]}` with vertices encoded as
+integers `0 … 2^n − 1`. To reconstruct the full Q7 set:
+
 ```bash
 cat q7_edges_304.jsonl.part1 q7_edges_304.jsonl.part2 q7_edges_304.jsonl.part3 > q7_solutions_all.jsonl
 ```
 
-## Verification
+## Upper bound (Q6)
 
-All C4-free claims certified by exhaustive enumeration:
-
-- Q6: C(6,2)×2^4 = 240 four-cycles checked
-- Q7: C(7,2)×2^5 = 672 four-cycles checked (all 19,866 solutions)
-- Q8: C(8,2)×2^6 = 1,792 four-cycles checked
-
-```python
-import json
-
-def verify_c4free(edges, n):
-    es = set(tuple(sorted(e)) for e in edges)
-    for base in range(2**n):
-        for d1 in range(n):
-            for d2 in range(d1+1, n):
-                if (base>>d1)&1 or (base>>d2)&1:
-                    continue
-                a, b, c, d = base, base|(1<<d1), base|(1<<d2), base|(1<<d1)|(1<<d2)
-                if all(tuple(sorted(e)) in es for e in [(a,b),(a,c),(b,d),(c,d)]):
-                    return False
-    return True
-
-with open("q6_edges_132.jsonl") as f:
-    sol = json.loads(f.read())
-print(verify_c4free(sol["edges"], 6))  # True
-```
-
-## Upper Bound (Q6)
+The ILP in `q6_ilp.mps` certifies ex(Q6,C4) ≤ 132 with any MIP solver:
 
 ```bash
-# Using SCIP
-scip -f q6_ilp.mps
-
-# Using Python (pyscipopt)
-from pyscipopt import Model
-m = Model()
-m.readProblem("q6_ilp.mps")
-m.optimize()
-print(int(-m.getObjVal()))  # 132
+scip -f q6_ilp.mps          # SCIP
+# or, in Python:
+#   from pyscipopt import Model
+#   m = Model(); m.readProblem("q6_ilp.mps"); m.optimize()
+#   print(int(-m.getObjVal()))   # 132
 ```
-
-## Contact
-
-Minamo Minamoto — minamominamoto4f5683f6@gmail.com
 
 ## Citation
 
 ```
 Minamo Minamoto (2026). New Lower Bounds for C4-Free Subgraphs of the
-Hypercubes Q6, Q7, and Q8. arXiv:2603.29127 [math.CO].
+Hypercubes Q6, Q7, and Q8: Constructions, Structure, and Computational
+Method. arXiv:2603.29127.
 ```
+
+## License
+
+Released under the MIT License (see `LICENSE`). You are free to use, modify, and
+redistribute the code and data with attribution.
+
+## Contact
+
+Minamo Minamoto — ORCID [0009-0002-1201-5704](https://orcid.org/0009-0002-1201-5704)
