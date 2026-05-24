@@ -1,6 +1,6 @@
 # C4-Free Subgraphs of Hypercubes
 
-Supplementary data, code, and papers accompanying work by **Minamo Minamoto** (2026)
+Supplementary data, code, and paper accompanying work by **Minamo Minamoto** (2026)
 on quadrilateral-free (C4-free) subgraphs of the hypercubes Q6, Q7, and Q8.
 
 Preprint: **arXiv:2603.29127** — *New Lower Bounds for C4-Free Subgraphs of the
@@ -22,30 +22,35 @@ search; they are experimental evidence, not upper-bound proofs.
 ## Reproducibility: one command
 
 Every C4-free claim is independently re-checkable with a dependency-free script
-(standard library only, no third-party packages, no network):
+(standard library only; no third-party packages, no network):
 
 ```bash
 python3 verify.py
 ```
 
-`verify.py` reads each solution, checks that every edge is a valid Q_n edge with
-no loops or duplicates and exactly the claimed edge count, certifies C4-freeness by
+`verify.py` reads each solution, checks that every edge is a valid Q_n edge with no
+loops or duplicates and exactly the claimed edge count, certifies C4-freeness by
 **exhaustively enumerating all four-cycles** of Q_n, and prints the SHA-256 of each
-data file as a fixed-version certificate. It exits 0 iff every check passes.
+data file. It exits 0 iff every check passes. Four-cycles enumerated per solution
+( C(n,2) · 2^(n-2) ): Q6 = 240, Q7 = 672 (for all 19,866 solutions), Q8 = 1,792.
 
-Four-cycles enumerated per solution ( C(n,2) · 2^(n-2) ):
+The data-file hashes are also recorded in `SHA256SUMS` as a fixed-version
+certificate, checkable with standard tools:
 
-* Q6: 240   * Q7: 672 (for all 19,866 solutions)   * Q8: 1,792
+```bash
+shasum -a 256 -c SHA256SUMS     # macOS
+sha256sum -c SHA256SUMS         # Linux
+```
 
-## Papers
+## Paper and code
 
 | File | Description |
 | --- | --- |
-| `c4free_hypercube.pdf` | New lower bounds ex(Q7,C4) ≥ 304 and ex(Q8,C4) ≥ 680 |
-| `c4free_q7_structure.pdf` | Structural classification of 304-edge C4-free subgraphs of Q7 (20 dimension-profile types, 19,866 solutions) |
-| `q8_structure.pdf` | Structural analysis of the 680-edge construction for Q8 and the 681-edge barrier |
-| `sa_method.pdf` | Two-phase simulated-annealing method for lower bounds of ex(Qn,C4) |
-| `q6_proof.pdf` | Computational proof that ex(Q6,C4) = 132 |
+| `c4free_hypercube.pdf` | The paper (PDF): new lower bounds, structural classification (Q7: 20 dimension-profile types, 19,866 solutions; Q8: the 680-edge construction and 681-edge barrier), and the computational method |
+| `c4free_hypercube.tex` | LaTeX source of the paper |
+| `c4free_sa.py` | Two-phase simulated-annealing search used to obtain the lower bounds |
+| `verify.py` | Dependency-free verifier (re-checks every certificate from scratch) |
+| `SHA256SUMS` | SHA-256 certificate for the data files |
 
 ## Data files
 
@@ -69,7 +74,7 @@ The ILP in `q6_ilp.mps` certifies ex(Q6,C4) ≤ 132 with any MIP solver:
 
 ```bash
 scip -f q6_ilp.mps          # SCIP
-# or, in Python:
+# or in Python (pyscipopt):
 #   from pyscipopt import Model
 #   m = Model(); m.readProblem("q6_ilp.mps"); m.optimize()
 #   print(int(-m.getObjVal()))   # 132
@@ -85,8 +90,7 @@ Method. arXiv:2603.29127.
 
 ## License
 
-Released under the MIT License (see `LICENSE`). You are free to use, modify, and
-redistribute the code and data with attribution.
+Released under the MIT License (see `LICENSE`).
 
 ## Contact
 

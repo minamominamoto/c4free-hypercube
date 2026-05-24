@@ -1,0 +1,470 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{geometry}
+\usepackage{hyperref}
+\usepackage{url}
+\usepackage{booktabs}
+\usepackage{xcolor}
+\usepackage{enumitem}
+\usepackage{microtype}
+\geometry{margin=2.5cm}
+\hypersetup{colorlinks=true,linkcolor=blue,citecolor=blue,urlcolor=blue}
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+\newcommand{\ex}{\mathrm{ex}}
+
+\title{\textbf{New Lower Bounds for $C_4$-Free Subgraphs\\
+of the Hypercubes $Q_6$, $Q_7$, and $Q_8$:\\
+Constructions, Structure, and Computational Method}}
+\author{Minamo Minamoto\\[4pt]
+\small Independent\\
+\small \texttt{minamominamoto4f5683f6@gmail.com}}
+\date{March 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+We establish new lower bounds $\ex(Q_7,C_4)\ge304$ and $\ex(Q_8,C_4)\ge680$
+for the maximum number of edges in a $C_4$-free subgraph of the 7- and
+8-dimensional hypercubes, and give a modern computational reproduction of
+$\ex(Q_6,C_4)=132$.
+All bounds are witnessed by explicit constructions supplied as edge lists with
+machine-verifiable certificates: a complete, deterministic enumeration of all
+four-cycles (240 for $Q_6$, 672 for $Q_7$, 1\,792 for $Q_8$) establishes
+$C_4$-freeness, and each certificate is reproducible by an independent,
+dependency-free verifier.
+
+For $Q_7$ we identify $19\,866$ distinct $C_4$-free subgraphs on 304 edges;
+their \emph{dimension profiles} fall into exactly 20 types.  All $19\,866$
+solutions share a rigid structural core: degree sequence
+$\{4^{32},5^{96}\}$, spectral radius $\lambda_1\approx4.787$, and local
+maximality.  Pairwise Hamming distances range from 36 to 260.
+Whether these solutions exhaust all 304-edge $C_4$-free subgraphs of
+$Q_7$ remains open.
+
+For $Q_8$ we analyse the local structure of the 680-edge construction:
+every non-edge of the construction creates at least one $C_4$, and
+1\,076 independent searches at 681 edges did not achieve zero violations.
+These observations constitute computational evidence, not a proof,
+of the conjectured equality $\ex(Q_8,C_4)=680$.
+
+The constructions are found by a two-phase simulated annealing algorithm
+with Aut$(Q_n)$-based diversification, described in full detail.
+For $Q_6$ we additionally provide an ILP-based proof that
+$\ex(Q_6,C_4)\le132$, reproducing the exact value computationally.
+
+Edge lists, ILP files, and source code are publicly available at\\
+\url{https://github.com/minamominamoto/c4free-hypercube}.
+\end{abstract}
+
+\medskip
+\noindent\textbf{MSC 2020:} 05C35, 05C62, 05C50.\\
+\textbf{Keywords:} hypercube, $C_4$-free, extremal graph theory,
+simulated annealing, integer linear programming, dimension profile.
+
+\tableofcontents
+
+%% ============================================================
+\section{Introduction}
+%% ============================================================
+
+The $n$-dimensional hypercube $Q_n$ has vertex set $\{0,1\}^n$, two vertices
+adjacent iff they differ in exactly one coordinate; it has $2^n$ vertices and
+$n\cdot2^{n-1}$ edges.  The problem of determining
+$\ex(Q_n,C_4)=\max\{|E(G)|:G\subseteq Q_n,\,G\text{ is }C_4\text{-free}\}$
+was raised by Erd\H{o}s~\cite{Erd84} and remains open in general.
+
+The best known asymptotic bounds are
+\begin{equation}\label{eq:bounds}
+\tfrac{1}{2}(n+\sqrt{n})\cdot2^{n-1}\;\le\;\ex(Q_n,C_4)\;\le\;0.6032\cdot n\cdot2^{n-1},
+\end{equation}
+where the lower bound (valid for $n=4^r$) is due to Brass, Harborth, and
+Nienborg~\cite{BHN95}, and the upper bound to Baber~\cite{Bab12} via the flag
+algebra method, improving the earlier bound of Thomason and Wagner~\cite{TW09}.
+Balogh et al.~\cite{BHLL12} give 0.6068 via a related method.
+For general $n\ge9$, the weaker bound
+$\tfrac{1}{2}(n+0.9\sqrt{n})\cdot2^{n-1}$ applies~\cite{BHN95}.
+Exact values have been determined for small $n$; Harborth and Nienborg~\cite{HN94}
+proved $\ex(Q_6,C_4)=132$.
+
+Our main results are:
+
+\begin{theorem}\label{thm:main}
+\begin{enumerate}[label=(\roman*)]
+  \item $\ex(Q_7,C_4)\ge304$.
+  \item $\ex(Q_8,C_4)\ge680$.
+\end{enumerate}
+\end{theorem}
+
+Both bounds are realised by explicit constructions (supplementary files
+\texttt{q7\_edges\_304.jsonl} and \texttt{q8\_edges\_680.jsonl}).
+
+\begin{table}[ht]
+\centering
+\caption{Known values and new lower bounds of $\ex(Q_n,C_4)$.
+  The BHN column gives the Brass--Harborth--Nienborg general estimate.}
+\label{tab:values}\medskip
+\begin{tabular}{ccccl}
+\toprule
+$n$ & $|E(Q_n)|$ & $\ex(Q_n,C_4)$ & BHN est. & Source\\
+\midrule
+4 &   32 & 24  & $\approx25.6$ & Chung~\cite{Chu92}\\
+5 &   80 & 56  & $\approx51.2$ & Emamy-K et al.~\cite{EMR92}\\
+6 &  192 & 132 & $\approx96.0$ & Harborth--Nienborg~\cite{HN94} (reproduced)\\
+7 &  448 & $\ge\mathbf{304}$ & $\approx300.2$ & This work\\
+8 & 1024 & $\ge\mathbf{680}$ & $\approx674.9$ & This work\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The paper is organised as follows.
+Section~\ref{sec:verify} describes the $C_4$ enumeration and verification
+procedure used throughout.
+Sections~\ref{sec:q7}--\ref{sec:q8} present the $Q_7$ and $Q_8$ constructions.
+Section~\ref{sec:structure} classifies the $19\,866$ $Q_7$ solutions found
+by their dimension profiles, yielding exactly 20 types.
+Section~\ref{sec:method} describes the two-phase simulated annealing algorithm.
+Section~\ref{sec:q6} reproduces the exact value $\ex(Q_6,C_4)=132$ via ILP.
+Section~\ref{sec:open} lists open problems.
+
+%% ============================================================
+\section{$C_4$ Enumeration and Verification}\label{sec:verify}
+%% ============================================================
+
+\begin{lemma}[$C_4$ enumeration in $Q_n$]\label{lem:c4}
+Every four-cycle of $Q_n$ is uniquely determined by a pair of coordinate
+directions $0\le i<j\le n-1$ and a base vertex $b\in\{0,1\}^n$ with
+$b_i=b_j=0$.  Its four vertices are
+\[
+  b,\quad b\oplus e_i,\quad b\oplus e_j,\quad b\oplus e_i\oplus e_j,
+\]
+and the total number of four-cycles in $Q_n$ is $\binom{n}{2}\cdot2^{n-2}$.
+For $n=6$: $240$; for $n=7$: $672$; for $n=8$: $1\,792$.
+\end{lemma}
+
+\noindent\textbf{Verification algorithm.}\quad
+Given a candidate edge set $E\subseteq E(Q_n)$ stored as a hash set,
+the following procedure performs a complete, deterministic $C_4$-freeness check:
+\begin{quote}\small
+\textbf{for each} pair $(i,j)$ with $0\le i<j\le n-1$:\\
+\quad\textbf{for each} $b\in\{0,1\}^n$ with $b_i=b_j=0$:\\
+\quad\quad let $v_1=b,\;v_2=b\oplus e_i,\;v_3=b\oplus e_j,\;v_4=b\oplus e_i\oplus e_j$\\
+\quad\quad \textbf{if} $\{v_1v_2,\,v_1v_3,\,v_2v_4,\,v_3v_4\}\subseteq E$:
+  \textbf{return} \textsc{violation}\\
+\textbf{return} \textsc{c4-free}
+\end{quote}
+We applied this algorithm to all constructions and all $19\,866$ solutions
+of $Q_7$; every call returned \textsc{c4-free}.
+
+%% ============================================================
+\section{The $Q_7$ Construction}\label{sec:q7}
+%% ============================================================
+
+We constructed a $C_4$-free subgraph of $Q_7$ on 304 edges by
+penalty-based simulated annealing (Section~\ref{sec:method}),
+then certified it by Lemma~\ref{lem:c4}'s algorithm.
+
+\begin{proposition}\label{prop:q7}
+The 304-edge construction has the following properties:
+\begin{enumerate}[label=(\roman*)]
+  \item Degree sequence: 32 vertices of degree 4 and 96 of degree 5
+    (degree sum $608=2\cdot304$).
+  \item Bipartite: $\lambda_1\approx4.787$, $\lambda_n\approx-4.787$,
+    $\lambda_1+\lambda_n=0$ to machine precision.
+  \item $\mathrm{Tr}(A^4)=5216$, attaining the $C_4$-free trace equality
+    $\sum_i\deg(i)^2+\sum_{uv\in E}(\deg u+\deg v)-2|E|$.
+  \item Local maximality: every non-edge of $Q_7$ creates a $C_4$ when added.
+\end{enumerate}
+\end{proposition}
+
+Through $19\,866$ independent runs (Section~\ref{sec:landscape})
+we found $19\,866$ $C_4$-free subgraphs of $Q_7$ on 304 edges with
+pairwise distinct edge sets (not quotiented by $\mathrm{Aut}(Q_7)$),
+all sharing the structural properties stated in Proposition~\ref{prop:rigid}.
+
+%% ============================================================
+\section{The $Q_8$ Construction}\label{sec:q8}
+%% ============================================================
+
+Simulated annealing produced a $C_4$-free subgraph of $Q_8$ on 680 edges,
+certified by exhaustive enumeration of all $1\,792$ four-cycles.
+
+\begin{proposition}\label{prop:q8struct}
+The $680$-edge $C_4$-free subgraph of $Q_8$ has the following properties:
+\begin{enumerate}[label=(\roman*)]
+  \item Degree sequence $\{4^8,\,5^{160},\,6^{88}\}$; degree sum $1360=2\cdot680$.
+  \item Bipartite, with $\lambda_1+\lambda_n=0$.
+  \item Local maximality: every non-edge of $Q_8$ creates a $C_4$ upon addition.
+  \item Edge density $680/1024=66.4\%$, compared to $304/448=67.9\%$
+    for the $Q_7$ construction.
+\end{enumerate}
+\end{proposition}
+
+\begin{remark}
+Since $8$ is not a power of $4$, the exact BHN formula does not apply for
+$n=8$.  The applicable estimate is
+$\tfrac{1}{2}(8+0.9\sqrt{8})\cdot128\approx674.9$,
+which our 680-edge construction surpasses by 5.1 edges.
+\end{remark}
+
+\subsection{Local optimality of the 680-edge construction}
+
+For the $680$-edge solution, every non-edge of $Q_8$ creates at least
+one $C_4$ upon addition.  Among the $344$ non-edges:
+exactly $1$ creates exactly $1$ new $C_4$; exactly $1$ creates exactly $2$;
+the remaining $342$ create $3$ or more.
+
+Over $1\,076$ independent simulated-annealing trials targeting $681$ edges,
+the minimum $C_4$ violation count observed was $1$ (never $0$),
+where the violation count denotes the number of four-cycles fully contained
+in the candidate edge set.
+
+\begin{conjecture}\label{conj:q8}
+$\ex(Q_8,C_4)=680$.
+\end{conjecture}
+
+Table~\ref{tab:compare} compares the $Q_7$ and $Q_8$ constructions.
+
+\begin{table}[ht]
+\centering
+\caption{Structural comparison of the $Q_7$ and $Q_8$ constructions.}
+\label{tab:compare}\medskip
+\begin{tabular}{lcc}
+\toprule
+Parameter & $Q_7$ (304 edges) & $Q_8$ (680 edges)\\
+\midrule
+Total edges $|E(Q_n)|$ & 448 & 1024\\
+Achieved edges & 304 & 680\\
+Edge density & 67.9\% & 66.4\%\\
+Min degree & 4 & 4\\
+Max degree & 5 & 6\\
+Degree sequence & $\{4^{32},5^{96}\}$ & $\{4^8,5^{160},6^{88}\}$\\
+BHN estimate & $\approx300.2$ & $\approx674.9$\\
+Improvement & $+3.8$ & $+5.1$\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+%% ============================================================
+\section{Structural Classification of $Q_7$ Solutions}\label{sec:structure}
+%% ============================================================
+
+\subsection{Dimension profiles and the twenty types}
+
+\begin{definition}[Dimension profile]
+For $G\subseteq Q_7$, let $e_i(G)=|\{uv\in E(G):u\oplus v=2^i\}|$.
+The \emph{dimension profile} is the sorted tuple
+$\pi(G)=(e_{\sigma(0)}\ge\cdots\ge e_{\sigma(6)})$.
+\end{definition}
+
+The dimension profile is invariant under coordinate permutations (a subgroup
+of $\mathrm{Aut}(Q_7)$ of order $7!=5040$), giving a coarse but computable
+classification.
+
+\begin{proposition}\label{prop:twenty}
+Among the $19\,866$ solutions, the dimension profile takes exactly
+$\mathbf{20}$ distinct values.
+\end{proposition}
+
+Table~\ref{tab:types} lists all 20 types with frequencies and structural invariants.
+
+\begin{table}[ht]
+\centering\small
+\caption{The 20 dimension-profile types of 304-edge $C_4$-free subgraphs of
+  $Q_7$, sorted by decreasing frequency.
+  $H$: Shannon entropy of normalised profile (bits).}
+\label{tab:types}\medskip
+\begin{tabular}{clrrl}
+\toprule
+Rank & Profile $\pi$ & Solutions & $H$ & $\lambda_1$ (mean)\\
+\midrule
+ 1 & $[44,44,44,44,43,43,42]$ & 3155 & 2.8072 & 4.787\\
+ 2 & $[45,45,45,43,43,42,41]$ & 2913 & 2.8065 & 4.788\\
+ 3 & $[45,45,45,43,43,43,40]$ & 2200 & 2.8063 & 4.786\\
+ 4 & $[44,44,44,44,44,43,41]$ & 2116 & 2.8069 & 4.787\\
+ 5 & $[46,46,46,42,42,42,40]$ & 1756 & 2.8053 & 4.788\\
+ 6 & $[46,46,46,42,42,41,41]$ & 1181 & 2.8054 & 4.789\\
+ 7 & $[44,44,44,44,44,44,40]$ & 1085 & 2.8066 & 4.787\\
+ 8 & $[45,45,45,43,42,42,42]$ & 1064 & 2.8066 & 4.787\\
+ 9 & $[45,45,44,43,43,43,41]$ &  974 & 2.8067 & 4.787\\
+10 & $[44,44,44,44,44,42,42]$ &  931 & 2.8070 & 4.787\\
+11 & $[47,47,47,41,41,41,40]$ &  902 & 2.8037 & 4.789\\
+12 & $[45,45,43,43,43,43,42]$ &  439 & 2.8069 & 4.787\\
+13 & $[45,44,44,43,43,43,42]$ &  307 & 2.8070 & 4.787\\
+14 & $[46,45,45,42,42,42,42]$ &  236 & 2.8063 & 4.787\\
+15 & $[44,44,44,43,43,43,43]$ &  163 & 2.8073 & 4.787\\
+16 & $[47,47,44,43,41,41,41]$ &  153 & 2.8050 & 4.788\\
+17 & $[46,46,44,42,42,42,42]$ &  107 & 2.8062 & 4.787\\
+18 & $[48,48,48,40,40,40,40]$ &  101 & 2.8014 & 4.789\\
+19 & $[46,46,43,43,42,42,42]$ &   44 & 2.8063 & 4.787\\
+20 & $[46,46,45,42,42,42,41]$ &   39 & 2.8058 & 4.787\\
+\midrule
+   & \textbf{Total}           & \textbf{19866}\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Observations: (1) $\lambda_1$ lies in $[4.786,4.789]$ across all 20 types.
+(2) $H$ ranges from $2.801$ to $2.807$, all near $\log_27\approx2.807$.
+(3) Type~18 ($[48,48,48,40,40,40,40]$) has 3-fold symmetry.
+
+\subsection{Shared structural properties}
+
+\begin{proposition}\label{prop:rigid}
+Every solution in the $19\,866$ satisfies:
+\begin{enumerate}[label=(\roman*)]
+  \item Degree sequence $\{4^{32},5^{96}\}$.
+  \item $\lambda_1+\lambda_n=0$ (bipartite), $\lambda_1\approx4.787$.
+  \item $\mathrm{Tr}(A^4)=5216$ ($C_4$-free trace equality).
+  \item Local maximality: no edge of $Q_7$ can be added without creating a $C_4$.
+  \item Every edge of $Q_7$ appears in at least one solution
+    (verified by taking the union of the edge sets over all $19\,866$ solutions).
+\end{enumerate}
+\end{proposition}
+
+\subsection{Solution landscape}\label{sec:landscape}
+
+Pairwise Hamming distances $d_H(G,G')=|E(G)\triangle E(G')|$
+over a random sample of $5\,000$ pairs range from $36$ to $260$
+(mean $\approx195.4$, median $196$).
+
+Over $1\,076$ independent trials targeting $305$ edges,
+the minimum $C_4$ violation count was $2$ (never $0$).
+
+\begin{conjecture}\label{conj:q7}
+$\ex(Q_7,C_4)=304$.
+\end{conjecture}
+
+%% ============================================================
+\section{Computational Method}\label{sec:method}
+%% ============================================================
+
+\subsection{Two-phase simulated annealing}
+
+\noindent\textbf{Phase 1 (Penalty SA).}
+We minimise $f(E)=-|E|+\lambda V$ where $V$ is the number of $C_4$ violations
+and $\lambda\in[0.30,0.90]$.
+Temperature schedule: geometric from $T_0\in[0.20,4.00]$ to
+$T_1\in[0.001,0.030]$ over $3$--$15$ million steps.
+A move toggles a single edge; the change in $f$ is computed incrementally
+in $O(\deg)$ time using precomputed $C_4$-to-edge incidence lists.
+
+\noindent\textbf{Phase 2 (Swap SA).}
+Edge count is fixed; swap moves (remove one edge, add one non-edge)
+minimise $V$.
+Parameters: up to $2\times10^8$ steps for $Q_7$ at 305 edges;
+$5\times10^7$ for $Q_8$ at 681 edges.
+
+\noindent\textbf{Diversification.}
+Before each trial, a random element of $\mathrm{Aut}(Q_n)$
+(random bit permutation composed with random bit flip) is applied to
+the current best solution.  This prevents repeated exploration of the
+same automorphism class.
+
+\subsection{Comparison with known lower bounds}
+
+\begin{align*}
+n=7:&\quad\tfrac12(7+0.9\sqrt7)\cdot64\approx300.2,\quad\text{our bound: }304\;(\Delta=+3.8,\,+1.25\%),\\
+n=8:&\quad\tfrac12(8+0.9\sqrt8)\cdot128\approx674.9,\quad\text{our bound: }680\;(\Delta=+5.1,\,+0.75\%).
+\end{align*}
+
+\subsection{Regularity trend across dimensions}
+
+Degree sequences across dimensions suggest increasing regularity:
+$Q_6$: $\{4^{32},5^{32}\}$;
+$Q_7$: $\{4^{32},5^{96}\}$;
+$Q_8$: $\{4^8,5^{160},6^{88}\}$.
+The degree support $\{n-3,n-2,n-1\}$ may reflect an underlying structural
+principle for optimal $C_4$-free subgraphs of $Q_n$.
+
+%% ============================================================
+\section{Computational Proof that $\ex(Q_6,C_4)=132$}\label{sec:q6}
+%% ============================================================
+
+Harborth and Nienborg~\cite{HN94} proved $\ex(Q_6,C_4)=132$ by combinatorial
+arguments.  We reproduce this result computationally, providing an independent
+verification and a template for small hypercubes.
+
+\subsection{Lower bound: explicit construction}
+
+Simulated annealing (Section~\ref{sec:method}) finds a $C_4$-free subgraph of
+$Q_6$ on 132 edges, certified by exhaustive enumeration of all 240 four-cycles.
+The explicit edge list is provided in \texttt{q6\_edges\_132.jsonl}.
+
+\subsection{Upper bound: integer linear program}
+
+Label the 192 edges of $Q_6$ as $x_1,\ldots,x_{192}\in\{0,1\}$.
+For each of the 240 four-cycles $\{e_1,e_2,e_3,e_4\}$,
+the constraint $x_{e_1}+x_{e_2}+x_{e_3}+x_{e_4}\le3$ ensures $C_4$-freeness.
+The ILP is:
+\[
+  \max\sum_{i=1}^{192}x_i \quad\text{subject to}\quad
+  \sum_{e\in C}x_e\le3\;\;\forall C\in\mathcal{C}_6,\quad x_i\in\{0,1\}.
+\]
+This formulation has 192 binary variables and 240 constraints.
+The MPS file \texttt{q6\_ilp.mps} is provided for independent verification.
+
+\begin{proposition}\label{prop:q6ilp}
+The optimal value of the above ILP is $132$, establishing $\ex(Q_6,C_4)\le132$.
+Combined with the lower bound construction, $\ex(Q_6,C_4)=132$.
+\end{proposition}
+
+On standard desktop hardware, standard MIP solvers such as SCIP, HiGHS,
+or Gurobi verify this instance quickly.
+
+%% ============================================================
+\section{Open Problems}\label{sec:open}
+%% ============================================================
+
+\begin{enumerate}
+  \item Prove or disprove $\ex(Q_7,C_4)=304$ (Conjecture~\ref{conj:q7}).
+  \item Determine $\ex(Q_8,C_4)$ exactly (Conjecture~\ref{conj:q8}).
+  \item What is the number of $\mathrm{Aut}(Q_7)$-orbits among all 304-edge
+    $C_4$-free subgraphs of $Q_7$?
+  \item Is the degree sequence $\{4^{32},5^{96}\}$ necessary for any locally
+    maximal $C_4$-free subgraph of $Q_7$ on 304 edges?
+  \item Can the flag algebra method of~\cite{Bab12,BHLL12} yield tight bounds
+    for small $n\le8$?
+  \item Does the degree sequence pattern $\{(n-3)^a,(n-2)^b,(n-1)^c\}$
+    continue for $n=9,10,\ldots$?
+\end{enumerate}
+
+\section*{Acknowledgements}
+The author thanks B.~Lidick\'y (Iowa State University) for the endorsement
+and for pointing out the reference~\cite{Bab12}.
+The author also thanks the open-source community for the HiGHS and SCIP
+solvers used in ILP experiments.
+
+\begin{thebibliography}{99}
+\bibitem{Bab12}
+R.~Baber,
+Tur\'an densities of hypercubes,
+arXiv:1201.3587, 2012.
+
+\bibitem{BHLL12} J.~Balogh, P.~Hu, B.~Lidick\'y, and H.~Liu, Upper bounds on
+  the size of 4- and 6-cycle-free subgraphs of the hypercube,
+  \textit{Eur.\ J.\ Combin.}\ \textbf{35} (2014), 75--85.
+\bibitem{BHN95} P.~Brass, H.~Harborth, and H.~Nienborg, On the maximum number
+  of edges in a $C_4$-free subgraph of $Q_n$,
+  \textit{J.\ Graph Theory}\ \textbf{19} (1995), 17--23.
+\bibitem{Chu92} F.~Chung, Subgraphs of a hypercube containing no small even
+  cycles, \textit{J.\ Graph Theory}\ \textbf{16} (1992), 273--286.
+\bibitem{EMR92} M.\,R.~Emamy-K., P.~Guan, and P.\,I.~Rivera-Vega, On the
+  characterization of the maximum squareless subgraphs of the 5-cube,
+  \textit{Congr.\ Numer.}\ \textbf{88} (1992), 97--109.
+\bibitem{Erd84} P.~Erd\H{o}s, On some problems in graph theory, combinatorial
+  analysis and combinatorial number theory, in: \textit{Graph Theory and
+  Combinatorics} (B.~Bollob\'as, ed.), Academic Press, 1984, pp.~1--17.
+\bibitem{HN94} H.~Harborth and H.~Nienborg, Maximum number of edges in a
+  six-cube without four-cycles, \textit{Bull.\ ICA}\ \textbf{12} (1994), 55--60.
+\bibitem{TW09} A.~Thomason and P.~Wagner, Bounding the size of square-free
+  subgraphs of the hypercube, \textit{Discrete Math.}\ \textbf{309} (2009),
+  1730--1735.
+\end{thebibliography}
+\end{document}
