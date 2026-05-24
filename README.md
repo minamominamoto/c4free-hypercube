@@ -46,7 +46,7 @@ sha256sum -c SHA256SUMS         # Linux
 
 | File | Description |
 | --- | --- |
-| `c4free_hypercube.pdf` | The paper (PDF): new lower bounds, structural classification (Q7: 20 dimension-profile types, 19,866 solutions; Q8: the 680-edge construction and 681-edge barrier), and the computational method |
+| `c4free_hypercube.pdf` | The paper (PDF): new lower bounds, structural classification (Q7: 20 dimension-profile types, 19,866 solutions; Q8: the 680-edge construction and computational evidence concerning the 681-edge searches), and the computational method |
 | `c4free_hypercube.tex` | LaTeX source of the paper |
 | `c4free_sa.py` | Two-phase simulated-annealing search used to obtain the lower bounds |
 | `verify.py` | Dependency-free verifier (re-checks every certificate from scratch) |
