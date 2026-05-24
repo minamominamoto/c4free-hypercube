@@ -1,0 +1,32 @@
+{
+  "title": "Data and verification package for \"New Lower Bounds for C4-Free Subgraphs of the Hypercubes Q6, Q7, and Q8: Constructions, Structure, and Computational Method\"",
+  "description": "Reproducibility package for the C4-free hypercube lower-bound constructions. Contains: explicit edge lists for the record C4-free subgraphs of Q6 (132 edges), Q7 (304 edges) and Q8 (680 edges); machine-verifiable certificates (SHA-256 hashes, edge counts, and a complete enumeration of all four-cycles establishing C4-freeness); and a dependency-free verification script that re-checks every certificate from scratch. Each construction can be independently re-verified without external libraries.",
+  "upload_type": "dataset",
+  "creators": [
+    {
+      "name": "Minamoto, Minamo",
+      "orcid": "0009-0002-1201-5704"
+    }
+  ],
+  "keywords": [
+    "C4-free",
+    "quadrilateral-free subgraph",
+    "hypercube",
+    "Q_n",
+    "extremal graph theory",
+    "Turan-type problem",
+    "machine-verifiable certificate",
+    "reproducibility",
+    "experimental mathematics"
+  ],
+  "related_identifiers": [
+    {
+      "identifier": "arXiv:2603.29127",
+      "relation": "isSupplementTo",
+      "scheme": "arxiv"
+    }
+  ],
+  "license": "MIT",
+  "version": "1.0",
+  "language": "eng"
+}
