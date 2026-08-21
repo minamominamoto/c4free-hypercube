@@ -141,18 +141,36 @@ paper's preparation but are not packaged into a single bundled
 verifier; a reader wishing to check them would need to recompute them
 from the released edge lists using the definitions given in the text.
 
-The $Q_7$ solutions were found by a two-stage process that we have now
-recovered and independently verified: a conventional multi-move-type
+The $Q_7$ solutions were found by a two-stage process that we have
+since traced and partly re-verified (the two stages have different
+evidentiary status, detailed below and in Section~\ref{sec:method}):
+a conventional multi-move-type
 penalty simulated annealing (add/remove/$1$-swap/kick moves with
 temperature-scaled Boltzmann acceptance) found a single seed $304$-edge
 solution, and a remove-and-repair collector -- starting from an
 existing solution (optionally transformed by a random element of
 $\mathrm{Aut}(Q_7)$), removing a few edges, then greedily re-adding
 only violation-free edges -- mass-collected the released $19\,866$
-solutions; we confirmed this collector, run from the released seed,
-finds $1\,987$ new valid solutions in $30$ seconds, and that the
-recovered output file matches the released $19\,866$ records exactly
-by hash and by edge set (Section~\ref{sec:method}). The two released
+solutions; we directly confirmed the collector stage by running it
+ourselves: from the released seed, it
+finds $1\,987$ new valid solutions in $30$ seconds. Tracing further
+back, we located the entire prior history: the earliest recovered
+attempt on this problem (a CBC-solver ILP, the same square-$\le3$-edges
+formulation, dated over a week before any other file discussed in this
+paper) reaches $289$ edges; the codebase was then revised to HiGHS
+with warm-starting, and file timestamps together with recovered solver
+logs document a progression $289\to293\to299\to301\to303\to304$ edges, the last
+step apparently via the \texttt{sa\_search.py} series. We confirmed
+the $301$-edge step's mechanism directly: \texttt{source.py}, the
+HiGHS version, run for $60$ seconds with no prior solution to warm-start
+from (a genuine cold start), produces a valid, growing $295$-edge
+$C_4$-free solution via branch-and-bound alone. We further confirmed
+provenance in a way any reader can reproduce from the released
+files alone, without needing our recovered archive: applying
+\texttt{sa\_collect304.py}'s own canonicalisation-then-MD5 hash
+function directly to each of the $19\,866$ released edge sets
+reproduces the \texttt{hash} field already stored in that same
+released record, for all $19\,866$ (Section~\ref{sec:method}). The two released
 $Q_8$ $680$-edge solutions (Solutions~A and~B, Section~\ref{sec:q8})
 have likewise now been traced to recovered, independently-verified
 working code, \texttt{sa\_q8.py}: a penalty-SA hill-climber that always
@@ -384,10 +402,10 @@ The 304-edge construction has the following properties:
 \end{enumerate}
 \end{proposition}
 
-Through $19\,866$ collector trials (Section~\ref{sec:landscape};
-see Section~\ref{sec:method} for the now-verified production code
-underlying this search history)
-we found $19\,866$ $C_4$-free subgraphs of $Q_7$ on 304 edges with
+Across the collector runs described in Section~\ref{sec:method} (whose
+\texttt{trial} field reaches into the millions per run; $19\,866$ is
+the number of \emph{stored solutions}, not the number of trials),
+we obtained $19\,866$ $C_4$-free subgraphs of $Q_7$ on 304 edges with
 pairwise distinct edge sets (not quotiented by $\mathrm{Aut}(Q_7)$),
 all sharing the structural properties stated in Proposition~\ref{prop:rigid}.
 
@@ -853,9 +871,15 @@ The witness edge set satisfies:
     squares meet the edge set in $0$, $2$, or $4$ edges).
   \item Degree sequence $\{4^2,\,5^{168},\,6^{86}\}$; degree sum
     $1364=2\cdot682$.
-  \item Local-field histogram $\{0\!:\!2,\,2\!:\!168,\,4\!:\!86\}$, where
+  \item Local-field histogram $\{0\!:\!2,\,2\!:\!168,\,4\!:\!86\}$ over
+    all $256$ vertices, where
     the local field at a vertex is (positive degree) $-$ (negative degree)
-    under the signed-graph correspondence above.
+    under the signed-graph correspondence above; restricted to $U$
+    specifically (the $128$ vertices summed over in
+    Lemma~\ref{lem:fieldbound} and the upper-bound derivation of
+    Section~\ref{sec:oddsquare-exact}), the histogram is
+    $\{0\!:\!1,\,2\!:\!84,\,4\!:\!43\}$, giving
+    $\sum_{v\in U}h(v)=2\cdot84+4\cdot43=340$ directly.
   \item Local maximality: every one of the $342$ non-edges of $Q_8$
     creates at least $3$ new $C_4$s upon addition (distribution
     $\{3\!:\!41,\,4\!:\!159,\,5\!:\!120,\,6\!:\!22\}$), a strictly stronger
@@ -1006,7 +1030,14 @@ $196$ (all four values computed directly from the full pairwise
 distance distribution, not sampled).
 
 Over $1\,076$ reported trials targeting $305$ edges,
-the minimum $C_4$ violation count was $2$ (never $0$).
+the minimum $C_4$ violation count was $2$ (never $0$). We note this
+figure is identical to the $681$-edge $Q_8$ statistic reported below
+(Section~\ref{sec:q8}); we do not have a log or seed list for either
+figure, so we cannot confirm whether this is a genuine coincidence
+across two separate search efforts or a duplication error somewhere
+in this manuscript's history. We did not attempt to resolve this by
+guessing; a reader should treat both $1\,076$ figures as unarchived,
+author-recorded claims of uncertain independence from each other.
 
 \begin{conjecture}\label{conj:q7}
 $\ex(Q_7,C_4)=304$.
@@ -1069,16 +1100,15 @@ from the released edge lists alone (though, like the other structural
 statistics noted earlier, not via a bundled analysis script).
 
 \noindent\textbf{Update: the $Q_7$ production code has been recovered
-and verified.} Earlier versions of this manuscript reported the $Q_7$
+and verified, with one important caveat.} Earlier versions of this manuscript reported the $Q_7$
 provenance question as unresolved, based on the released
 \texttt{c4free\_sa.py} (Section~\ref{sec:c4freesa} below), whose
 \texttt{phase1\_sa} we found cannot progress from a fresh random start
-under its documented parameters. We have since located the actual
-scripts used to produce the $19\,866$ released $Q_7$ solutions:
+under its documented parameters. We have since located scripts
+that produce the $19\,866$ released $Q_7$ solutions:
 \texttt{sa\_search.py} (a conventional multi-move-type penalty SA --
 add, remove, $1$-swap, and kick moves, with a proper temperature-scaled
-Boltzmann acceptance rule rather than a hard violation cap -- used to
-find a single $304$-edge seed solution from scratch) and
+Boltzmann acceptance rule rather than a hard violation cap) and
 \texttt{sa\_collect304.py} (a remove-and-repair collector: starting
 from an existing valid $304$-edge solution -- either the seed or a
 previously found solution, optionally first transformed by a random
@@ -1086,22 +1116,106 @@ element of $\mathrm{Aut}(Q_7)$ -- it removes a small number $k$ of
 edges, drawn from $\{1,2,3,4,5,8,12,20\}$ with fixed weights, then
 greedily re-adds edges one at a time, accepting only additions that
 create zero new violating squares, keeping the result if it reaches
-$304$ edges with zero violations and has not been seen before). Unlike
+$304$ edges with zero violations and has not been seen before). The
+caveat: the released \texttt{sa\_search.py} unconditionally loads its
+starting state from \texttt{selected\_edges\_best.json} (no
+random/greedy fallback), and the specific file we recovered and
+release alongside this revision already contains the final $304$-edge
+solution; running the released script therefore searches for
+\emph{improvements beyond} $304$ edges (consistent with the later,
+separately-recovered $305$-edge search history discussed below), not a
+from-scratch discovery of the first $304$-edge solution. We have
+since traced the entire earlier chain, back to what appears to be the
+true origin: the earliest recovered attempt on this problem, dated
+over a week before \texttt{selected\_edges\_301.json} and every other
+file discussed above, is a CBC-solver (not HiGHS) ILP of the same
+square-$\le3$-edges formulation, explicitly commented as attacking
+``Erd\H{o}s's Problem 100, the $n=7$ case''; its recovered log shows
+it reaching $289$ edges. The codebase was then revised to use HiGHS
+with warm-starting, and file timestamps together with recovered solver
+logs document a progression $289\to301$
+(\texttt{selected\_edges\_301.json}) $\to$ $303$
+(\texttt{source\_72h.py}'s $72$-hour warm-started run, whose log we
+also recovered and which explicitly records ``warm start: loading
+$301$-edge solution'' and ends at $303$ edges, $0$ violations) $\to$
+$304$ (via the \texttt{sa\_search.py} series, dated after the $303$-edge
+result). We further located, in a recovered chat transcript
+documenting the CBC run above, that it eventually reached $293$ edges
+(after $\sim12$ hours) before switching to HiGHS, which reached $299$
+edges (in $1$ hour, independently confirmed $0$ violations at the
+time), refining the chain to
+$289\to293\to299\to301\to303\to304$. We distinguish two evidentiary
+levels here: the $293$ and $299$ figures are read from a historical
+chat transcript, not independently re-executed by us (we did not
+re-run a $12$-hour CBC solve or re-verify that specific $299$-edge
+output ourselves); the $289$ figure is directly documented by a
+recovered solver log rather than executed by us either. What we
+\emph{did} independently execute and verify ourselves: the HiGHS-based \texttt{source.py}, run for $60$ seconds
+with no pre-existing \texttt{selected\_edges\_best.json} (a genuine
+cold start, not a warm start), finds a valid $295$-edge $C_4$-free
+solution ($0$ violations) via HiGHS branch-and-bound alone, confirming
+this ILP approach genuinely produces growing, valid solutions from
+nothing and is a plausible, demonstrated mechanism for the $301$-edge
+step. We do not have a bit-for-bit reproduction of the exact original
+$301$-edge solution (that would require rerunning HiGHS for the same
+duration with the same solver-internal randomisation), but the
+mechanism at each step is now either independently executed by us, or directly documented by a
+recovered log or chat transcript, rather than merely claimed, closing the previously-unarchived
+gap about the search method (though not a bit-for-bit
+replay of any specific historical run). Unlike
 \texttt{phase1\_sa}, this method never needs to escape a
 far-from-feasible random state: it always starts already at zero
 violations and only removes a small number of edges before repairing,
 so the search stays close to feasible throughout. We verified this
 directly: running the released \texttt{sa\_collect304.py} from its
 released seed solution for $30$ seconds found $1\,987$ new, valid,
-previously-unrecorded $304$-edge solutions. We also verified, by exact
-SHA-256/hash and edge-set comparison of the recovered
-\texttt{solutions\_304.jsonl} against the $19\,866$ released records,
-that all $19\,866$ hashes and all $19\,866$ underlying edge sets match
-exactly, confirming this is genuinely the file that was released, not
-merely a similar-looking dataset. This also fully explains the
+previously-unrecorded $304$-edge solutions. We further verified
+provenance in a way independent of our own recovered archive and
+reproducible from the released files alone: applying
+\texttt{sa\_collect304.py}'s own canonicalisation-then-MD5 hash
+function, run exactly as implemented, directly
+to each of the $19\,866$ released
+\texttt{q7\_edges\_304.jsonl.*} edge sets exactly reproduces the
+\texttt{hash} field already stored in that same record, for all
+$19\,866$ with zero mismatches -- without needing the recovered
+\texttt{solutions\_304.jsonl} at all. We must correct our own earlier
+description of what this function does, however: we had described it
+as coordinate relabelling by descending per-direction edge count,
+followed by taking the lexicographically smallest of the $2^n$
+bit-flip images. On rereading the code, this describes what a
+docstring-level intent might have been, not what is implemented. The
+implementation instead loops over only the $n$ single-bit XOR masks
+(not all $2^n$ combined masks), and compares candidate frozensets with
+Python's \texttt{<} operator, which for \texttt{frozenset} tests
+\emph{proper subset}, not lexicographic order; since every candidate
+here has the same cardinality ($304$), no candidate is ever a proper
+subset of another, so this comparison is always \texttt{False} and the
+flip-selection loop never updates its choice. The function's actual
+output is therefore just the coordinate-permuted set from the first
+step, with no flip-based canonicalisation occurring at all. We
+verified this discrepancy directly: recomputing the canonical form as
+originally (mis)described -- trying all $2^n=128$ XOR masks with a
+genuine lexicographic comparison -- gives a different result from the
+released implementation for the first published solution (the true
+lexicographic minimum is attained at XOR mask $107$, not reproduced by
+the actual code), and for $92$ of the first $100$ released solutions,
+this correctly-described alternative hash does not match the
+\texttt{hash} field actually stored. The $19\,866/19\,866$ match we
+report above is against the code exactly as implemented (with this
+defect), which is what we release and what actually produced the
+stored \texttt{hash} values; it is not evidence that full
+translation-class canonicalisation is occurring, and the released
+$19\,866$ solutions should not be assumed de-duplicated across the
+$\mathbb{Z}_2^n$ translation subgroup on this basis. We do not know
+whether the intended, fully-canonicalising version was ever the one
+actually run in production, or whether this defect was present
+throughout; we did not attempt to guess or silently correct it, for
+the same reason given throughout this section. This also fully explains the
 previously undocumented per-record metadata fields
 (Section~\ref{sec:method} above, as reported in earlier manuscript
-versions): \texttt{method} records which of the collector's three
+versions), independently of this defect, since the fields' meanings
+come from the surrounding collector logic, not from
+\texttt{canonicalize()} itself: \texttt{method} records which of the collector's three
 restart strategies produced that solution (\texttt{auto}: random
 automorphism of a random existing solution; \texttt{repair}: direct
 remove-and-repair of a random existing solution, no automorphism;
@@ -1117,9 +1231,32 @@ collector run, and \texttt{elapsed} the wall-clock seconds since that
 run started (consistent with a shell history showing the collector
 was run and re-started under \texttt{nohup} multiple times, explaining
 why \texttt{trial} resets are visible across the released file). We
+also note a genuine implementation defect in the recovered
+\texttt{sa\_search.py} itself: \texttt{cur\_list}/\texttt{mis\_list}
+(the candidate lists sampled for removal/swap moves) are rebuilt from
+\texttt{current\_set}/\texttt{current\_missing} only every
+\texttt{REBUILD\_INTERVAL}$=5\,000$ iterations, while ordinary
+add/remove moves update \texttt{current\_set}/\texttt{current\_missing}
+directly every iteration without refreshing these lists; a stale list
+entry can therefore be chosen for removal or swap, and since
+\texttt{delta\_remove} does not check that its argument edge is
+actually present, the tracked \texttt{current\_v} can in principle
+drift from the true violation count. \texttt{count\_violations} is
+called once, to initialise \texttt{current\_v} at the start of each
+run, but is not called again to re-verify before \texttt{save\_best}
+writes an improved solution to disk. This is a defect in the search
+code's internal self-consistency, not in the released certificates:
+every released $304$-edge solution -- regardless of which script
+produced it -- has been independently re-verified $C_4$-free by
+exhaustive enumeration in this manuscript (Section~\ref{sec:verify}),
+so the defect does not affect the correctness of
+$\ex(Q_7,C_4)\ge304$. We release the code with this defect documented,
+not silently patched, for the same reason given throughout this
+section: patching it would misrepresent what was actually run. We
 release \texttt{sa\_search.py}, \texttt{sa\_collect304.py}, and the
-seed solution alongside this revision as verified, working production
-code for the $Q_7$ results; see Section~\ref{sec:c4freesa} below for
+seed solution alongside this revision as recovered
+code for the $Q_7$ results, with the two caveats above (the seed's
+provenance below $304$ edges, and this list-staleness defect); see Section~\ref{sec:c4freesa} below for
 the separate, distinct \texttt{c4free\_sa.py} whose relationship to
 the $Q_8$ results (and to the $Q_7$ results, before this recovery)
 remains as previously described. The $1\,076$-trial statistic at
@@ -1152,11 +1289,22 @@ hill-climbing improvement over many trials.
 We verified two things directly: first, that the recovered
 \texttt{q8\_edges\_680.txt} and \texttt{q8\_best.json} match the
 released Solution~A and Solution~B (Section~\ref{sec:q8}) exactly by
-edge set; second, by direct execution -- resuming from a saved
-$670$-edge intermediate state for $90$ seconds -- that the code makes
+edge set (we release these two files as
+\texttt{q8\_solution\_a.txt}/\texttt{q8\_solution\_b.json} alongside
+this revision, so a reader can repeat this edge-set comparison
+directly); second, by direct execution -- resuming from the $670$-edge
+intermediate state for $90$ seconds -- that the code makes
 genuine progress, reducing the violation count at the $675$-edge
 target from $22$ to $8$ within a single trial. We release
-\texttt{sa\_q8.py} alongside this revision. The $1\,076$-trial
+this $670$-edge checkpoint as \texttt{q8\_checkpoint\_670.json}
+(renamed to \texttt{q8\_best.json} to match \texttt{sa\_q8.py}'s
+expected filename) so this second test is independently
+reproducible from the released files alone, not only as our own
+one-time report; without this file, \texttt{sa\_q8.py} instead
+starts from a fresh greedy construction, which is a different (and
+also legitimate, since the algorithm always restarts from a valid
+state either way) starting point than the one we tested from. We
+also release \texttt{sa\_q8.py} itself. The $1\,076$-trial
 statistic at $681$ edges (Section~\ref{sec:q8}) is a record of
 attempts to exceed $680$, not of producing the $680$-edge solutions
 themselves; we did not recover a script or log specifically
@@ -1165,7 +1313,24 @@ claim in the same sense as before.
 
 \subsection{The released \texttt{c4free\_sa.py} and its known defect}\label{sec:c4freesa}
 
-The quantitative
+We have since determined why \texttt{c4free\_sa.py} does not match the
+production history: it was written after the fact. Following an
+early external review (of the first arXiv submission, which did not
+yet include search source code) that flagged the absence of published
+search code as the submission's principal weakness, \texttt{c4free\_sa.py}
+was written on $2026$-$03$-$28$ -- after the $Q_7$ ($19\,866$
+solutions, complete by $2026$-$03$-$17$) and $Q_8$ ($680$-edge
+solutions, complete by $2026$-$03$-$21$) results already existed via
+the separate scripts recovered and described above -- specifically to
+have \emph{some} search code available for release, and was validated
+only on the much smaller $Q_5$ case ($56$ edges) at the time, not at
+the $Q_7$/$Q_8$ scale where the \texttt{viol\_cap} defect documented
+below becomes fatal. This explains, rather than excuses, the
+discrepancy: \texttt{c4free\_sa.py} was never the operative research
+code for either dimension; it was a retrospective, small-scale-validated
+addition made to satisfy a reviewer's reproducibility request, and the
+defect went undetected because it was not exercised at the scale that
+triggers it. The quantitative
 claim about the \emph{$Q_8$ search process} — ``$1\,076$ independent
 trials'' at $681$ edges — remains an unarchived record, as noted just
 above; before the two recoveries above, this described the $Q_7$ and
@@ -1201,10 +1366,14 @@ for $311$; a \texttt{run} field is present on only $8$ records (one
 with \texttt{run=0}, seven with \texttt{run=2}); and $19\,858$ records
 carry a \texttt{trial} field with values up to at least seven figures.
 These fields are now explained by the recovered
-\texttt{sa\_search.py}/\texttt{sa\_collect304.py} pipeline above: this
-is a fully resolved provenance record for $Q_7$, not merely
-unexplained metadata (contrast with the $Q_8$ situation, which remains
-open).
+\texttt{sa\_search.py}/\texttt{sa\_collect304.py} pipeline above,
+subject to the two caveats noted there (the seed's own provenance
+below $304$ edges, and the list-staleness defect); this record is
+substantially more resolved than the analogous $Q_8$ $681$-edge
+trial statistic, which remains an unarchived claim with no
+recovered script or log at all (the $Q_8$ $680$-edge \emph{solutions}
+themselves, by contrast, have also now been traced to recovered code
+-- see below).
 
 \subsection{Two-phase simulated annealing}
 
@@ -1339,7 +1508,7 @@ $Q_8$'s $\{8,160,88\}$, so we do not claim a general regularity trend
 here.
 
 %% ============================================================
-\section{Computational Reproduction of $\ex(Q_6,C_4)=132$}\label{sec:q6}
+\section{Computational Reproduction of the $\ex(Q_6,C_4)=132$ Lower Bound}\label{sec:q6}
 %% ============================================================
 
 Harborth and Nienborg~\cite{HN94} proved $\ex(Q_6,C_4)=132$ by combinatorial
