@@ -1284,6 +1284,18 @@ principle, verify on the dual side.
 
 \begin{enumerate}
   \item Prove or disprove $\ex(Q_7,C_4)=304$ (Conjecture~\ref{conj:q7}).
+    A direct SAT-encoding attack on this question (a $305$-edge
+    $C_4$-free existence query encoded as CNF, $64\,512$ variables and
+    $129\,104$ clauses, with a symmetry-broken variant at $113\,664$
+    variables/$227\,786$ clauses; attempted cube-and-conquer splitting
+    via \texttt{march\_cu} and direct solving via CaDiCaL and Kissat)
+    was attempted over several weeks and did not reach a conclusion:
+    the cube-generation step itself repeatedly failed to complete, and
+    direct solver runs of over $17$ days of process time returned
+    \texttt{UNKNOWN} rather than a SAT/UNSAT verdict. We record this
+    as an unsuccessful attempt, not as evidence either way; the
+    hardness suggests this instance is not easily settled by
+    off-the-shelf SAT solvers at current scale.
   \item\label{op:q8exact} Determine $\ex(Q_8,C_4)$ exactly. Is it $682$, or can a
     non-odd-square construction exceed $g(8)=682$? The $Q_7$ audit of
     Section~\ref{sec:oddsquareaudit} shows the two questions are genuinely
