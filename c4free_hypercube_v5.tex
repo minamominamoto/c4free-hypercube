@@ -154,12 +154,19 @@ only violation-free edges -- mass-collected the released $19\,866$
 solutions; we directly confirmed the collector stage by running it
 ourselves: from the released seed, it
 finds $1\,987$ new valid solutions in $30$ seconds. Tracing further
-back, we located the entire prior history: the earliest recovered
-attempt on this problem (a CBC-solver ILP, the same square-$\le3$-edges
-formulation, dated over a week before any other file discussed in this
-paper) reaches $289$ edges; the codebase was then revised to HiGHS
-with warm-starting, and file timestamps together with recovered solver
-logs document a progression $289\to293\to299\to301\to303\to304$ edges, the last
+back, we located most of the prior history, with one correction
+to an earlier draft of this paper: the
+earliest recovered attempt (a CBC-solver ILP explicitly commented as
+attacking Erd\H{o}s's Problem 100) has a confirmed bug (its
+$C_4$-detection finds $0$ of $672$ four-cycles, since adjacent
+vertices in the bipartite $Q_7$ never share a common neighbour, which
+its logic incorrectly relies on), so we withdraw our earlier claim
+that this specific recovered file is what reached $289$ edges; a
+recovered solver log, headed as a corrected version and reporting the
+correct $C_4$ count, documents that a since-fixed version of the
+script did reach $289$ edges, but we have not located that corrected
+script itself. From there, file timestamps together with recovered solver
+logs and a chat transcript document a progression $289\to293\to299\to301\to303\to304$ edges, the last
 step apparently via the \texttt{sa\_search.py} series. We confirmed
 the $301$-edge step's mechanism directly: \texttt{source.py}, the
 HiGHS version, run for $60$ seconds with no prior solution to warm-start
@@ -181,9 +188,13 @@ states at $584,662,\ldots,679$ edges $\to$ $680$). We confirmed the two
 released files this recovered code produced, \texttt{q8\_edges\_680.txt}
 and \texttt{q8\_best.json}, match Solutions~A and~B respectively
 exactly by edge set, and we confirmed the code makes genuine
-progress on direct execution: run for $90$ seconds from a saved
-$670$-edge intermediate state, it reduces the violation count at the
-$675$-edge target from $22$ to $8$. This is a different script,
+progress on direct execution: run once for $90$ seconds from a saved
+$670$-edge intermediate state, it reduced the violation count at the
+$675$-edge target from $22$ to $8$. \texttt{sa\_q8.py} sets no random
+seed, so this specific numeric trajectory is a one-time observation,
+not a fixed-seed reproducible result: a reader rerunning the released
+files should expect qualitatively similar monotonic improvement, not
+these exact numbers. This is a different script,
 released separately from \texttt{c4free\_sa.py}, whose
 generalisation of the same two-phase idea to a single $n$-agnostic
 script (Section~\ref{sec:method}) does \emph{not} share this
@@ -711,8 +722,9 @@ increases by exactly $-h(v)>0$. This contradicts maximality of $|E|$, so no such
 This is a corollary of, not an alternative to, Lemma~\ref{lem:switching}:
 the argument uses only that flipping one vertex's spin preserves
 odd-squareness (immediate from the switching correspondence) and counts
-the resulting change in $|E|$ directly. Since all $389$ released
-odd-square $Q_7$ solutions attain $g(7)=304$ (Section~\ref{sec:oddsquareaudit}),
+the resulting change in $|E|$ directly. All $389$ released
+odd-square $Q_7$ solutions have $304$ edges, the maximum shown below
+(Section~\ref{sec:oddsquareaudit}), so
 the Lemma's hypothesis applies to every one of them; we independently
 verified $h(v)\ge0$ for all $v\in U$ holds on all $389$, with no
 counterexample, consistent with (and not merely assumed by) the Lemma.
@@ -784,7 +796,7 @@ section (Section~\ref{sec:oddsquare-exact}), not because the upper-bound
 proof depends on them.
 
 Marinari, Parisi, and Ritort~\cite{MPR95} report having exhibited, by
-simulated annealing, an explicit $D=8$ ground state attaining Derrida et
+simulated annealing, a $D=8$ ground state attaining Derrida et
 al.'s improved energy lower bound. Their attainment claim, under the
 correspondence developed below, corresponds to the same bound value
 $\sum_{v\in U}h(v)=340$ established directly above -- MPR95 do not
@@ -1125,13 +1137,32 @@ solution; running the released script therefore searches for
 \emph{improvements beyond} $304$ edges (consistent with the later,
 separately-recovered $305$-edge search history discussed below), not a
 from-scratch discovery of the first $304$-edge solution. We have
-since traced the entire earlier chain, back to what appears to be the
-true origin: the earliest recovered attempt on this problem, dated
+since traced the entire earlier chain, with one significant correction to an
+earlier draft of this section. The
+earliest recovered attempt on this problem, dated
 over a week before \texttt{selected\_edges\_301.json} and every other
-file discussed above, is a CBC-solver (not HiGHS) ILP of the same
-square-$\le3$-edges formulation, explicitly commented as attacking
-``Erd\H{o}s's Problem 100, the $n=7$ case''; its recovered log shows
-it reaching $289$ edges. The codebase was then revised to use HiGHS
+file discussed above, is a CBC-solver (not HiGHS) ILP explicitly commented as attacking
+``Erd\H{o}s's Problem 100, the $n=7$ case'' (\texttt{source\_cbc\_origin.py},
+released alongside this revision). On closer inspection, however, this specific
+recovered file has a genuine bug: its $C_4$-detection logic computes,
+for each edge $(u,v)$, the common neighbours of $u$ and $v$ -- but
+$Q_7$ is bipartite, so adjacent vertices never share a common
+neighbour (a shared neighbour of two adjacent vertices would close an
+odd cycle), and we confirmed by direct execution that this logic finds
+$0$ of the $672$ four-cycles, so the ILP it builds has no $C_4$
+constraints at all. A recovered solver log from the same period
+(\texttt{out.log@@20260227183310}, not bundled) is headed with a
+Japanese label meaning ``fixed version'' and explicitly prints, in
+Japanese, ``C4 count: 672 -- correctly enumerated'', confirming a
+corrected version of the script existed and was run, reaching $289$
+edges; but we have not been able to locate that corrected script
+itself among the recovered files, only its log. We therefore withdraw
+our earlier characterisation of \texttt{source\_cbc\_origin.py} as
+the script underlying the $289$-edge result: it is a recovered early
+draft with a confirmed defect, retained in the release for
+transparency about the development history, but it is not the code
+that produced $289$ edges, and no bit-for-bit reproduction of that
+specific step is available from what we recovered. The codebase was then revised to use HiGHS
 with warm-starting, and file timestamps together with recovered solver
 logs document a progression $289\to301$
 (\texttt{selected\_edges\_301.json}) $\to$ $303$
@@ -1140,7 +1171,7 @@ also recovered and which explicitly records ``warm start: loading
 $301$-edge solution'' and ends at $303$ edges, $0$ violations) $\to$
 $304$ (via the \texttt{sa\_search.py} series, dated after the $303$-edge
 result). We further located, in a recovered chat transcript
-documenting the CBC run above, that it eventually reached $293$ edges
+documenting the corrected-CBC run above, that it eventually reached $293$ edges
 (after $\sim12$ hours) before switching to HiGHS, which reached $299$
 edges (in $1$ hour, independently confirmed $0$ violations at the
 time), refining the chain to
@@ -1150,7 +1181,10 @@ chat transcript, not independently re-executed by us (we did not
 re-run a $12$-hour CBC solve or re-verify that specific $299$-edge
 output ourselves); the $289$ figure is directly documented by a
 recovered solver log rather than executed by us either. What we
-\emph{did} independently execute and verify ourselves: the HiGHS-based \texttt{source.py}, run for $60$ seconds
+\emph{did} independently execute and verify ourselves: the HiGHS-based \texttt{source.py} --
+the released file hardcodes \texttt{time\_limit=7200} with no
+command-line override, so we edited this one value down to $60$ for
+this test -- run for $60$ seconds
 with no pre-existing \texttt{selected\_edges\_best.json} (a genuine
 cold start, not a warm start), finds a valid $295$-edge $C_4$-free
 solution ($0$ violations) via HiGHS branch-and-bound alone, confirming
@@ -1167,9 +1201,18 @@ replay of any specific historical run). Unlike
 far-from-feasible random state: it always starts already at zero
 violations and only removes a small number of edges before repairing,
 so the search stays close to feasible throughout. We verified this
-directly: running the released \texttt{sa\_collect304.py} from its
-released seed solution for $30$ seconds found $1\,987$ new, valid,
-previously-unrecorded $304$-edge solutions. We further verified
+far-from-feasible random state: it always starts already at zero
+violations and only removes a small number of edges before repairing,
+so the search stays close to feasible throughout. We verified this
+directly: the released script hardcodes \texttt{RUNTIME=36*3600} with
+no seed and no command-line override, so we edited the runtime down
+to $30$ seconds for this test; running it from its
+released seed solution then found $1\,987$ new, valid,
+previously-unrecorded $304$-edge solutions in that one run. As with
+\texttt{sa\_q8.py} above, the absence of a fixed seed means this
+specific count is a one-time observation of the collector's typical
+throughput, not a number guaranteed to reproduce exactly on a rerun.
+We further verified
 provenance in a way independent of our own recovered archive and
 reproducible from the released files alone: applying
 \texttt{sa\_collect304.py}'s own canonicalisation-then-MD5 hash
@@ -1222,8 +1265,10 @@ remove-and-repair of a random existing solution, no automorphism;
 \texttt{auto\_seed}: random automorphism of the original seed); the
 $311$ records lacking a \texttt{method} field and the $8$ carrying a
 \texttt{run} rather than a \texttt{trial} field come from an earlier
-version of the collector script (recovered as
-\texttt{sa\_collect304~(0).py} in the same archive) that logged
+version of the collector script (which we examined during recovery as
+\texttt{sa\_collect304~(0).py}, but which we have not included in the
+released package -- it is not among the files a reader receives) that
+logged
 records with only a \texttt{run} counter and no \texttt{method}
 distinction, before the script was revised to its released form;
 \texttt{trial} is the sequential attempt counter within a single
@@ -1298,9 +1343,15 @@ genuine progress, reducing the violation count at the $675$-edge
 target from $22$ to $8$ within a single trial. We release
 this $670$-edge checkpoint as \texttt{q8\_checkpoint\_670.json}
 (renamed to \texttt{q8\_best.json} to match \texttt{sa\_q8.py}'s
-expected filename) so this second test is independently
-reproducible from the released files alone, not only as our own
-one-time report; without this file, \texttt{sa\_q8.py} instead
+expected filename) so a reader can repeat this second test starting
+from the same point we did; \texttt{sa\_q8.py} sets no random seed,
+however, so a rerun will show the same qualitative
+monotonic-improvement behaviour (confirming the code is not frozen,
+unlike \texttt{phase1\_sa}) but not necessarily the same specific
+violation-count trajectory or the exact $22\to8$ figures -- this is a
+one-time observation of genuine progress, not a fixed-seed
+reproducible numeric result;
+without this file, \texttt{sa\_q8.py} instead
 starts from a fresh greedy construction, which is a different (and
 also legitimate, since the algorithm always restarts from a valid
 state either way) starting point than the one we tested from. We
