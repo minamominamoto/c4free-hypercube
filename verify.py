@@ -15,6 +15,12 @@ For each n in {6, 7, 8} this script:
     and confirming none of them is fully present;
   - prints the SHA-256 of each data file as a fixed-version certificate.
 
+Additionally, for the Q8 odd-square reconstruction (q8_odd_square_682.json)
+this script independently checks the stronger odd-square condition: every
+square must meet the edge set in exactly 1 or 3 edges (not merely "not 4").
+This check is independent of the self-check performed by
+generate_q8_682.py; it does not import or reuse that script's logic.
+
 Usage:
     python3 verify.py
 
@@ -35,6 +41,11 @@ TARGETS = [
         "q7_edges_304.jsonl.part3",
     ]),
     (8, 680, 2, ["q8_edges_680.jsonl"]),
+]
+
+# Odd-square targets are checked separately (stronger condition than C4-free).
+ODDSQUARE_TARGETS = [
+    (8, 682, 1, ["q8_odd_square_682.json"]),
 ]
 
 
@@ -83,6 +94,33 @@ def verify_solution(edges, n, expected_edges):
     for a, b, c, d in four_cycle_corners(n):
         if (a, b) in es and (a, c) in es and (b, d) in es and (c, d) in es:
             return False, "C4 found on vertices %d,%d,%d,%d" % (a, b, d, c)
+    return True, "ok"
+
+
+def verify_odd_square(edges, n, expected_edges):
+    """Independent check of the odd-square condition: every square of Q_n
+    must meet the edge set in exactly 1 or 3 edges. This subsumes the
+    plain C4-free check (a square with 4 edges present fails here too)
+    and additionally rejects squares with 0 or 2 edges present."""
+    es = build_edge_set(edges)
+    if len(es) != expected_edges:
+        return False, "edge count %d != %d" % (len(es), expected_edges)
+    N = 1 << n
+    for u, v in es:
+        if not (0 <= u < N and 0 <= v < N):
+            return False, "vertex out of range in edge (%d,%d)" % (u, v)
+        if not is_hypercube_edge(u, v):
+            return False, "(%d,%d) is not a Q_%d edge" % (u, v, n)
+    bad = 0
+    for a, b, c, d in four_cycle_corners(n):
+        cnt = ((a, b) in es) + ((a, c) in es) + ((b, d) in es) + ((c, d) in es)
+        if cnt not in (1, 3):
+            bad += 1
+            if bad <= 3:
+                print("    [FAIL] square %d,%d,%d,%d has %d edges present "
+                      "(neither 1 nor 3)" % (a, b, d, c, cnt))
+    if bad:
+        return False, "%d square(s) violate the odd-square condition" % bad
     return True, "ok"
 
 
@@ -156,6 +194,41 @@ def main():
                   % (len(sols), ec))
         else:
             all_ok = False
+
+    print("\n" + "-" * 56)
+    print("Odd-square condition (independent of the C4-free check above)")
+    for n, ec, nsol, paths in ODDSQUARE_TARGETS:
+        ncycles = sum(1 for _ in four_cycle_corners(n))
+        print("\nQ%d odd-square: expecting %d solution(s), %d edges each; "
+              "%d squares checked per solution"
+              % (n, nsol, ec, ncycles))
+        missing = False
+        for p in paths:
+            try:
+                print("  sha256  %s  %s" % (sha256(p), p))
+            except FileNotFoundError:
+                print("  [MISSING] %s" % p)
+                missing = True
+                all_ok = False
+        if missing:
+            continue
+        sols = load_solutions(paths)
+        if len(sols) != nsol:
+            print("  [FAIL] found %d solution(s), expected %d"
+                  % (len(sols), nsol))
+            all_ok = False
+        bad = 0
+        for i, edges in enumerate(sols):
+            ok, msg = verify_odd_square(edges, n, ec)
+            if not ok:
+                bad += 1
+                print("  [FAIL] solution %d: %s" % (i, msg))
+        if bad == 0 and len(sols) == nsol:
+            print("  [OK] all %d solution(s) satisfy the odd-square "
+                  "condition with exactly %d edges" % (len(sols), ec))
+        else:
+            all_ok = False
+
     print("\n" + "=" * 56)
     print("RESULT:", "ALL CHECKS PASSED" if all_ok else "FAILURES DETECTED")
     return 0 if all_ok else 1

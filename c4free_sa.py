@@ -18,6 +18,15 @@ Diversification:
     Before each trial, apply a random element of Aut(Q_n)
     (random bit permutation + random bit flip) to the current best.
 
+    KNOWN BUG (documented, not fixed, to preserve the exact code that
+    produced the released solutions): the automorphism-transformed
+    "start" computed in search() below is never passed into
+    phase1_sa(), which always initialises from a fresh
+    rng.sample(...) draw instead. This diversification mechanism is
+    therefore dead code as released; see the accompanying manuscript,
+    Section 7.1, for a full description of what this script actually
+    does versus what this docstring originally (incorrectly) claimed.
+
 Usage
 -----
     python c4free_sa.py --n 7 --target 304 --trials 10 --seed 42
