@@ -311,7 +311,9 @@ The 304-edge construction has the following properties:
 \end{enumerate}
 \end{proposition}
 
-Through $19\,866$ independent runs (Section~\ref{sec:landscape})
+Through $19\,866$ reported simulated-annealing runs (Section~\ref{sec:landscape};
+see Section~\ref{sec:method} for what is and is not independently
+verifiable about this search history)
 we found $19\,866$ $C_4$-free subgraphs of $Q_7$ on 304 edges with
 pairwise distinct edge sets (not quotiented by $\mathrm{Aut}(Q_7)$),
 all sharing the structural properties stated in Proposition~\ref{prop:rigid}.
@@ -379,7 +381,7 @@ $C_4$; exactly $1$ creates exactly $2$; the remaining $342$ create $3$
 or more (Proposition~\ref{prop:q8struct}(ii)). Solution~A's non-edges
 all create at least $2$ new $C_4$s.
 
-Over $1\,076$ independent simulated-annealing trials targeting $681$
+Over $1\,076$ reported simulated-annealing trials targeting $681$
 edges, the minimum $C_4$ violation count observed was $1$ (never $0$),
 where the violation count denotes the number of four-cycles fully
 contained in the candidate edge set. This was originally reported as
@@ -594,10 +596,16 @@ reduces the number of negative edges without violating odd-squareness).
 We take this as an external fact from~\cite{DPTV79} rather than
 reproving it here.
 
-Given Lemma~\ref{lem:fieldbound} and $h(v)\ge0$, maximising $|E|=(n\cdot2^{n-1}+\sum_{v\in U}h(v))/2$
-is equivalent to maximising $\sum_{v\in U}h(v)$ subject to the \emph{fixed}
+Given Lemma~\ref{lem:fieldbound} and $h(v)\ge0$, $|E|=(n\cdot2^{n-1}+\sum_{v\in U}h(v))/2$
+is bounded above by relaxing to the integer optimisation problem of
+maximising $\sum_{v\in U}h(v)$ subject to the \emph{fixed}
 sum of squares $\sum_{v\in U}h(v)^2=n\cdot2^{n-1}$ over the $2^{n-1}$
-nonnegative integers $h(v)$ of fixed parity. Both cases $n=7,8$ admit a
+nonnegative integers $h(v)$ of fixed parity (we use only that every
+realisable $h$-vector satisfies these constraints, not the converse
+that every integer vector satisfying them is realisable as an
+odd-square signature; the bound obtained is therefore an upper bound on
+$|E|$, tight whenever a matching witness is exhibited). Both cases
+$n=7,8$ admit a
 short, fully elementary and self-contained upper bound on
 $\sum_{v\in U}h(v)$, without appeal to DPTV's Table~I:
 
@@ -643,44 +651,19 @@ proof depends on them.
 
 Marinari, Parisi, and Ritort~\cite{MPR95} report having exhibited, by
 simulated annealing, an explicit $D=8$ ground state attaining Derrida et
-al.'s improved energy lower bound; their paper reports the result in
-energy units and does not include the explicit spin configuration or its
-translation into edge-count terms. We make this translation explicit and
-independently checkable. Writing $U$ for one part of the bipartition of
-$Q_n$ ($|U|=2^{n-1}$) and $h(v)=2\deg_E(v)-n$ for the local field of
-Section~\ref{sec:oddsquare} restricted to $E$, a bipartite double-counting
-identity gives $\sum_{v\in U}h(v)=2|E|-n\cdot2^{n-1}$ for \emph{any} edge
-set $E$ (odd-square or not), hence
-\[
-|E|=\frac{n\cdot2^{n-1}+\sum_{v\in U}h(v)}{2}.
-\]
-For $n=7$, Derrida et al.\ both derive the field-sum bound and prove it
-is achieved by an explicit construction (their $d\le7$ case): the bound
-value is $\sum_{v\in U}h(v)=160$ (table~I of~\cite{DPTV79}), giving
-$|E|=(448+160)/2=304$. For $n=8$ the situation is different: Derrida et
-al.\ give the same bound value, $\sum_{v\in U}h(v)=340$, giving
-$|E|=(1024+340)/2=682$, but do \emph{not} themselves establish that this
-bound is achievable — they state only a conjecture for $D\ge8$, without
-an explicit construction. Achievability at $D=8$ is exactly what
-Marinari, Parisi, and Ritort~\cite{MPR95} later established, by
-exhibiting a ground state attaining the bound. We stress what this checks and what it does not:
-since the identity above holds for \emph{any} edge set, computing
-$\sum_{v\in U}h(v)$ from a witness already known to have $304$ or $682$
-edges automatically returns $160$ or $340$ respectively — we confirmed
-this (for a representative odd-square 304-edge $Q_7$ solution,
-Section~\ref{sec:oddsquareaudit}, and for the 682-edge $Q_8$ witness
-below), but it is a consistency check on the witnesses, not an
-independent verification that $160$/$340$ are the \emph{maximal}
-achievable field sums. That upper-bound claim rests entirely on Derrida
-et al.'s local-field argument and Table~I~\cite{DPTV79}, which we cite
-as an external result (Section~\ref{sec:oddsquare-exact}) rather than
-re-derive here. Under the correspondence of
-Section~\ref{sec:oddsquare}, attaining Derrida et al.'s bound at $D=8$
-therefore corresponds to $g(8)=682$; the explicit 682-edge witness
-realising it is due to the present reconstruction below, prompted by
-S.~Lai's identification of the connection to~\cite{DPTV79,MPR95}.
-Together with the $D\le7$ case this gives Theorem~\ref{thm:oddsquare}:
-$g(6)=132$, $g(7)=304$, and $g(8)=682$.
+al.'s improved energy lower bound -- the same bound value
+$\sum_{v\in U}h(v)=340$ established directly above. Their paper reports
+the result in energy units only, without an explicit spin configuration
+or its translation into edge-count terms; we supply that translation
+and an explicit, machine-verified $682$-edge certificate in
+Section~\ref{sec:oddsquareverify} below. Under the correspondence of
+Section~\ref{sec:oddsquare}, this historical attainment report at $D=8$
+corresponds to $g(8)=682$, matching what was already established above
+from Lemma~\ref{lem:fieldbound} alone; the explicit witness realising it
+is due to the present reconstruction, prompted by S.~Lai's
+identification of the connection to~\cite{DPTV79,MPR95}. Together with
+the $D\le7$ case this gives Theorem~\ref{thm:oddsquare}: $g(6)=132$,
+$g(7)=304$, and $g(8)=682$.
 
 \subsection{Verification}\label{sec:oddsquareverify}
 
@@ -747,10 +730,15 @@ All quantities in Proposition~\ref{prop:q8oddsquare} were recomputed
 independently of the reconstruction script by direct enumeration of all
 $1\,792$ squares against the released edge list, using the strict
 definition of $C_4$-freeness from Lemma~\ref{lem:c4} (no square may
-have all four edges present); this independent check found zero violations.
-The reconstruction, its SHA-256 checksum, and an independent audit were
-cross-checked against S.~Lai's separately produced implementation, with
-full agreement.
+have all four edges present); this independent check found zero violations
+and is fully reproducible from the released files alone.
+The reconstruction, its SHA-256 checksum, and an independent audit are
+additionally reported to have been cross-checked against S.~Lai's
+separately produced implementation, with full agreement; this
+cross-check is recorded as a dated correspondence account (as in
+Section~\ref{sec:oddsquareverify}), not as an independently verifiable
+artefact, since the correspondence, Lai's implementation, and its
+output are not included in the released materials.
 
 Table~\ref{tab:oddsquare} summarises the odd-square reconstructions
 alongside the corresponding simulated-annealing witnesses of
@@ -876,7 +864,7 @@ $\approx195.4$ and median $196$, both stable across resampling; the
 sample-based min and max are not, and should not be read as close to
 the true extremes above.
 
-Over $1\,076$ independent trials targeting $305$ edges,
+Over $1\,076$ reported trials targeting $305$ edges,
 the minimum $C_4$ violation count was $2$ (never $0$).
 
 \begin{conjecture}\label{conj:q7}
