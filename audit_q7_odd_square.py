@@ -11,16 +11,19 @@ from itertools import combinations
 
 
 def squares(n):
+    result = []
     for d1, d2 in combinations(range(n), 2):
         m1, m2 = 1 << d1, 1 << d2
         for base in range(1 << n):
             if not base & (m1 | m2):
-                yield ((base, base | m1), (base, base | m2),
-                       (base | m1, base | m1 | m2),
-                       (base | m2, base | m1 | m2))
+                result.append(((base, base | m1), (base, base | m2),
+                               (base | m1, base | m1 | m2),
+                               (base | m2, base | m1 | m2)))
+    return result
 
 
 def main(paths):
+    sq_list = squares(7)  # precomputed once, not per-solution
     rows = []
     global_index = 0
     for path in paths:
@@ -29,7 +32,7 @@ def main(paths):
                 obj = json.loads(line)
                 edges = {tuple(sorted(map(int, e))) for e in obj["edges"]}
                 hist = Counter(sum(tuple(sorted(e)) in edges for e in sq)
-                               for sq in squares(7))
+                               for sq in sq_list)
                 profile = [0] * 7
                 for u, v in edges:
                     profile[(u ^ v).bit_length() - 1] += 1

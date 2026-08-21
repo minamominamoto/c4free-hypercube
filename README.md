@@ -86,6 +86,7 @@ sha256sum -c ODDSQUARE_BRIDGE_SHA256SUMS.txt      # odd-square material
 | --- | --- |
 | `q6_edges_132.jsonl` | 132-edge C4-free subgraph of Q6 (lower-bound witness) |
 | `q6_ilp.mps` | ILP in MPS format (192 variables, 240 constraints) for the Q6 upper bound. Optimality was not independently closed within a practical runtime with a generic solver (see paper, Section 8.2); the upper bound ex(Q6,C4)≤132 rests on Harborth–Nienborg's combinatorial proof. |
+| `q6_ilp_edge_map.csv` | Reconstructed x_i ↔ Q6-edge correspondence for `q6_ilp.mps` (not originally recorded; reconstructed by matching the MPS's variable-constraint incidence against Q6's known edge-square structure, verified to reproduce all 240 constraints exactly). |
 | `q7_edges_304.jsonl.part{1,2,3}` | The 19,866 distinct 304-edge C4-free subgraphs of Q7 (split into 3 parts) |
 | `q8_edges_680.jsonl` | Two distinct 680-edge C4-free subgraphs of Q8 (Solution A and Solution B; see paper for how they differ) |
 | `q8_odd_square_682.json` | The 682-edge odd-square witness for Q8 (current headline lower bound) |

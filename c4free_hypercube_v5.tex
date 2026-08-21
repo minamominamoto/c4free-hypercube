@@ -84,8 +84,10 @@ An exhaustive audit of the $19\,866$ previously published $304$-edge $Q_7$
 solutions shows that only $389$ of them lie in the odd-square subclass; the
 remaining $19\,477$ do not. The odd-square construction therefore does
 not subsume or fully explain the structural classification given here
-(one profile type, Type~18 with 101 solutions, is entirely odd-square,
-but the other 19 types are not): the $19\,866$ solutions'
+(one profile type, Type~18 with 101 solutions, is entirely odd-square;
+of the other 19, three (ranks 5, 7, and 10) are mixed, containing some
+odd-square and some non-odd-square solutions, and the remaining 16
+contain no odd-square solutions at all): the $19\,866$ solutions'
 common structural core (degree sequence $\{4^{32},5^{96}\}$, spectral radius
 in $[4.78543,4.79129]$, local maximality) and their classification into 20
 dimension-profile types are independent results. Whether these $19\,866$
@@ -99,9 +101,18 @@ see Section~\ref{sec:q8} for both 680-edge solutions released). All
 bounds are witnessed by explicit edge-list constructions with
 machine-verifiable certificates: a complete, deterministic enumeration of
 all four-cycles (240 for $Q_6$, 672 for $Q_7$, 1\,792 for $Q_8$) establishes
-$C_4$-freeness, and every certificate reported here, including the
-odd-square reconstructions, is reproducible by an independent,
-dependency-free verifier.
+$C_4$-freeness, and every \emph{construction} certificate reported here
+(the edge sets themselves, their $C_4$-freeness, and the $Q_8$
+odd-square condition) is reproducible by an independent,
+dependency-free verifier (\texttt{verify.py}), with the $Q_7$
+odd-square membership of individual solutions separately reproducible
+via \texttt{audit\_q7\_odd\_square.py}. The further structural and
+statistical claims reported below (spectral-radius ranges, pairwise
+Hamming extrema, Type-18 automorphism counts, non-edge violation
+distributions, and similar) were independently recomputed during this
+paper's preparation but are not packaged into a single bundled
+verifier; a reader wishing to check them would need to recompute them
+from the released edge lists using the definitions given in the text.
 
 The original ($Q_7$, $Q_8$) constructions are found by a two-phase simulated
 annealing algorithm, described in full detail; the released search code
@@ -602,9 +613,9 @@ unchanged. Every square containing $v$ has exactly two edges incident
 to $v$; flipping both leaves their product, and hence the whole
 square's sign product, unchanged, so odd-squareness is preserved
 everywhere. At $v$ itself, the positive-edge count changes from
-$p=(n+h(v))/2$ to $q=(n-h(v))/2$, a change of $q-p=-h(v)>0$; no other
-vertex's incident edges change sign, so $|E|$ increases by exactly
-$-h(v)>0$. This contradicts maximality of $|E|$, so no such $v$ exists.
+$p=(n+h(v))/2$ to $q=(n-h(v))/2$, a change of $q-p=-h(v)>0$; no edge
+other than the $n$ edges incident to $v$ changes sign, so $|E|$
+increases by exactly $-h(v)>0$. This contradicts maximality of $|E|$, so no such $v$ exists.
 \end{proof}
 This is a corollary of, not an alternative to, Lemma~\ref{lem:switching}:
 the argument uses only that flipping one vertex's spin preserves
@@ -1068,14 +1079,14 @@ This formulation has 192 binary variables and 240 constraints, each
 variable appearing in exactly 5 of the 240 square constraints (matching
 $Q_6$'s edge-square incidence). The MPS file \texttt{q6\_ilp.mps} is
 provided for independent verification (SHA-256 in the released checksum
-manifest); we do not supply a separate
-document listing which specific $Q_6$ edge each $x_i$ corresponds to,
-so a reader wishing to interpret an individual solution vector edge-by-edge
-would need to infer that correspondence from the generator (not released
-separately) or from the constraint incidence pattern itself. This does
-not affect the feasible value (132, matching the released construction)
-or the structural checks (192 variables, 240 constraints, 5-regular
-incidence), which we verified directly from the MPS file's own contents.
+manifest). The correspondence between each $x_i$ and its $Q_6$ edge was
+not originally recorded alongside the MPS file; we have since
+reconstructed it (\texttt{q6\_ilp\_edge\_map.csv}: $x_i\leftrightarrow$
+vertex pair) by matching the MPS's variable--constraint incidence
+pattern against $Q_6$'s known edge--square incidence structure (squares
+enumerated by base vertex, then direction pair), and verified the
+reconstruction exactly reproduces all $240$ constraints' variable
+memberships from the released MPS file.
 
 \begin{proposition}\label{prop:q6ilp}
 The ILP above has feasible value $132$, matching the released 132-edge
