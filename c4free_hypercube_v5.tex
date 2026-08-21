@@ -191,8 +191,9 @@ machine-verifiable 682-edge certificate, which MPR's paper does not
 supply (they report the result in energy units only, without an
 explicit spin configuration); and the structural analysis of that
 certificate (Proposition~\ref{prop:q8oddsquare}). The specific
-certificate we release attains the same bound value MPR report, but its
-own provenance is not fully documented (see the note in
+certificate we release attains the same bound value MPR report; its
+own provenance is recorded as a dated private-correspondence account
+rather than an independently reproducible computational log (see
 Section~\ref{sec:oddsquareverify}); we do not claim it reproduces any
 particular configuration MPR may have used internally.
 Both bounds are realised by explicit constructions (supplementary files
@@ -488,7 +489,7 @@ Vannimenus~\cite{DPTV79} and, for $D=8$, by Marinari, Parisi, and
 Ritort~\cite{MPR95}: the ground-state energy is (up to an affine rescaling)
 the number of negative edges, $|E(Q_n)|-|E|$. In the language of signed
 graphs, $|E(Q_n)|-g(n)$ is the \emph{frustration index} of the fully
-frustrated signature on $Q_n$; see also~\cite{LNSW25} for a recent treatment
+frustrated signature on $Q_n$; see also~\cite{LNSW26} for a recent treatment
 of this quantity in the context of Huang's proof of the sensitivity
 conjecture. This sign convention matches the one used by the reconstruction
 script \texttt{generate\_q8\_682.py} (Section~\ref{sec:oddsquareverify}),
@@ -526,6 +527,86 @@ reconstruct this $D=6$ configuration ourselves (unlike the $D=7,8$
 cases below); the value $132$ rests on the quoted primary-source count
 together with the independently proved exact value from~\cite{HN94}, not
 on our own machine verification of the specific bond configuration.
+
+\begin{lemma}[Self-contained bound for $n=7,8$]\label{lem:fieldbound}
+For any odd-square edge set $E$ in $Q_n$, writing $U$ for one part of
+the bipartition ($|U|=2^{n-1}$) and $h(v)=2\deg_E(v)-n$ as before, every
+$h(v)$ with $v\in U$ is an integer of the same parity as $n$, and
+\[
+\sum_{v\in U}h(v)^2=n\cdot2^{n-1}.
+\]
+\end{lemma}
+\begin{proof}
+For $v\in U$ and direction $i\in\{0,\ldots,n-1\}$ write
+$s_i(v)=\sigma(v,v\oplus e_i)\in\{\pm1\}$, so $h(v)=\sum_i s_i(v)$ and
+$h(v)^2=n+\sum_{i\ne j}s_i(v)s_j(v)$. Fix $i\ne j$ and consider, for
+$v\in U$, the square on $\{v,v\oplus e_i,v\oplus e_j,z\}$ where
+$z=v\oplus e_i\oplus e_j\in U$. Its four edges have signs $s_i(v)$,
+$s_j(v)$, and (computed from $z$'s own perspective, since a sign is a
+single scalar attached to the edge) $s_j(z)$, $s_i(z)$. The odd-square
+condition means their product is $-1$:
+$s_i(v)s_j(v)\cdot s_j(z)s_i(z)=-1$. Writing $X=s_i(v)s_j(v)$ and
+$Y=s_i(z)s_j(z)$, both lie in $\{\pm1\}$ and $XY=-1$ forces $X=-Y$, i.e.\
+$s_i(v)s_j(v)+s_i(z)s_j(z)=0$. The map $v\mapsto z=v\oplus e_i\oplus e_j$
+is a fixed-point-free involution on $U$ (as $e_i\oplus e_j\ne0$), so it
+partitions $U$ into pairs $\{v,z\}$ on each of which the two
+corresponding terms cancel; summing over all such pairs gives
+$\sum_{v\in U}s_i(v)s_j(v)=0$ for every fixed $i\ne j$. Summing over all
+ordered pairs $i\ne j$ and adding the $n\cdot|U|$ diagonal contribution
+gives $\sum_{v\in U}h(v)^2=n\cdot2^{n-1}$.
+\end{proof}
+This proof uses only that \emph{every} square has product $-1$ (the
+odd-square condition), so it is sufficient for the identity to hold; it
+is not necessary. Testing against all $19\,866$ published $304$-edge
+$Q_7$ solutions -- odd-square and non-odd-square alike -- shows every
+one of them satisfies $\sum_{v\in U}h(v)^2=448$, including the
+$19\,477$ that are not odd-square. The identity's failure for the
+non-odd-square $Q_8$ Solution~B of Section~\ref{sec:q8} ($1016\ne1024$)
+is therefore not explained by odd-squareness as such: Solution~B has an
+asymmetric degree distribution between $U$ and its complement
+($\{4^3,5^{82},6^{43}\}$ vs.\ $\{4^4,5^{80},6^{44}\}$), whereas
+Solution~A, both the $Q_7$ solutions, and the $682$-edge witness all
+have symmetric $U$/complement degree distributions; the identity
+appears tied to that symmetry (which the odd-square condition implies
+but does not require) rather than to odd-squareness itself, and we do
+not characterise the identity's full necessary-and-sufficient condition
+here.
+
+The distribution's nonnegativity, $h(v)\ge0$, is not implied by
+Lemma~\ref{lem:fieldbound} alone; it is the extra ground-state
+condition of Derrida et al.~\cite{DPTV79} (a configuration with some
+$h(v)<0$ cannot be minimal, since flipping that vertex's spin strictly
+reduces the number of negative edges without violating odd-squareness).
+We take this as an external fact from~\cite{DPTV79} rather than
+reproving it here.
+
+Given Lemma~\ref{lem:fieldbound} and $h(v)\ge0$, maximising $|E|=(n\cdot2^{n-1}+\sum_{v\in U}h(v))/2$
+is equivalent to maximising $\sum_{v\in U}h(v)$ subject to a \emph{fixed}
+sum of squares $n\cdot2^{n-1}$ over the $2^{n-1}$ nonnegative integers
+$h(v)$ of fixed parity. By the QM–AM inequality, for a fixed sum of
+squares the linear sum is maximised when the values are as equal as
+possible, i.e.\ concentrated on the integers of the correct parity
+nearest $\sqrt n$ (matching Derrida et al.'s own description of the
+extremal distribution~\cite{DPTV79}). For $n=7$ ($\sqrt7\approx2.65$,
+odd values), concentrating on $\{1,3\}$ and solving
+$n_1+n_3=64$, $n_1+9n_3=448$ gives $n_3=48$, $n_1=16$, so
+$\sum_{v\in U}h(v)=16\cdot1+48\cdot3=160$ and $|E|=(448+160)/2=304$. For
+$n=8$ ($\sqrt8\approx2.83$, even values), a pure two-value
+$\{2,4\}$-concentration is not even integrally feasible here: solving
+$n_2+n_4=128$, $4n_2+16n_4=1024$ gives $n_4=128/3$, not an integer. The
+extremal distribution for $n=8$ genuinely needs a third value; the
+released 682-edge witness (Section~\ref{sec:oddsquareverify}) has
+$h$-distribution on $U$ equal to $\{0{:}1,\,2{:}84,\,4{:}43\}$
+(independently recomputed from the released edge list), giving
+$\sum_{v\in U}h(v)=0\cdot1+2\cdot84+4\cdot43=340$ and matching
+$\sum_{v\in U}h(v)^2=0+336+688=1024$ exactly, but we do not derive from
+first principles here that this three-value distribution is optimal
+among all integer distributions satisfying Lemma~\ref{lem:fieldbound}'s
+constraint; that optimality is DPTV's Table~I result, taken as external
+input, consistent with their own remark that for $d=6,8$ the extremal
+distribution is not two-valued and not unique unlike other $d\le7$. The
+$n=7$ case above is, however, fully self-contained given
+Lemma~\ref{lem:fieldbound}.
 
 Marinari, Parisi, and Ritort~\cite{MPR95} report having exhibited, by
 simulated annealing, an explicit $D=8$ ground state attaining Derrida et
@@ -592,14 +673,21 @@ structural quantity below against the recomputed data before writing the
 certificate; it does not take any of these quantities as input.
 \emph{Provenance of the spin configuration.} The 256-bit configuration
 was derived by the author on 17--18 August 2026, using the canonical
-fully frustrated coupling of Marinari, Parisi, and Ritort~\cite{MPR95}
-(private correspondence with S.~Lai, who independently reconstructed the
-identical 682-edge set from the shared spin vector and cross-checked all
-1,792 squares, the degree distribution, and the local-field distribution
-before this material was incorporated into the manuscript). We do not
-claim this configuration is identical to any specific configuration MPR
-may have used internally, since they did not publish one; it is an
-independently derived witness attaining the same bound.
+fully frustrated coupling of Marinari, Parisi, and Ritort~\cite{MPR95},
+as recorded in dated correspondence with S.~Lai, who independently
+reconstructed the identical 682-edge set from the shared spin vector and
+cross-checked all 1,792 squares, the degree distribution, and the
+local-field distribution before this material was incorporated into the
+manuscript. This provenance record is a first-person, dated account
+(the correspondence itself), not an independently reproducible
+computational log: no search seed, intermediate search records, or
+derivation script for the spin configuration itself is included in the
+released materials, only the scripts that regenerate and verify the
+edge set \emph{from} the given spin configuration
+(Section~\ref{sec:oddsquare}). We do not claim this configuration is
+identical to any specific configuration MPR may have used internally,
+since they did not publish one; it is an independently derived witness
+attaining the same bound.
 
 \begin{proposition}\label{prop:q8oddsquare}
 The witness edge set satisfies:
@@ -1026,8 +1114,8 @@ revision, (iii)~retrieval and cross-checking of the primary sources cited
 in Section~\ref{sec:oddsquare} and (iv)~drafting assistance for the revised
 text. All definitions, constructions, theorems, computations, and analyses
 are the author's own, including the 256-bit spin configuration used in
-the $Q_8$ witness of Section~\ref{sec:oddsquareverify}, whose derivation
-is documented there. The author reviewed all
+the $Q_8$ witness of Section~\ref{sec:oddsquareverify}, whose provenance
+is recorded there as a dated correspondence account. The author reviewed all
 AI-assisted output, independently executed the verification and witness
 scripts against the released data, and takes full responsibility for the
 accuracy and integrity of the work. The specific model version(s) of
@@ -1064,11 +1152,11 @@ arXiv:1201.3587, 2012.
   Combinatorics} (B.~Bollob\'as, ed.), Academic Press, 1984, pp.~1--17.
 \bibitem{HN94} H.~Harborth and H.~Nienborg, Maximum number of edges in a
   six-cube without four-cycles, \textit{Bull.\ ICA}\ \textbf{12} (1994), 55--60.
-\bibitem{LNSW25} S.~Laplante, R.~Naserasr, A.~Sunny, and Z.~Wang,
+\bibitem{LNSW26} S.~Laplante, R.~Naserasr, A.~Sunny, and Z.~Wang,
   Sensitivity conjecture and signed hypercubes,
-  \textit{ACM Trans.\ Comput.\ Theory}, 2025,
+  \textit{ACM Trans.\ Comput.\ Theory} \textbf{18} (2026), no.~1, Article~6, 1--25,
   \url{https://doi.org/10.1145/3777401}
-  (preprint: HAL hal-04080411).
+  (preprint: HAL hal-04080411, 2023).
 \bibitem{MPR95} E.~Marinari, G.~Parisi, and F.~Ritort, The fully frustrated
   hypercubic model is glassy and aging at large $D$,
   \textit{J.\ Phys.\ A}\ \textbf{28} (1995), 327--334, arXiv:cond-mat/9410089.
