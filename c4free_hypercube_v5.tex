@@ -218,7 +218,7 @@ published 304-edge $Q_7$ solutions, only 389 are odd-square
 (Section~\ref{sec:structure}).
 
 \begin{table}[ht]
-\centering
+\centering\small
 \caption{Known values and lower bounds of $\ex(Q_n,C_4)$.
   The BHN column gives Brass--Harborth--Nienborg estimates from
   Eq.~\eqref{eq:bounds}; that equation's tight form applies only for
@@ -232,11 +232,11 @@ published 304-edge $Q_7$ solutions, only 389 are odd-square
 \toprule
 $n$ & $|E(Q_n)|$ & $\ex(Q_n,C_4)$ & BHN (Eq.~\ref{eq:bounds}) & Source\\
 \midrule
-4 &   32 & 24  & $24$ (tight form, $n=4^1$) & Chung~\cite{Chu92}\\
-5 &   80 & 56  & n/a (outside stated domain) & Emamy-K et al.~\cite{EMR92}\\
-6 &  192 & 132 & n/a (outside stated domain) & Harborth--Nienborg~\cite{HN94} (reproduced)\\
-7 &  448 & $\ge\mathbf{304}$ & $\approx300.2$ (extrapolated) & Derrida et al.~\cite{DPTV79} (reproduced)\\
-8 & 1024 & $\ge\mathbf{682}$ & $\approx674.9$ (extrapolated) & witness attaining bound of~\cite{MPR95} (this paper)\\
+4 &   32 & 24  & $24$ (tight, $n=4^1$) & Chung~\cite{Chu92}\\
+5 &   80 & 56  & n/a (outside domain) & Emamy-K et al.~\cite{EMR92}\\
+6 &  192 & 132 & n/a (outside domain) & Harborth--Nienborg~\cite{HN94}\\
+7 &  448 & $\ge\mathbf{304}$ & $\approx300.2$ (extrapol.) & Derrida et al.~\cite{DPTV79}\\
+8 & 1024 & $\ge\mathbf{682}$ & $\approx674.9$ (extrapol.) & witness for~\cite{MPR95} bound\\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -448,7 +448,11 @@ $\sigma_2(x,y)=\sigma_1(x,y)\,t(x)t(y)$ for every edge $(x,y)$.
 \end{lemma}
 \begin{proof}
 Let $\tau=\sigma_1\sigma_2$ (pointwise product). On every square $C$,
-$\prod_{e\in C}\tau(e)=\bigl(\prod_{e\in C}\sigma_1(e)\bigr)\bigl(\prod_{e\in C}\sigma_2(e)\bigr)=(-1)(-1)=+1$.
+\[
+\prod_{e\in C}\tau(e)
+=\Bigl(\prod_{e\in C}\sigma_1(e)\Bigr)\Bigl(\prod_{e\in C}\sigma_2(e)\Bigr)
+=(-1)(-1)=+1.
+\]
 The map sending a cycle $C$ to $\prod_{e\in C}\tau(e)\in\{\pm1\}$ is a group
 homomorphism from the cycle space of $Q_n$ (over $\mathrm{GF}(2)$, under
 symmetric difference) to $\{\pm1\}$, since edges shared by two cycles cancel
@@ -463,11 +467,17 @@ via Harary's theorem). Solving for $\sigma_2$ gives the claim.
 \end{proof}
 
 Lemma~\ref{lem:switching} says any two odd-square signatures are related by
-a \emph{vertex switching} $t$; in Ising terms, replacing $s(x)$ by $t(x)s(x)$
-for all $x$ is a gauge transformation that preserves the ground-state
-energy (equivalently, $|E_2|=|\{e:\sigma_2(e)=+1\}|$ ranges over exactly
-the same set of values as $|E_1|$ does, as $\sigma_1$ ranges over a full
-switching class, when $\sigma_2$ ranges over all odd-square signatures).
+a \emph{vertex switching} $t$. For a \emph{fixed} coupling $J$, letting the
+spin configuration $s$ range over all $2^n$ choices produces exactly the
+signatures $\sigma_s(x,y)=J(x,y)s(x)s(y)$ in the switching class of $J$
+(writing $s=t\cdot s_0$ for a fixed reference $s_0$ realises every
+switching $t$); this is the operational fact we use, not a claim that
+different $s$ give the same energy under fixed $J$ (they generally do
+not -- that variation is exactly what is being optimised). The
+energy-preserving gauge transformation in the physical sense instead
+acts on \emph{both} $J$ and $s$ together, $J(x,y)\mapsto J(x,y)t(x)t(y)$
+and $s(x)\mapsto t(x)s(x)$, under which $J(x,y)s(x)s(y)$ is unchanged
+edge-by-edge~\cite{MPR95}.
 Consequently, $g(n)$ — defined as a maximum over \emph{all} odd-square
 edge sets — equals the maximum of $|E|$ over the switching class of any
 one fixed fully-frustrated signature, in particular the reference coupling
@@ -566,11 +576,15 @@ is therefore not explained by odd-squareness as such: Solution~B has an
 asymmetric degree distribution between $U$ and its complement
 ($\{4^3,5^{82},6^{43}\}$ vs.\ $\{4^4,5^{80},6^{44}\}$), whereas
 Solution~A, both the $Q_7$ solutions, and the $682$-edge witness all
-have symmetric $U$/complement degree distributions; the identity
-appears tied to that symmetry (which the odd-square condition implies
-but does not require) rather than to odd-squareness itself, and we do
-not characterise the identity's full necessary-and-sufficient condition
-here.
+have symmetric $U$/complement degree distributions. This symmetry is
+not itself implied by odd-squareness, however: a small odd-square
+counterexample in $Q_3$ (vertices $0,\ldots,7$,
+$E=\{(0,2),(2,6),(3,7),(4,5),(4,6),(6,7)\}$, whose six squares meet $E$
+in $1,1,3,1,3,3$ edges) has $U$-degree multiset $\{1,1,1,3\}$ against
+$\{0,2,2,2\}$ on the complement, while still satisfying
+$\sum_{v\in U}h(v)^2=\sum_{v\in U^c}h(v)^2=12=3\cdot2^2$ on each side
+separately. We do not characterise the identity's full
+necessary-and-sufficient condition here.
 
 The distribution's nonnegativity, $h(v)\ge0$, is not implied by
 Lemma~\ref{lem:fieldbound} alone; it is the extra ground-state
@@ -581,32 +595,51 @@ We take this as an external fact from~\cite{DPTV79} rather than
 reproving it here.
 
 Given Lemma~\ref{lem:fieldbound} and $h(v)\ge0$, maximising $|E|=(n\cdot2^{n-1}+\sum_{v\in U}h(v))/2$
-is equivalent to maximising $\sum_{v\in U}h(v)$ subject to a \emph{fixed}
-sum of squares $n\cdot2^{n-1}$ over the $2^{n-1}$ nonnegative integers
-$h(v)$ of fixed parity. By the QM–AM inequality, for a fixed sum of
-squares the linear sum is maximised when the values are as equal as
-possible, i.e.\ concentrated on the integers of the correct parity
-nearest $\sqrt n$ (matching Derrida et al.'s own description of the
-extremal distribution~\cite{DPTV79}). For $n=7$ ($\sqrt7\approx2.65$,
-odd values), concentrating on $\{1,3\}$ and solving
-$n_1+n_3=64$, $n_1+9n_3=448$ gives $n_3=48$, $n_1=16$, so
-$\sum_{v\in U}h(v)=16\cdot1+48\cdot3=160$ and $|E|=(448+160)/2=304$. For
-$n=8$ ($\sqrt8\approx2.83$, even values), a pure two-value
-$\{2,4\}$-concentration is not even integrally feasible here: solving
-$n_2+n_4=128$, $4n_2+16n_4=1024$ gives $n_4=128/3$, not an integer. The
-extremal distribution for $n=8$ genuinely needs a third value; the
-released 682-edge witness (Section~\ref{sec:oddsquareverify}) has
-$h$-distribution on $U$ equal to $\{0{:}1,\,2{:}84,\,4{:}43\}$
-(independently recomputed from the released edge list), giving
-$\sum_{v\in U}h(v)=0\cdot1+2\cdot84+4\cdot43=340$ and matching
-$\sum_{v\in U}h(v)^2=0+336+688=1024$ exactly, but we do not derive from
-first principles here that this three-value distribution is optimal
-among all integer distributions satisfying Lemma~\ref{lem:fieldbound}'s
-constraint; that optimality is DPTV's Table~I result, taken as external
-input, consistent with their own remark that for $d=6,8$ the extremal
-distribution is not two-valued and not unique unlike other $d\le7$. The
-$n=7$ case above is, however, fully self-contained given
-Lemma~\ref{lem:fieldbound}.
+is equivalent to maximising $\sum_{v\in U}h(v)$ subject to the \emph{fixed}
+sum of squares $\sum_{v\in U}h(v)^2=n\cdot2^{n-1}$ over the $2^{n-1}$
+nonnegative integers $h(v)$ of fixed parity. Both cases $n=7,8$ admit a
+short, fully elementary and self-contained upper bound on
+$\sum_{v\in U}h(v)$, without appeal to DPTV's Table~I:
+
+\textbf{$n=7$ (odd $h\ge0$).} For every odd integer $h\ge0$,
+$(h-1)(h-3)\ge0$, i.e.\ $h^2\ge4h-3$, with equality exactly at $h\in\{1,3\}$.
+Summing over $v\in U$ ($|U|=64$) and using
+$\sum_{v}h(v)^2=448$:
+\[
+448=\sum_{v\in U}h(v)^2\ge4\sum_{v\in U}h(v)-3\cdot64,
+\quad\text{so}\quad
+\sum_{v\in U}h(v)\le\frac{448+192}{4}=160.
+\]
+The released $304$-edge witness attains $\sum_{v\in U}h(v)=160$ exactly
+(Section~\ref{sec:oddsquareaudit}), so this bound is tight and
+$g(7)=(448+160)/2=304$ is established without external input.
+
+\textbf{$n=8$ (even $h\ge0$).} For every even integer $h\ge0$,
+$(h-2)(h-4)\ge0$, i.e.\ $h^2\ge6h-8$, with equality exactly at
+$h\in\{2,4\}$. Summing over $v\in U$ ($|U|=128$) and using
+$\sum_v h(v)^2=1024$:
+\[
+1024=\sum_{v\in U}h(v)^2\ge6\sum_{v\in U}h(v)-8\cdot128,
+\quad\text{so}\quad
+\sum_{v\in U}h(v)\le\frac{1024+1024}{6}=341.\overline{3}.
+\]
+Since $\sum_{v\in U}h(v)$ is a sum of even integers it is itself even, so
+$\sum_{v\in U}h(v)\le340$. The released $682$-edge witness attains
+$\sum_{v\in U}h(v)=340$ exactly, with $h$-distribution on $U$ equal to
+$\{0{:}1,\,2{:}84,\,4{:}43\}$ (independently recomputed from the released
+edge list); this three-value distribution is not two-valued, consistent
+with the equality cases $h\in\{2,4\}$ of the inequality above together
+with the single $h=0$ vertex, whose contribution the bound already
+prices in without requiring it to vanish. This bound is therefore also
+tight, giving $g(8)=(1024+340)/2=682$ without external input.
+
+Both upper bounds $g(7)\le304$ and $g(8)\le682$ are thus established
+directly from Lemma~\ref{lem:fieldbound} and elementary inequalities,
+independently of DPTV's Table~I; we retain the citations to
+Derrida et al.~\cite{DPTV79} and Marinari--Parisi--Ritort~\cite{MPR95}
+for historical priority and for the connection that prompted this
+section (Section~\ref{sec:oddsquare-exact}), not because the upper-bound
+proof depends on them.
 
 Marinari, Parisi, and Ritort~\cite{MPR95} report having exhibited, by
 simulated annealing, an explicit $D=8$ ground state attaining Derrida et
@@ -721,10 +754,10 @@ full agreement.
 
 Table~\ref{tab:oddsquare} summarises the odd-square reconstructions
 alongside the corresponding simulated-annealing witnesses of
-Sections~\ref{sec:q7}--\ref{sec:q8}.
+Sections \ref{sec:q7} and \ref{sec:q8}.
 
 \begin{table}[ht]
-\centering
+\centering\small
 \caption{Odd-square reconstructions compared with the simulated-annealing
   witnesses of Sections~\ref{sec:q7}--\ref{sec:q8}.}
 \label{tab:oddsquare}\medskip
@@ -733,9 +766,9 @@ Sections~\ref{sec:q7}--\ref{sec:q8}.
 Parameter & $Q_7$ odd-square & $Q_8$ odd-square\\
 \midrule
 Edges (value of $g(n)$) & 304 & 682\\
-Source & one of 389 SA solutions & witness attaining bound of~\cite{MPR95}\\
-Non-odd-square SA witness (Solution~B, this paper) & --- & 680 (Section~\ref{sec:q8})\\
-Improvement over Solution~B & --- & $+2$\\
+Source & one of 389 SA sols. & witness for~\cite{MPR95} bound\\
+Non-odd-square SA witness (this paper) & --- & 680 (Solution~B,~\ref{sec:q8})\\
+Improvement over that witness & --- & $+2$\\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -926,8 +959,11 @@ in $O(\deg)$ time using precomputed $C_4$-to-edge incidence lists.
 
 \noindent\textbf{Phase 2 (Swap SA).}
 Edge count is fixed; swap moves (remove one edge, add one non-edge)
-minimise $V$. Phase 2 only runs when phase 1 ends with $V\le4$
-violations (Section~\ref{sec:method} intro). In the released code, the
+minimise $V$. Phase 2 only runs when phase 1 \emph{returns} a
+best-so-far state with $V\le4$ violations -- \texttt{phase1\_sa} tracks
+and returns the best state seen during the run, not necessarily its
+terminal current state, so a literal reimplementation using only the
+terminal state could behave differently. In the released code, the
 step budget for phase 2 is chosen by the phase-1 violation count $v$,
 not by dimension: $2\times10^8$ steps if $v\le1$, otherwise
 $5\times10^7$ steps. In practice this correlates with dimension, since
@@ -1011,17 +1047,30 @@ The explicit edge list is provided in \texttt{q6\_edges\_132.jsonl}.
 
 \subsection{Upper bound: integer linear program}\label{sec:q6upper}
 
-Label the 192 edges of $Q_6$ as $x_1,\ldots,x_{192}\in\{0,1\}$,
+Label the 192 edges of $Q_6$ as $x_0,\ldots,x_{191}\in\{0,1\}$
+(matching the released \texttt{q6\_ilp.mps}'s $0$-indexed variable
+names; the text elsewhere in this paper is otherwise $1$-indexed for
+readability, but the MPS file itself uses $0$-indexing throughout),
 and let $\mathcal{C}_6$ denote the set of all 240 four-cycles of $Q_6$.
 For each four-cycle $\{e_1,e_2,e_3,e_4\}\in\mathcal{C}_6$,
 the constraint $x_{e_1}+x_{e_2}+x_{e_3}+x_{e_4}\le3$ ensures $C_4$-freeness.
 The ILP is:
 \[
-  \max\sum_{i=1}^{192}x_i \quad\text{subject to}\quad
+  \max\sum_{i=0}^{191}x_i \quad\text{subject to}\quad
   \sum_{e\in C}x_e\le3\;\;\forall C\in\mathcal{C}_6,\quad x_i\in\{0,1\}.
 \]
-This formulation has 192 binary variables and 240 constraints.
-The MPS file \texttt{q6\_ilp.mps} is provided for independent verification.
+This formulation has 192 binary variables and 240 constraints, each
+variable appearing in exactly 5 of the 240 square constraints (matching
+$Q_6$'s edge-square incidence). The MPS file \texttt{q6\_ilp.mps} is
+provided for independent verification (SHA-256 in the released checksum
+manifest); we do not supply a separate
+document listing which specific $Q_6$ edge each $x_i$ corresponds to,
+so a reader wishing to interpret an individual solution vector edge-by-edge
+would need to infer that correspondence from the generator (not released
+separately) or from the constraint incidence pattern itself. This does
+not affect the feasible value (132, matching the released construction)
+or the structural checks (192 variables, 240 constraints, 5-regular
+incidence), which we verified directly from the MPS file's own contents.
 
 \begin{proposition}\label{prop:q6ilp}
 The ILP above has feasible value $132$, matching the released 132-edge
