@@ -413,14 +413,20 @@ where the violation count denotes the number of four-cycles fully
 contained in the candidate edge set. This was originally reported as
 computational evidence for the conjecture $\ex(Q_8,C_4)=680$; that
 conjecture is withdrawn, since the odd-square reconstruction of
-Section~\ref{sec:oddsquare} gives $\ex(Q_8,C_4)\ge682>680$. Since a
-stochastic annealing run does not define a graph-theoretic neighbourhood
-search (no fixed radius or reachability guarantee is established), the
-681-edge search failure is evidence only about the behaviour of the
-stated heuristic across $1\,076$ independent fresh-random-restart trials
-targeting 681 edges (Section~\ref{sec:method}), not a mathematical
-statement about $\ex(Q_8,C_4)$ or about any formally defined
-neighbourhood of the 680-edge solutions.
+Section~\ref{sec:oddsquare} gives $\ex(Q_8,C_4)\ge682>680$. Beyond that
+withdrawal, given Section~\ref{sec:method}'s finding that the released,
+unmodified heuristic cannot reliably progress from a fresh random start
+under its documented parameters, this $1{,}076$-trial statistic should
+not be read as an experimental result about the behaviour of the
+\emph{stated} (i.e.\ released, as-documented) heuristic at all; it is,
+like the other process-level figures in this paper, an unarchived,
+author-recorded historical claim whose relationship to the released
+code we cannot verify. A stochastic annealing run does not in any case
+define a graph-theoretic neighbourhood search (no fixed radius or
+reachability guarantee is established), so even taken at face value
+this figure would be evidence only about some particular search
+process, not a mathematical statement about $\ex(Q_8,C_4)$ or about
+any formally defined neighbourhood of the 680-edge solutions.
 
 Table~\ref{tab:compare} compares the $Q_7$ construction with Solution~B
 (the 680-edge solution whose local-optimality numbers are discussed
@@ -698,7 +704,15 @@ proof depends on them.
 Marinari, Parisi, and Ritort~\cite{MPR95} report having exhibited, by
 simulated annealing, an explicit $D=8$ ground state attaining Derrida et
 al.'s improved energy lower bound -- the same bound value
-$\sum_{v\in U}h(v)=340$ established directly above. Their paper reports
+$\sum_{v\in U}h(v)=340$ established directly above. Their Hamiltonian is
+$H\equiv-D^{-1/2}\sum_{(x,y)}J_{x,y}s_xs_y$~\cite[Eq.~3]{MPR95}; writing
+$S=\sum_{(x,y)}J_{x,y}s_xs_y$ for the sum over \emph{all} edges (not
+just $U$), a bipartite argument identical to the one used for
+Lemma~\ref{lem:fieldbound} shows $S=\sum_{v\in U}h(v)$ exactly (every
+edge has exactly one endpoint in $U$, so summing the local field over
+$U$ counts each edge's sign once), so $H=-S/\sqrt D$ and, per site,
+$H/N=-S/(N\sqrt D)$ with $N=2^D$; at $D=8,S=340$ this is
+$H\approx-120.2$, or $H/N\approx-0.470$ per site. Their paper reports
 the result in energy units only, without an explicit spin configuration
 or its translation into edge-count terms; we supply that translation
 and an explicit, machine-verified $682$-edge certificate in
@@ -1077,10 +1091,17 @@ single-toggle result: $147$, still far above cap), and running
 Reproducing trial 1 of \texttt{-{}-n 8 -{}-target 680 -{}-seed 0}
 similarly gives initial $V=333$ against $\texttt{viol\_cap}=38$,
 frozen after $50\,000$ steps. Sampling $10\,000$ independent uniform-random
-edge sets directly (bypassing the annealing loop) gives a minimum $V$
+edge sets directly (bypassing the annealing loop; \texttt{random.Random(999)},
+\texttt{rng.sample(range(ne), target)} repeated $10\,000$ times per
+dimension, minimum $V$ tracked via \texttt{count\_violations}) gives a
+minimum $V$
 of $117$ for $Q_7$/304 and $297$ for $Q_8$/680 -- both far above the
 maximum possible \texttt{viol\_cap} of $40$ -- so this is not
-attributable to unlucky seeds. We could not identify parameter draws
+attributable to unlucky seeds; independent resampling with other seeds
+gives minima in the same range (we observed $111$--$117$ for $Q_7$ and
+$296$--$304$ for $Q_8$ across several seeds), so the qualitative
+conclusion (minimum $V\gg40$) does not depend on the particular seed
+chosen, though the exact minimum does. We could not identify parameter draws
 under which the released, unmodified \texttt{phase1\_sa} reaches
 $V=0$ from a fresh random start for these targets. Consequently, our
 earlier claim that fresh per-trial random initialisation explains the
