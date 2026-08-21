@@ -349,12 +349,12 @@ all sharing the structural properties stated in Proposition~\ref{prop:rigid}.
 This section documents the originally announced $Q_8$ witness, reported to
 have been obtained independently of the odd-square subclass by the same
 simulated-annealing method as the $Q_7$ construction of Section~\ref{sec:q7}
-(see Section~\ref{sec:method} for a caveat about reproducing this
-process from the released code). It has since been
+(see Section~\ref{sec:method} for the finding that the released,
+unmodified code cannot be confirmed to reproduce this process). It has since been
 superseded as the paper's headline lower bound by the 682-edge odd-square
 reconstruction of Section~\ref{sec:oddsquare}; it is retained here as an
-independent structural data point and as a demonstration of the
-simulated-annealing method on its own terms.
+independent structural data point, not as a demonstration that the
+simulated-annealing method as released is capable of finding it.
 
 Simulated annealing is reported to have produced two $C_4$-free subgraphs of $Q_8$ on 680
 edges (both released in \texttt{q8\_edges\_680.jsonl}), each certified by
@@ -816,7 +816,7 @@ Sections \ref{sec:q7} and \ref{sec:q8}.
 Parameter & $Q_7$ odd-square & $Q_8$ odd-square\\
 \midrule
 Edges (value of $g(n)$) & 304 & 682\\
-Source & one of 389 SA sols. & witness for~\cite{MPR95} bound\\
+Source & one of 389 reported SA sols. & witness for~\cite{MPR95} bound\\
 Non-odd-square comparison witness & n/a (19\,477 exist,~\ref{sec:oddsquareaudit}) & 680 (Solution~B,~\ref{sec:q8})\\
 Improvement over that witness & --- & $+2$\\
 \bottomrule
