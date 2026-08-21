@@ -470,7 +470,9 @@ via Harary's theorem). Solving for $\sigma_2$ gives the claim.
 
 Lemma~\ref{lem:switching} says any two odd-square signatures are related by
 a \emph{vertex switching} $t$. For a \emph{fixed} coupling $J$, letting the
-spin configuration $s$ range over all $2^n$ choices produces exactly the
+spin configuration $s:V(Q_n)\to\{\pm1\}$ range over all $2^{2^n}$ choices
+(one sign per vertex of $Q_n$, which itself has $2^n$ vertices) produces
+exactly the
 signatures $\sigma_s(x,y)=J(x,y)s(x)s(y)$ in the switching class of $J$
 (writing $s=t\cdot s_0$ for a fixed reference $s_0$ realises every
 switching $t$); this is the operational fact we use, not a claim that
@@ -588,15 +590,28 @@ $\sum_{v\in U}h(v)^2=\sum_{v\in U^c}h(v)^2=12=3\cdot2^2$ on each side
 separately. We do not characterise the identity's full
 necessary-and-sufficient condition here.
 
-The distribution's nonnegativity, $h(v)\ge0$, is not implied by
-Lemma~\ref{lem:fieldbound} alone; it is the extra ground-state
-condition of Derrida et al.~\cite{DPTV79} (a configuration with some
-$h(v)<0$ cannot be minimal, since flipping that vertex's spin strictly
-reduces the number of negative edges without violating odd-squareness).
-We take this as an external fact from~\cite{DPTV79} rather than
-reproving it here.
+\begin{lemma}[Nonnegativity at the maximum]\label{lem:nonneg}
+If $E$ is odd-square in $Q_n$ with $|E|$ maximum (i.e.\ $|E|=g(n)$), then
+$h(v)\ge0$ for every $v\in\{0,1\}^n$.
+\end{lemma}
+\begin{proof}
+Suppose $h(v)<0$ for some $v$. Flipping the spin at $v$ (replacing
+$s(v)$ by $-s(v)$, all other spins unchanged) flips $\sigma(v,w)$ for
+every edge $(v,w)$ incident to $v$ and leaves every other edge's sign
+unchanged. Every square containing $v$ has exactly two edges incident
+to $v$; flipping both leaves their product, and hence the whole
+square's sign product, unchanged, so odd-squareness is preserved
+everywhere. At $v$ itself, the positive-edge count changes from
+$p=(n+h(v))/2$ to $q=(n-h(v))/2$, a change of $q-p=-h(v)>0$; no other
+vertex's incident edges change sign, so $|E|$ increases by exactly
+$-h(v)>0$. This contradicts maximality of $|E|$, so no such $v$ exists.
+\end{proof}
+This is a corollary of, not an alternative to, Lemma~\ref{lem:switching}:
+the argument uses only that flipping one vertex's spin preserves
+odd-squareness (immediate from the switching correspondence) and counts
+the resulting change in $|E|$ directly.
 
-Given Lemma~\ref{lem:fieldbound} and $h(v)\ge0$, $|E|=(n\cdot2^{n-1}+\sum_{v\in U}h(v))/2$
+Given Lemmas~\ref{lem:fieldbound} and~\ref{lem:nonneg}, $|E|=(n\cdot2^{n-1}+\sum_{v\in U}h(v))/2$
 is bounded above by relaxing to the integer optimisation problem of
 maximising $\sum_{v\in U}h(v)$ subject to the \emph{fixed}
 sum of squares $\sum_{v\in U}h(v)^2=n\cdot2^{n-1}$ over the $2^{n-1}$
@@ -659,7 +674,9 @@ and an explicit, machine-verified $682$-edge certificate in
 Section~\ref{sec:oddsquareverify} below. Under the correspondence of
 Section~\ref{sec:oddsquare}, this historical attainment report at $D=8$
 corresponds to $g(8)=682$, matching what was already established above
-from Lemma~\ref{lem:fieldbound} alone; the explicit witness realising it
+from Lemmas~\ref{lem:fieldbound} and~\ref{lem:nonneg} together with the
+integer/parity constraints and elementary inequalities; the explicit
+witness realising it
 is due to the present reconstruction, prompted by S.~Lai's
 identification of the connection to~\cite{DPTV79,MPR95}. Together with
 the $D\le7$ case this gives Theorem~\ref{thm:oddsquare}: $g(6)=132$,
