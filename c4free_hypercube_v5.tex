@@ -93,8 +93,17 @@ odd-square and some non-odd-square solutions, and the remaining 16
 contain no odd-square solutions at all): the $19\,866$ solutions'
 common structural core (degree sequence $\{4^{32},5^{96}\}$, spectral radius
 in $[4.78543,4.79129]$, local maximality) and their classification into 20
-dimension-profile types are independent results. Whether these $19\,866$
-solutions exhaust all 304-edge $C_4$-free subgraphs of $Q_7$ remains open.
+dimension-profile types are independent results. These $19\,866$
+labelled solutions certainly do \emph{not} exhaust all labelled
+304-edge $C_4$-free subgraphs of $Q_7$: the first released solution
+alone has a stabiliser of size $3$ in
+$\mathrm{Aut}(Q_7)\cong(\mathbb{Z}_2)^7\rtimes S_7$ (order $645\,120$),
+so its orbit alone has size $645\,120/3=215\,040>19\,866$. What
+remains open is whether the $19\,866$ released solutions represent
+every $\mathrm{Aut}(Q_7)$-orbit of 304-edge $C_4$-free subgraphs (i.e.\
+every such subgraph is equivalent under $\mathrm{Aut}(Q_7)$ to one of
+the $19\,866$), not whether they exhaust the labelled solutions
+themselves; see Open Problem~\ref{op:orbits}.
 
 For $Q_8$, the reconstructed 682-edge odd-square witness is locally maximal
 in a strong sense: all 342 non-edges of $Q_8$ create at least 3 new $C_4$s
@@ -231,6 +240,16 @@ for $n=7,8$:
 \begin{theorem}\label{thm:oddsquare}
 $g(6)=132$, $g(7)=304$, and $g(8)=682$.
 \end{theorem}
+
+\noindent Unlike $g(7)$ and $g(8)$, whose lower bounds have explicit,
+machine-verified odd-square witnesses among the released data, the
+$g(6)\ge132$ lower bound rests on Derrida et al.'s $D=6$ bond
+configuration~\cite{DPTV79}, not reconstructed as an edge-list witness
+here (Section~\ref{sec:oddsquare-exact}); the released
+132-edge $Q_6$ construction (\texttt{q6\_edges\_132.jsonl}) is a
+genuine, independently machine-verified $C_4$-free witness for
+$\ex(Q_6,C_4)\ge132$, but it is not itself odd-square, so it is not a
+witness for $g(6)\ge132$ specifically.
 
 \noindent Theorem~\ref{thm:oddsquare} is proved in
 Section~\ref{sec:oddsquare}. Combined with $g(n)\le\ex(Q_n,C_4)$, it in
@@ -1003,9 +1022,11 @@ sets themselves) are machine-verifiable certificates: any reader can
 confirm $C_4$-freeness and the reported edge counts directly from the
 supplied data with \texttt{verify.py}, independently of how the search
 was run. The Hamming-distance statistics of Section~\ref{sec:landscape}
-are likewise fully archived: they are computed exhaustively over all
-released solutions, not sampled, so they are independently
-reproducible from the released edge lists alone. The quantitative
+are likewise on a different footing from the search-process claims below:
+they are computed exhaustively over all
+released solutions, not sampled, so they are recomputable directly
+from the released edge lists alone (though, like the other structural
+statistics noted earlier, not via a bundled analysis script). The quantitative
 claims about the \emph{search process} that
 produced the solutions — ``$19\,866$ independent runs'' and ``$1\,076$ independent
 trials'' at $305$ and at $681$ edges — describe unarchived search history. The
@@ -1302,8 +1323,9 @@ principle, verify on the dual side.
     different for $n=7$ (the general extremal value $304$ is attained
     overwhelmingly by non-odd-square solutions), so no assumption is made
     here about which way $n=8$ resolves.
-  \item What is the number of $\mathrm{Aut}(Q_7)$-orbits among all 304-edge
-    $C_4$-free subgraphs of $Q_7$? Among the 389 odd-square solutions
+  \item\label{op:orbits} What is the number of $\mathrm{Aut}(Q_7)$-orbits among all 304-edge
+    $C_4$-free subgraphs of $Q_7$? Do the $19\,866$ released solutions
+    represent every such orbit? Among the 389 odd-square solutions
     specifically?
   \item Is the degree sequence $\{4^{32},5^{96}\}$ necessary for any locally
     maximal $C_4$-free subgraph of $Q_7$ on 304 edges?
