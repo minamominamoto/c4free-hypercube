@@ -125,13 +125,7 @@ Odd Squares, Fully Frustrated Models, and Computational Structure.
 
 ## License
 
-Released under the MIT License (see `LICENSE`).
-
-**Known inconsistency to resolve:** `c4free_sa.py`'s own header states
-`License: CC-BY 4.0`, which conflicts with this repository-wide MIT
-license. Pick one and make the two consistent (either update the
-script's header to MIT, or mark it as an explicit per-file exception in
-this README) before treating the reuse terms as settled.
+Released under the MIT License (see `LICENSE`), including `c4free_sa.py`.
 
 ## Contact
 

@@ -98,8 +98,16 @@ in a strong sense: all 342 non-edges of $Q_8$ create at least 3 new $C_4$s
 upon addition (compared with the earlier 680-edge simulated-annealing
 Solution~B, for which 2 of 344 non-edges created only 1 or 2 new $C_4$s;
 see Section~\ref{sec:q8} for both 680-edge solutions released). All
-bounds are witnessed by explicit edge-list constructions with
-machine-verifiable certificates: a complete, deterministic enumeration of
+$C_4$-free-construction bounds are witnessed by explicit edge-list
+constructions with
+machine-verifiable certificates -- the sole exception being the
+odd-square lower bound $g(6)\ge132$, which rests on Derrida et al.'s
+$D=6$ bond configuration (Section~\ref{sec:oddsquare-exact}), not
+reconstructed by us; the released $132$-edge $Q_6$ witness
+(\texttt{q6\_edges\_132.jsonl}) is a genuine, machine-verified $C_4$-free
+construction establishing $\ex(Q_6,C_4)\ge132$, but its square-intersection
+histogram $\{1{:}8,\,2{:}44,\,3{:}188\}$ shows it is \emph{not} itself an
+odd-square witness. For all other bounds, a complete, deterministic enumeration of
 all four-cycles (240 for $Q_6$, 672 for $Q_7$, 1\,792 for $Q_8$) establishes
 $C_4$-freeness, and every \emph{construction} certificate reported here
 (the edge sets themselves, their $C_4$-freeness, and the $Q_8$

@@ -2,7 +2,7 @@
 c4free_sa.py  --  Two-phase Simulated Annealing for C4-free subgraphs of Q_n
 Author : Minamo Minamoto (2026)
 GitHub : https://github.com/minamominamoto/c4free-hypercube
-License: CC-BY 4.0
+License: MIT
 
 Algorithm
 ---------
