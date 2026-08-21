@@ -70,7 +70,10 @@ of the earlier 680-edge witness.
 Writing $g(n)$ for the maximum size of an \emph{odd-square} edge set (every
 square meets it in exactly one or three edges), we show $g(6)=132$,
 $g(7)=304$, and $g(8)=682$ exactly. For $n=7,8$ the upper bound follows
-from the local-field argument of Derrida et al.~\cite{DPTV79} and the
+from a self-contained local-field argument in the spirit of Derrida et
+al.~\cite{DPTV79} (a quadratic field-sum identity together with
+elementary parity constraints, proved here directly rather than cited
+from their Table~I) and the
 lower bound from explicit constructions; for $n=6$ we instead combine an
 explicit odd-square construction already given in~\cite{DPTV79} itself
 (lower bound $g(6)\ge132$) with the independent exact value
@@ -122,12 +125,21 @@ paper's preparation but are not packaged into a single bundled
 verifier; a reader wishing to check them would need to recompute them
 from the released edge lists using the definitions given in the text.
 
-The original ($Q_7$, $Q_8$) constructions are found by a two-phase simulated
-annealing algorithm, described in full detail; the released search code
-computes an $\mathrm{Aut}(Q_n)$-diversified restart point before each
-trial but does not pass it into the phase-1 search, which always
-restarts from a fresh uniform-random edge set instead (see
-Section~\ref{sec:method}). For $Q_6$ we additionally give an ILP formulation whose
+The original ($Q_7$, $Q_8$) constructions are reported to have been found by a
+two-phase simulated annealing algorithm, described in full detail; the
+released search code computes an $\mathrm{Aut}(Q_n)$-diversified
+restart point before each trial but does not pass it into the phase-1
+search, which always restarts from a fresh uniform-random edge set
+instead. On direct execution, however, we found that the released,
+unmodified phase-1 code frequently cannot make any progress at all
+from such a fresh random start under its own documented parameter
+ranges, for a structural reason unrelated to step count or luck of
+the seed (Section~\ref{sec:method}); we could not identify parameters
+under which it reaches these targets with zero violations. The
+released edge-set certificates themselves remain independently
+verified as valid; what we cannot confirm is that the released,
+unmodified search code -- run as documented -- is what actually
+produced them. For $Q_6$ we additionally give an ILP formulation whose
 feasible value matches the known exact value $\ex(Q_6,C_4)=132$; we did
 not independently verify the ILP's optimality within a practical
 runtime, and the upper bound itself rests on the combinatorial proof
@@ -300,8 +312,10 @@ of $Q_7$; every call returned \textsc{c4-free}.
 \section{The $Q_7$ Construction}\label{sec:q7}
 %% ============================================================
 
-We constructed a $C_4$-free subgraph of $Q_7$ on 304 edges by
-penalty-based simulated annealing (Section~\ref{sec:method}),
+We report having constructed a $C_4$-free subgraph of $Q_7$ on 304 edges by
+penalty-based simulated annealing (Section~\ref{sec:method}; see that
+section for a caveat about the released code's ability to reproduce
+this process),
 then certified it by Lemma~\ref{lem:c4}'s algorithm.
 
 \begin{proposition}\label{prop:q7}
@@ -332,15 +346,17 @@ all sharing the structural properties stated in Proposition~\ref{prop:rigid}.
 \section{The $Q_8$ Construction}\label{sec:q8}
 %% ============================================================
 
-This section documents the originally announced $Q_8$ witness, obtained
-independently of the odd-square subclass by the same simulated-annealing
-method as the $Q_7$ construction of Section~\ref{sec:q7}. It has since been
+This section documents the originally announced $Q_8$ witness, reported to
+have been obtained independently of the odd-square subclass by the same
+simulated-annealing method as the $Q_7$ construction of Section~\ref{sec:q7}
+(see Section~\ref{sec:method} for a caveat about reproducing this
+process from the released code). It has since been
 superseded as the paper's headline lower bound by the 682-edge odd-square
 reconstruction of Section~\ref{sec:oddsquare}; it is retained here as an
 independent structural data point and as a demonstration of the
 simulated-annealing method on its own terms.
 
-Simulated annealing produced two $C_4$-free subgraphs of $Q_8$ on 680
+Simulated annealing is reported to have produced two $C_4$-free subgraphs of $Q_8$ on 680
 edges (both released in \texttt{q8\_edges\_680.jsonl}), each certified by
 exhaustive enumeration of all $1\,792$ four-cycles. We refer to them as
 Solution~A (first line of the file) and Solution~B (second line); the
@@ -704,7 +720,7 @@ them independently of~\cite{DPTV79,MPR95}.
 
 \textbf{$Q_7$, $g(7)=304$.} The 304-edge odd-square value coincides with our
 originally announced $Q_7$ lower bound (Theorem~\ref{thm:main}(i)); of the
-$19\,866$ solutions we found by simulated annealing (Section~\ref{sec:q7}),
+$19\,866$ solutions reported found by simulated annealing (Section~\ref{sec:q7}),
 389 are themselves odd-square witnesses of $g(7)=304$
 (Section~\ref{sec:structure}), independently confirming reachability of this
 value without reference to~\cite{DPTV79}.
@@ -787,7 +803,7 @@ Parameter & $Q_7$ odd-square & $Q_8$ odd-square\\
 \midrule
 Edges (value of $g(n)$) & 304 & 682\\
 Source & one of 389 SA sols. & witness for~\cite{MPR95} bound\\
-Non-odd-square SA witness (this paper) & --- & 680 (Solution~B,~\ref{sec:q8})\\
+Non-odd-square comparison witness & n/a (19\,477 exist,~\ref{sec:oddsquareaudit}) & 680 (Solution~B,~\ref{sec:q8})\\
 Improvement over that witness & --- & $+2$\\
 \bottomrule
 \end{tabular}
@@ -856,7 +872,10 @@ Observations: (1) $\lambda_1$ lies in $[4.787,4.789]$ across all 20 types.
 (2) $H$ ranges from $2.801$ to $2.807$, all near $\log_27\approx2.807$.
 (3) All 101 Type-18 solutions have a genuine $\mathrm{Aut}(Q_7)$-automorphism
 (coordinate permutation combined with a bitwise XOR, i.e.\ the full
-affine group $\mathrm{Aut}(Q_7)\cong(\mathbb{Z}_2)^7\rtimes S_7$, not
+automorphism group $\mathrm{Aut}(Q_7)\cong(\mathbb{Z}_2)^7\rtimes S_7$
+of $Q_7$ itself -- a proper subgroup of the full affine group
+$\mathrm{AGL}(7,2)$ over $\mathbb{F}_2^7$, since only coordinate
+\emph{permutations} are allowed, not general linear maps -- not
 merely a coordinate permutation) that nontrivially permutes at least
 two of the three tied $48$-edge directions; of these, $46/101$ have a
 genuine order-$3$ automorphism cyclically permuting all three
@@ -888,13 +907,12 @@ Every solution in the $19\,866$ satisfies:
 \subsection{Solution landscape}\label{sec:landscape}
 
 Pairwise Hamming distances $d_H(G,G')=|E(G)\triangle E(G')|$, computed
-exhaustively over all $\binom{19\,866}{2}\approx1.97\times10^8$ pairs,
+exhaustively over all $\binom{19\,866}{2}=197\,319\,045$ pairs,
 range from $\mathbf{6}$ (attained by a pair of profile-type-1 and
 profile-type-2 solutions, differing by just 3 edges each way) to
-$\mathbf{274}$. A random sample of $5\,000$ pairs gives a mean
-$\approx195.4$ and median $196$, both stable across resampling; the
-sample-based min and max are not, and should not be read as close to
-the true extremes above.
+$\mathbf{274}$, with exact mean $195.396108\ldots$ and exact median
+$196$ (all four values computed directly from the full pairwise
+distance distribution, not sampled).
 
 Over $1\,076$ reported trials targeting $305$ edges,
 the minimum $C_4$ violation count was $2$ (never $0$).
@@ -952,10 +970,13 @@ The successful outcomes described in this section (the released edge
 sets themselves) are machine-verifiable certificates: any reader can
 confirm $C_4$-freeness and the reported edge counts directly from the
 supplied data with \texttt{verify.py}, independently of how the search
-was run. The quantitative claims about the \emph{search process} that
-produced them — ``$19\,866$ independent runs'', ``$1\,076$ independent
-trials'' at $305$ and at $681$ edges, and the resampling statistics of
-Section~\ref{sec:landscape} — describe unarchived search history. The
+was run. The Hamming-distance statistics of Section~\ref{sec:landscape}
+are likewise fully archived: they are computed exhaustively over all
+released solutions, not sampled, so they are independently
+reproducible from the released edge lists alone. The quantitative
+claims about the \emph{search process} that
+produced the solutions — ``$19\,866$ independent runs'' and ``$1\,076$ independent
+trials'' at $305$ and at $681$ edges — describe unarchived search history. The
 search program itself, \texttt{c4free\_sa.py}, is released alongside
 this manuscript, but the specific run seeds, logs, and driver
 invocations of the actual production runs that produced the released
@@ -974,6 +995,24 @@ therefore not assume rerunning the released code as documented will
 reproduce them, or indeed complete a single trial successfully; see
 Section~\ref{sec:method} for the specifics and for what remains an
 open provenance question about the actual search method used.
+
+Beyond the aggregate counts, each released $Q_7$ record itself carries
+undocumented provenance fields (\texttt{method}, \texttt{run},
+\texttt{trial}, \texttt{hash}, \texttt{elapsed}) that we did not
+explain in earlier versions of this manuscript. For completeness: of
+the $19\,866$ records, \texttt{method} is \texttt{auto} for $18\,206$,
+\texttt{auto\_seed} for $1\,347$, \texttt{repair} for $2$, and absent
+for $311$; a \texttt{run} field is present on only $8$ records (one
+with \texttt{run=0}, seven with \texttt{run=2}); and $19\,858$ records
+carry a \texttt{trial} field with values up to at least seven figures.
+We do not know what distinction \texttt{auto} vs.\ \texttt{auto\_seed}
+vs.\ \texttt{repair} marks, what unit of independence \texttt{run} or
+\texttt{trial} refers to, or why only $8$ records carry a \texttt{run}
+field, since this was not documented at the time of the original
+search and we do not want to guess retrospectively. These fields
+should therefore be treated as additional unexplained search-history
+metadata, in the same category as the process-level claims discussed
+above, not as a resolved provenance record.
 
 \subsection{Two-phase simulated annealing}
 
@@ -1114,9 +1153,20 @@ $\ex(Q_6,C_4)\le132$ itself rests on~\cite{HN94}, not on our own solve.
 
 \subsection{Lower bound: explicit construction}\label{sec:q6lower}
 
-Simulated annealing (Section~\ref{sec:method}) finds a $C_4$-free subgraph of
+Simulated annealing (Section~\ref{sec:method}) is reported to have found a $C_4$-free subgraph of
 $Q_6$ on 132 edges, certified by exhaustive enumeration of all 240 four-cycles.
-The explicit edge list is provided in \texttt{q6\_edges\_132.jsonl}.
+The explicit edge list is provided in \texttt{q6\_edges\_132.jsonl}. As
+with the $Q_7$/$Q_8$ constructions (Section~\ref{sec:method}), the
+released, unmodified \texttt{phase1\_sa} exhibits the same structural
+freezing at $n=6$, target $132$: reproducing trial 1 for
+\texttt{-{}-n 6 -{}-target 132 -{}-seed 42} gives initial $V=54$
+against $\texttt{viol\_cap}=14$ (best single-toggle result $49$, still
+above cap), frozen after $100\,000$ steps; \texttt{-{}-seed 0} gives
+initial $V=52$ against $\texttt{viol\_cap}=38$ (best single-toggle
+result $48$). The 132-edge certificate itself remains independently
+verified as a valid $C_4$-free construction; as for $Q_7,Q_8$, we
+cannot confirm the released code, run as documented, is what actually
+produced it.
 
 \subsection{Upper bound: integer linear program}\label{sec:q6upper}
 
