@@ -27,6 +27,22 @@ Diversification:
     Section 7.1, for a full description of what this script actually
     does versus what this docstring originally (incorrectly) claimed.
 
+    SECOND, MORE SERIOUS KNOWN BUG (documented, not fixed, same
+    reason): phase1_sa's per-step proposal is rejected outright
+    whenever it would exceed viol_cap (drawn per trial from [6,40]).
+    Since a single-edge toggle changes V by at most n-1, if the fresh
+    random start's V exceeds viol_cap+(n-1) -- which we found to be
+    the typical case, not a rare one, for both n=7/target=304 and
+    n=8/target=680 -- phase1_sa is frozen from step one and cannot
+    make any move for any number of steps. We could not identify
+    parameters under which the released, unmodified phase1_sa reaches
+    V=0 from a fresh random start for these targets. See the
+    manuscript, Section 7.1, for the specific reproduction (exact
+    seeds, resulting V, and viol_cap values) and for an honest
+    statement that this leaves the provenance of the search *method*
+    (as opposed to the released solutions themselves, which are
+    independently verified) as an open question.
+
 Usage
 -----
     python c4free_sa.py --n 7 --target 304 --trials 10 --seed 42

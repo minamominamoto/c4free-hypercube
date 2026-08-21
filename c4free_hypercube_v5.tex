@@ -137,15 +137,6 @@ of Harborth and Nienborg~\cite{HN94}, which we reproduce on the lower
 Edge lists, ILP files, the odd-square reconstruction and audit scripts, and
 source code are made available at\\
 \url{https://github.com/minamominamoto/c4free-hypercube}.
-%% ZERO: as of this revision, the repository has not yet been updated to
-%% include the odd-square reconstruction/audit scripts, q8_odd_square_682.json,
-%% or this revision's edge lists; its README still states ex(Q8,C4)>=680.
-%% The updated files (README.md, this tex/pdf, all scripts and data) have
-%% been prepared as a flat set ready to add to your local clone and push
-%% yourself -- git push credentials are not available in this sandbox.
-%% Ideally push as a tagged/archived release with a SHA-256 manifest,
-%% before submission, so this claim is true at the time a reader follows
-%% the link. Remove this comment once done.
 \end{abstract}
 
 \medskip
@@ -971,16 +962,30 @@ invocations of the actual production runs that produced the released
 $19\,866$ solutions and the $1\,076$-trial statistics are not supplied.
 These process-level claims should be read as the authors' record of the
 search that was run, not as independently reproducible certificates in
-the same sense as the edge sets; a reader wishing to verify the exact
-process-level statistics would need to rerun an equivalent search
-(possible with the released code, but not reproducible bit-for-bit
-without the original seeds), not merely check the supplied files.
+the same sense as the edge sets. Worse, as detailed in
+Section~\ref{sec:method}'s Diversification discussion below, we found
+on direct execution that the released, unmodified
+\texttt{c4free\_sa.py} frequently cannot progress at all from a fresh
+random start under the documented parameter ranges, for a structural
+reason (not merely slow convergence); we could not identify parameters
+under which it reaches the target edge count with zero violations. A
+reader wishing to verify the exact process-level statistics should
+therefore not assume rerunning the released code as documented will
+reproduce them, or indeed complete a single trial successfully; see
+Section~\ref{sec:method} for the specifics and for what remains an
+open provenance question about the actual search method used.
 
 \subsection{Two-phase simulated annealing}
 
 \noindent\textbf{Phase 1 (Penalty SA).}
-We minimise $f(E)=-|E|+\lambda V$ where $V$ is the number of $C_4$ violations
-and $\lambda\in[0.30,0.90]$.
+The acceptance criterion for proposed moves minimises
+$f(E)=-|E|+\lambda V$ where $V$ is the number of $C_4$ violations
+and $\lambda\in[0.30,0.90]$, but the ``best'' state \texttt{phase1\_sa}
+tracks and returns is \emph{not} the minimiser of $f$: the released
+code instead keeps the state with lexicographically smallest $(V,-|E|)$
+seen so far (\texttt{v\_cur < best\_v or (v\_cur == best\_v and
+size\_cur > best\_size)}) -- prioritising fewer violations first, and
+only using edge count as a tiebreaker among states with equal $V$.
 Temperature schedule: geometric from $T_0\in[0.20,4.00]$ to
 $T_1\in[0.001,0.030]$ over $3$--$15$ million steps.
 A move toggles a single edge; the change in $f$ is computed incrementally
@@ -1012,14 +1017,53 @@ solution; the automorphism-based restart is dead code in the released
 implementation. (The script's own docstring originally described this
 mechanism without noting the bug; we have appended a note to the
 docstring documenting it, without altering any functional code, so
-that a reader of the code alone is not misled.) The diversity actually
-observed across trials and across the $19\,866$ collected solutions
-therefore comes from this per-trial fresh random initialisation
-together with per-trial randomised annealing parameters ($\lambda$,
-$T_0$, $T_1$, step count, and violation cap, each redrawn independently
-every trial), not from
-any automorphism-based mechanism. We note for completeness that even
-had the intended mechanism been wired correctly, applying an
+that a reader of the code alone is not misled.)
+
+\noindent\textbf{A more serious defect in \texttt{phase1\_sa}.} On
+direct execution, we found that the released \texttt{phase1\_sa} is
+frequently unable to make \emph{any} progress at all, for a structural
+reason independent of step count. Each accepted or rejected proposal
+toggles a single edge, changing the violation count $V$ by at most
+$n-1$ (the number of squares containing that edge); a proposal is
+rejected outright whenever the resulting $V$ would exceed
+\texttt{viol\_cap} (drawn per trial from $[6,40]$). If the initial
+random edge set's $V$ exceeds $\texttt{viol\_cap}+(n-1)$, \emph{no}
+single-edge toggle can ever produce an accepted move, so the state is
+frozen from step one, for any number of steps. We verified this is not
+a rare occurrence but the typical case: reproducing the exact RNG state
+of trial 1 for \texttt{-{}-n 7 -{}-target 304 -{}-seed 42}, the initial
+violation count is $V=152$ against $\texttt{viol\_cap}=14$ (best
+single-toggle result: $147$, still far above cap), and running
+\texttt{phase1\_sa} for $100\,000$ steps leaves $V=152$ unchanged.
+Reproducing trial 1 of \texttt{-{}-n 8 -{}-target 680 -{}-seed 0}
+similarly gives initial $V=333$ against $\texttt{viol\_cap}=38$,
+frozen after $50\,000$ steps. Sampling $10\,000$ independent uniform-random
+edge sets directly (bypassing the annealing loop) gives a minimum $V$
+of $117$ for $Q_7$/304 and $297$ for $Q_8$/680 -- both far above the
+maximum possible \texttt{viol\_cap} of $40$ -- so this is not
+attributable to unlucky seeds. We could not identify parameter draws
+under which the released, unmodified \texttt{phase1\_sa} reaches
+$V=0$ from a fresh random start for these targets. Consequently, our
+earlier claim that fresh per-trial random initialisation explains the
+diversity of the released solutions should be read with this caveat:
+we can confirm the released \emph{solutions} are valid (independently
+verified $C_4$-free certificates), but we cannot confirm that the
+released, unmodified \texttt{phase1\_sa} -- run as literally
+documented -- is what actually produced them. Either the historical
+production code differed from what is released here (e.g.\ a
+different \texttt{viol\_cap} range or a different acceptance rule),
+or some other undocumented step was involved; we do not know which,
+and we did not attempt to guess and silently "fix" the released code,
+since that would misrepresent what was actually run. This is a
+genuine, unresolved gap in the provenance of the search
+\emph{method} (as distinct from the search \emph{outputs}, which
+remain independently verified).
+
+The diversity actually
+observed across the $19\,866$ collected solutions is therefore not
+fully explained by the mechanisms described in this section; we note
+for completeness that even
+had the intended automorphism-based restart mechanism been wired correctly, applying an
 automorphism to a solution does not change which $\mathrm{Aut}(Q_n)$-orbit
 it belongs to, and the annealing moves used here (uniform edge
 toggle/swap proposals against an automorphism-invariant objective) admit
