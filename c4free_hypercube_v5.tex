@@ -52,12 +52,15 @@ overlooked connection to a line of statistical-physics literature on fully
 frustrated hypercubes: under the standard correspondence between edge sets
 meeting every $4$-cycle (\emph{square}) an odd number of times and fully
 frustrated signed hypercubes, the 1979 construction of Derrida, Pomeau,
-Toulouse, and Vannimenus~\cite{DPTV79} already yields a 304-edge $C_4$-free
-subgraph of $Q_7$, and the $D{=}8$ ground state reported by Marinari, Parisi,
+Toulouse, and Vannimenus~\cite{DPTV79} already yields a $D\le7$ odd-square
+construction attaining $304$ edges at $D=7$ (we did not reconstruct
+their specific $H_7$ edge set), and the $D{=}8$ ground state reported by Marinari, Parisi,
 and Ritort~\cite{MPR95} yields a 682-edge $C_4$-free subgraph of $Q_8$ that
 improves our originally announced 680-edge construction. For $Q_7$, this
-value coincides with one of our own previously found 304-edge solutions,
-which we confirm independently satisfies the odd-square condition. For
+value ($304$) is also attained by $389$ of our own previously found 304-edge
+solutions, which we confirm independently satisfy the odd-square condition
+(none is claimed to be DPTV's specific $H_7$ construction; we only
+confirm the attained value, not edge-set identity with theirs). For
 $Q_8$, we derived and machine-verified an explicit 682-edge witness
 attaining the bound MPR report attaining, using their canonical fully
 frustrated coupling (derivation documented in
@@ -97,8 +100,12 @@ dimension-profile types are independent results. These $19\,866$
 labelled solutions certainly do \emph{not} exhaust all labelled
 304-edge $C_4$-free subgraphs of $Q_7$: the first released solution
 alone has a stabiliser of size $3$ in
-$\mathrm{Aut}(Q_7)\cong(\mathbb{Z}_2)^7\rtimes S_7$ (order $645\,120$),
-so its orbit alone has size $645\,120/3=215\,040>19\,866$. What
+$\mathrm{Aut}(Q_7)\cong(\mathbb{Z}_2)^7\rtimes S_7$ (order $645\,120$;
+exhaustive check over all $645\,120$ elements), consisting of the
+identity and two nontrivial elements, both coordinate permutation
+$+$ XOR pairs -- $(5,1,2,3,4,6,0)$ with XOR mask $33=0100001_2$, and
+its square $(6,1,2,3,4,0,5)$ with XOR mask $96=1100000_2$, together
+forming a cyclic group of order $3$ -- so its orbit alone has size $645\,120/3=215\,040>19\,866$. What
 remains open is whether the $19\,866$ released solutions represent
 every $\mathrm{Aut}(Q_7)$-orbit of 304-edge $C_4$-free subgraphs (i.e.\
 every such subgraph is equivalent under $\mathrm{Aut}(Q_7)$ to one of
@@ -740,8 +747,11 @@ proof depends on them.
 
 Marinari, Parisi, and Ritort~\cite{MPR95} report having exhibited, by
 simulated annealing, an explicit $D=8$ ground state attaining Derrida et
-al.'s improved energy lower bound -- the same bound value
-$\sum_{v\in U}h(v)=340$ established directly above. Their Hamiltonian is
+al.'s improved energy lower bound. Their attainment claim, under the
+correspondence developed below, corresponds to the same bound value
+$\sum_{v\in U}h(v)=340$ established directly above -- MPR95 do not
+themselves report a quantity called $S$ or $340$; the correspondence is
+ours. Their Hamiltonian is
 $H\equiv-D^{-1/2}\sum_{(x,y)}J_{x,y}s_xs_y$~\cite[Eq.~3]{MPR95}; writing
 $S=\sum_{(x,y)}J_{x,y}s_xs_y$ for the sum over \emph{all} edges (not
 just $U$), a bipartite argument identical to the one used for
@@ -749,8 +759,15 @@ Lemma~\ref{lem:fieldbound} shows $S=\sum_{v\in U}h(v)$ exactly (every
 edge has exactly one endpoint in $U$, so summing the local field over
 $U$ counts each edge's sign once), so $H=-S/\sqrt D$ and, per site,
 $H/N=-S/(N\sqrt D)$ with $N=2^D$; at $D=8,S=340$ this is
-$H\approx-120.2$, or $H/N\approx-0.470$ per site. Their paper reports
-the result in energy units only, without an explicit spin configuration
+$H\approx-120.2$, or $H/N\approx-0.470$ per site. As a cross-check
+against MPR95's own text: they report (in their D=9 discussion) that
+``on a scale where the minimal energy jump is 1'' their D=9 naive
+bound $H/N=-1/2$ corresponds to an integer value of $-384$ (i.e.\ a
+scale factor of $768=384/(1/2)$), and state that on this same scale
+``the improved lower bound at $D=8$ gives $-361$.'' Applying the same
+factor to our value gives $768\times(-0.4696\ldots)=-360.62\ldots
+\approx-361$, matching their reported integer to within rounding. Their paper reports
+the $D=8$ attainment in energy units only, without an explicit spin configuration
 or its translation into edge-count terms; we supply that translation
 and an explicit, machine-verified $682$-edge certificate in
 Section~\ref{sec:oddsquareverify} below. Under the correspondence of
