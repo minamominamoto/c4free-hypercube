@@ -233,9 +233,14 @@ $g(6)=132$, $g(7)=304$, and $g(8)=682$.
 \end{theorem}
 
 \noindent Theorem~\ref{thm:oddsquare} is proved in
-Section~\ref{sec:oddsquare}. It does not resolve
-Theorem~\ref{thm:main}'s unrestricted bounds, since $g(n)\le\ex(Q_n,C_4)$
-and a general $C_4$-free subgraph need not be odd-square: of the $19\,866$
+Section~\ref{sec:oddsquare}. Combined with $g(n)\le\ex(Q_n,C_4)$, it in
+fact implies Theorem~\ref{thm:main}'s lower bounds
+$\ex(Q_7,C_4)\ge304$ and $\ex(Q_8,C_4)\ge682$ directly (redundantly with
+the explicit constructions of Sections~\ref{sec:q7}--\ref{sec:q8}). What
+it does \emph{not} resolve is whether these bounds are exact, i.e.\
+whether $\ex(Q_7,C_4)=304$ and $\ex(Q_8,C_4)=682$: a general
+$C_4$-free subgraph need not be odd-square, so $g(n)=\ex(Q_n,C_4)$ does
+not follow automatically, and of the $19\,866$
 published 304-edge $Q_7$ solutions, only 389 are odd-square
 (Section~\ref{sec:structure}).
 
@@ -670,8 +675,21 @@ $\sum_{v}h(v)^2=448$:
 \quad\text{so}\quad
 \sum_{v\in U}h(v)\le\frac{448+192}{4}=160.
 \]
-The released $304$-edge witness attains $\sum_{v\in U}h(v)=160$ exactly
-(Section~\ref{sec:oddsquareaudit}), so this bound is tight and
+Since $|E|=(n\cdot2^{n-1}+\sum_{v\in U}h(v))/2$ for \emph{any} $304$-edge
+set (odd-square or not), attaining $\sum_{v\in U}h(v)=160$ is automatic
+and does not by itself exhibit an odd-square witness; what is needed is
+an explicit odd-square set achieving it. The odd-square audit
+(Section~\ref{sec:oddsquareaudit}) supplies $389$ such witnesses among
+the released $304$-edge $Q_7$ solutions; the first in file order is
+global index $34$ (\texttt{q7\_edges\_304.jsonl.part1}, line $35$,
+SHA-256 \texttt{2f2649ae9c4d1c901ba5a88f9825689de3cc19de1b742d86f5d66d\allowbreak
+bfd3aebec7}), with square-intersection histogram $\{1{:}96,\,3{:}576\}$,
+confirming it is genuinely odd-square and attains
+$\sum_{v\in U}h(v)=160$. (The file's very first record, by contrast,
+has histogram $\{1{:}36,\,2{:}120,\,3{:}516\}$ and is \emph{not}
+odd-square, despite also satisfying $\sum_{v\in U}h(v)=160$ -- exactly
+because that identity holds regardless of odd-squareness.) This bound is
+therefore tight and
 $g(7)=(448+160)/2=304$ is established without external input.
 
 \textbf{$n=8$ (even $h\ge0$).} For every even integer $h\ge0$,
