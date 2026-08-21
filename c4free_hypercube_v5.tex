@@ -1093,13 +1093,22 @@ variable appearing in exactly 5 of the 240 square constraints (matching
 $Q_6$'s edge-square incidence). The MPS file \texttt{q6\_ilp.mps} is
 provided for independent verification (SHA-256 in the released checksum
 manifest). The correspondence between each $x_i$ and its $Q_6$ edge was
-not originally recorded alongside the MPS file; we have since
-reconstructed it (\texttt{q6\_ilp\_edge\_map.csv}: $x_i\leftrightarrow$
-vertex pair) by matching the MPS's variable--constraint incidence
-pattern against $Q_6$'s known edge--square incidence structure (squares
-enumerated by base vertex, then direction pair), and verified the
-reconstruction exactly reproduces all $240$ constraints' variable
-memberships from the released MPS file.
+not originally recorded alongside the MPS file. We have since
+constructed an incidence-preserving identification
+(\texttt{q6\_ilp\_edge\_map.csv}: $x_i\leftrightarrow$ vertex pair,
+verified to reproduce all $240$ constraints' variable memberships
+exactly from the released MPS file) by matching the MPS's
+variable--constraint incidence pattern against $Q_6$'s known
+edge--square incidence structure under one specific, standard
+enumeration convention (integer vertex labels $0,\ldots,63$; squares
+enumerated by base vertex, then direction pair). We call this an
+identification rather than \emph{the} original correspondence because
+incidence structure alone determines it only up to
+$\mathrm{Aut}(Q_6)$: any automorphism compatible with the assumed
+labelling convention would give an equally valid, incidence-matching
+relabelling. The identification is nonetheless useful for interpreting
+individual solution vectors and is consistent with (not merely
+coincidentally matching) the released data throughout.
 
 \begin{proposition}\label{prop:q6ilp}
 The ILP above has feasible value $132$, matching the released 132-edge
