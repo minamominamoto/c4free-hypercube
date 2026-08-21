@@ -141,21 +141,40 @@ paper's preparation but are not packaged into a single bundled
 verifier; a reader wishing to check them would need to recompute them
 from the released edge lists using the definitions given in the text.
 
-The original ($Q_7$, $Q_8$) constructions are reported to have been found by a
-two-phase simulated annealing algorithm, described in full detail; the
-released search code computes an $\mathrm{Aut}(Q_n)$-diversified
-restart point before each trial but does not pass it into the phase-1
-search, which always restarts from a fresh uniform-random edge set
-instead. On direct execution, however, we found that the released,
-unmodified phase-1 code frequently cannot make any progress at all
-from such a fresh random start under its own documented parameter
-ranges, for a structural reason unrelated to step count or luck of
-the seed (Section~\ref{sec:method}); we could not identify parameters
-under which it reaches these targets with zero violations. The
-released edge-set certificates themselves remain independently
-verified as valid; what we cannot confirm is that the released,
-unmodified search code -- run as documented -- is what actually
-produced them. For $Q_6$ we additionally give an ILP formulation whose
+The $Q_7$ solutions were found by a two-stage process that we have now
+recovered and independently verified: a conventional multi-move-type
+penalty simulated annealing (add/remove/$1$-swap/kick moves with
+temperature-scaled Boltzmann acceptance) found a single seed $304$-edge
+solution, and a remove-and-repair collector -- starting from an
+existing solution (optionally transformed by a random element of
+$\mathrm{Aut}(Q_7)$), removing a few edges, then greedily re-adding
+only violation-free edges -- mass-collected the released $19\,866$
+solutions; we confirmed this collector, run from the released seed,
+finds $1\,987$ new valid solutions in $30$ seconds, and that the
+recovered output file matches the released $19\,866$ records exactly
+by hash and by edge set (Section~\ref{sec:method}). The two released
+$Q_8$ $680$-edge solutions (Solutions~A and~B, Section~\ref{sec:q8})
+have likewise now been traced to recovered, independently-verified
+working code, \texttt{sa\_q8.py}: a penalty-SA hill-climber that always
+restarts each trial from the current best \emph{valid} (zero-violation)
+solution rather than from a fresh random sample, progressively
+improving it (initial greedy construction $\to$ intermediate saved
+states at $584,662,\ldots,679$ edges $\to$ $680$). We confirmed the two
+released files this recovered code produced, \texttt{q8\_edges\_680.txt}
+and \texttt{q8\_best.json}, match Solutions~A and~B respectively
+exactly by edge set, and we confirmed the code makes genuine
+progress on direct execution: run for $90$ seconds from a saved
+$670$-edge intermediate state, it reduces the violation count at the
+$675$-edge target from $22$ to $8$. This is a different script,
+released separately from \texttt{c4free\_sa.py}, whose
+generalisation of the same two-phase idea to a single $n$-agnostic
+script (Section~\ref{sec:method}) does \emph{not} share this
+always-restart-from-a-valid-state property, and which we found cannot
+progress from a fresh random start under its own documented parameters
+for either $Q_7$ or $Q_8$; \texttt{c4free\_sa.py} is retained as
+released (with its defect documented) but is no longer the operative
+account of how either the $Q_7$ or the $Q_8$ solutions were produced.
+For $Q_6$ we additionally give an ILP formulation whose
 feasible value matches the known exact value $\ex(Q_6,C_4)=132$; we did
 not independently verify the ILP's optimality within a practical
 runtime, and the upper bound itself rests on the combinatorial proof
@@ -343,10 +362,9 @@ of $Q_7$; every call returned \textsc{c4-free}.
 \section{The $Q_7$ Construction}\label{sec:q7}
 %% ============================================================
 
-We report having constructed a $C_4$-free subgraph of $Q_7$ on 304 edges by
-penalty-based simulated annealing (Section~\ref{sec:method}; see that
-section for a caveat about the released code's ability to reproduce
-this process),
+We constructed a $C_4$-free subgraph of $Q_7$ on 304 edges by
+penalty-based simulated annealing (Section~\ref{sec:method}, where the
+production code has since been recovered and verified),
 then certified it by Lemma~\ref{lem:c4}'s algorithm.
 
 \begin{proposition}\label{prop:q7}
@@ -366,9 +384,9 @@ The 304-edge construction has the following properties:
 \end{enumerate}
 \end{proposition}
 
-Through $19\,866$ reported simulated-annealing runs (Section~\ref{sec:landscape};
-see Section~\ref{sec:method} for what is and is not independently
-verifiable about this search history)
+Through $19\,866$ collector trials (Section~\ref{sec:landscape};
+see Section~\ref{sec:method} for the now-verified production code
+underlying this search history)
 we found $19\,866$ $C_4$-free subgraphs of $Q_7$ on 304 edges with
 pairwise distinct edge sets (not quotiented by $\mathrm{Aut}(Q_7)$),
 all sharing the structural properties stated in Proposition~\ref{prop:rigid}.
@@ -377,17 +395,15 @@ all sharing the structural properties stated in Proposition~\ref{prop:rigid}.
 \section{The $Q_8$ Construction}\label{sec:q8}
 %% ============================================================
 
-This section documents the originally announced $Q_8$ witness, reported to
-have been obtained independently of the odd-square subclass by the same
-simulated-annealing method as the $Q_7$ construction of Section~\ref{sec:q7}
-(see Section~\ref{sec:method} for the finding that the released,
-unmodified code cannot be confirmed to reproduce this process). It has since been
+This section documents the originally announced $Q_8$ witness, found by
+a penalty-SA hill-climber distinct from the $Q_7$ construction's
+method (see Section~\ref{sec:method} for the recovered and verified
+\texttt{sa\_q8.py} production code). It has since been
 superseded as the paper's headline lower bound by the 682-edge odd-square
 reconstruction of Section~\ref{sec:oddsquare}; it is retained here as an
-independent structural data point, not as a demonstration that the
-simulated-annealing method as released is capable of finding it.
+independent structural data point.
 
-Simulated annealing is reported to have produced two $C_4$-free subgraphs of $Q_8$ on 680
+Simulated annealing produced the two $C_4$-free subgraphs of $Q_8$ on 680
 edges (both released in \texttt{q8\_edges\_680.jsonl}), each certified by
 exhaustive enumeration of all $1\,792$ four-cycles. We refer to them as
 Solution~A (first line of the file) and Solution~B (second line); the
@@ -677,7 +693,11 @@ increases by exactly $-h(v)>0$. This contradicts maximality of $|E|$, so no such
 This is a corollary of, not an alternative to, Lemma~\ref{lem:switching}:
 the argument uses only that flipping one vertex's spin preserves
 odd-squareness (immediate from the switching correspondence) and counts
-the resulting change in $|E|$ directly.
+the resulting change in $|E|$ directly. Since all $389$ released
+odd-square $Q_7$ solutions attain $g(7)=304$ (Section~\ref{sec:oddsquareaudit}),
+the Lemma's hypothesis applies to every one of them; we independently
+verified $h(v)\ge0$ for all $v\in U$ holds on all $389$, with no
+counterexample, consistent with (and not merely assumed by) the Lemma.
 
 Given Lemmas~\ref{lem:fieldbound} and~\ref{lem:nonneg}, $|E|=(n\cdot2^{n-1}+\sum_{v\in U}h(v))/2$
 is bounded above by relaxing to the integer optimisation problem of
@@ -764,8 +784,11 @@ against MPR95's own text: they report (in their D=9 discussion) that
 ``on a scale where the minimal energy jump is 1'' their D=9 naive
 bound $H/N=-1/2$ corresponds to an integer value of $-384$ (i.e.\ a
 scale factor of $768=384/(1/2)$), and state that on this same scale
-``the improved lower bound at $D=8$ gives $-361$.'' Applying the same
-factor to our value gives $768\times(-0.4696\ldots)=-360.62\ldots
+``the improved lower bound at $D=8$ gives $-361$'' -- note this $768$
+factor is MPR95's own $D{=}9$ comparison scale, not an intrinsic
+$D{=}8$ energy-quantisation unit; they use it purely to compare bound
+values across dimensions on one common integer axis. Applying the same
+factor (as MPR95 themselves do for the $D=8$ figure) to our value gives $768\times(-0.4696\ldots)=-360.62\ldots
 \approx-361$, matching their reported integer to within rounding. Their paper reports
 the $D=8$ attainment in energy units only, without an explicit spin configuration
 or its translation into edge-count terms; we supply that translation
@@ -788,7 +811,7 @@ them independently of~\cite{DPTV79,MPR95}.
 
 \textbf{$Q_7$, $g(7)=304$.} The 304-edge odd-square value coincides with our
 originally announced $Q_7$ lower bound (Theorem~\ref{thm:main}(i)); of the
-$19\,866$ solutions reported found by simulated annealing (Section~\ref{sec:q7}),
+$19\,866$ solutions found by simulated annealing (Section~\ref{sec:q7}),
 389 are themselves odd-square witnesses of $g(7)=304$
 (Section~\ref{sec:structure}), independently confirming reachability of this
 value without reference to~\cite{DPTV79}.
@@ -870,7 +893,7 @@ Sections \ref{sec:q7} and \ref{sec:q8}.
 Parameter & $Q_7$ odd-square & $Q_8$ odd-square\\
 \midrule
 Edges (value of $g(n)$) & 304 & 682\\
-Source & one of 389 reported SA sols. & witness for~\cite{MPR95} bound\\
+Source & one of 389 verified SA sols. & witness for~\cite{MPR95} bound\\
 Non-odd-square comparison witness & n/a (19\,477 exist,~\ref{sec:oddsquareaudit}) & 680 (Solution~B,~\ref{sec:q8})\\
 Improvement over that witness & --- & $+2$\\
 \bottomrule
@@ -1043,46 +1066,145 @@ are likewise on a different footing from the search-process claims below:
 they are computed exhaustively over all
 released solutions, not sampled, so they are recomputable directly
 from the released edge lists alone (though, like the other structural
-statistics noted earlier, not via a bundled analysis script). The quantitative
-claims about the \emph{search process} that
-produced the solutions — ``$19\,866$ independent runs'' and ``$1\,076$ independent
-trials'' at $305$ and at $681$ edges — describe unarchived search history. The
-search program itself, \texttt{c4free\_sa.py}, is released alongside
-this manuscript, but the specific run seeds, logs, and driver
-invocations of the actual production runs that produced the released
-$19\,866$ solutions and the $1\,076$-trial statistics are not supplied.
-These process-level claims should be read as the authors' record of the
-search that was run, not as independently reproducible certificates in
-the same sense as the edge sets. Worse, as detailed in
-Section~\ref{sec:method}'s Diversification discussion below, we found
+statistics noted earlier, not via a bundled analysis script).
+
+\noindent\textbf{Update: the $Q_7$ production code has been recovered
+and verified.} Earlier versions of this manuscript reported the $Q_7$
+provenance question as unresolved, based on the released
+\texttt{c4free\_sa.py} (Section~\ref{sec:c4freesa} below), whose
+\texttt{phase1\_sa} we found cannot progress from a fresh random start
+under its documented parameters. We have since located the actual
+scripts used to produce the $19\,866$ released $Q_7$ solutions:
+\texttt{sa\_search.py} (a conventional multi-move-type penalty SA --
+add, remove, $1$-swap, and kick moves, with a proper temperature-scaled
+Boltzmann acceptance rule rather than a hard violation cap -- used to
+find a single $304$-edge seed solution from scratch) and
+\texttt{sa\_collect304.py} (a remove-and-repair collector: starting
+from an existing valid $304$-edge solution -- either the seed or a
+previously found solution, optionally first transformed by a random
+element of $\mathrm{Aut}(Q_7)$ -- it removes a small number $k$ of
+edges, drawn from $\{1,2,3,4,5,8,12,20\}$ with fixed weights, then
+greedily re-adds edges one at a time, accepting only additions that
+create zero new violating squares, keeping the result if it reaches
+$304$ edges with zero violations and has not been seen before). Unlike
+\texttt{phase1\_sa}, this method never needs to escape a
+far-from-feasible random state: it always starts already at zero
+violations and only removes a small number of edges before repairing,
+so the search stays close to feasible throughout. We verified this
+directly: running the released \texttt{sa\_collect304.py} from its
+released seed solution for $30$ seconds found $1\,987$ new, valid,
+previously-unrecorded $304$-edge solutions. We also verified, by exact
+SHA-256/hash and edge-set comparison of the recovered
+\texttt{solutions\_304.jsonl} against the $19\,866$ released records,
+that all $19\,866$ hashes and all $19\,866$ underlying edge sets match
+exactly, confirming this is genuinely the file that was released, not
+merely a similar-looking dataset. This also fully explains the
+previously undocumented per-record metadata fields
+(Section~\ref{sec:method} above, as reported in earlier manuscript
+versions): \texttt{method} records which of the collector's three
+restart strategies produced that solution (\texttt{auto}: random
+automorphism of a random existing solution; \texttt{repair}: direct
+remove-and-repair of a random existing solution, no automorphism;
+\texttt{auto\_seed}: random automorphism of the original seed); the
+$311$ records lacking a \texttt{method} field and the $8$ carrying a
+\texttt{run} rather than a \texttt{trial} field come from an earlier
+version of the collector script (recovered as
+\texttt{sa\_collect304~(0).py} in the same archive) that logged
+records with only a \texttt{run} counter and no \texttt{method}
+distinction, before the script was revised to its released form;
+\texttt{trial} is the sequential attempt counter within a single
+collector run, and \texttt{elapsed} the wall-clock seconds since that
+run started (consistent with a shell history showing the collector
+was run and re-started under \texttt{nohup} multiple times, explaining
+why \texttt{trial} resets are visible across the released file). We
+release \texttt{sa\_search.py}, \texttt{sa\_collect304.py}, and the
+seed solution alongside this revision as verified, working production
+code for the $Q_7$ results; see Section~\ref{sec:c4freesa} below for
+the separate, distinct \texttt{c4free\_sa.py} whose relationship to
+the $Q_8$ results (and to the $Q_7$ results, before this recovery)
+remains as previously described. The $1\,076$-trial statistic at
+$305$ edges and the analogous $681$-edge search-attempt statistic for
+$Q_8$ are unaffected by
+this recovery and remain unarchived, unresolved provenance claims in
+the sense described below; only the $680$-edge \emph{solutions}
+themselves (not the $681$-edge negative-search statistics) have since
+also been traced to verified code, described next.
+
+\subsection{Update: the \texorpdfstring{$Q_8$}{Q8} 680-edge production code has also been recovered}
+
+We have since also located and verified the actual
+production code for the two released $Q_8$ $680$-edge solutions:
+\texttt{sa\_q8.py}, a penalty-SA hill-climber structurally similar to
+\texttt{c4free\_sa.py}'s Phase-1/Phase-2 design (and sharing its
+per-trial hard violation cap, \texttt{max\_viol}, drawn from
+$[8,35]$) but critically different in one respect: each trial
+restarts not from a fresh random sample but from \texttt{best\_valid\_sol},
+the current best \emph{zero-violation} solution (initially an
+edge-greedy construction, then whatever the algorithm has since
+improved upon), loaded from \texttt{q8\_best.json}. Because every
+restart point already has zero violations, the freezing failure mode
+of \texttt{c4free\_sa.py} does not arise: proposals only need to stay
+within \texttt{max\_viol} of an already-feasible state, not close an
+initial gap of $100$+ violations. The recovered directory contains a
+progression of intermediate saved solutions ($584$, $662$, $666$,
+$669$, $670$, $672$--$680$ edges), consistent with gradual
+hill-climbing improvement over many trials.
+We verified two things directly: first, that the recovered
+\texttt{q8\_edges\_680.txt} and \texttt{q8\_best.json} match the
+released Solution~A and Solution~B (Section~\ref{sec:q8}) exactly by
+edge set; second, by direct execution -- resuming from a saved
+$670$-edge intermediate state for $90$ seconds -- that the code makes
+genuine progress, reducing the violation count at the $675$-edge
+target from $22$ to $8$ within a single trial. We release
+\texttt{sa\_q8.py} alongside this revision. The $1\,076$-trial
+statistic at $681$ edges (Section~\ref{sec:q8}) is a record of
+attempts to exceed $680$, not of producing the $680$-edge solutions
+themselves; we did not recover a script or log specifically
+substantiating that count, so it remains an unarchived, author-recorded
+claim in the same sense as before.
+
+\subsection{The released \texttt{c4free\_sa.py} and its known defect}\label{sec:c4freesa}
+
+The quantitative
+claim about the \emph{$Q_8$ search process} — ``$1\,076$ independent
+trials'' at $681$ edges — remains an unarchived record, as noted just
+above; before the two recoveries above, this described the $Q_7$ and
+the $Q_8$ $680$-edge solution claims as well. The
+search program \texttt{c4free\_sa.py}, distinct from both recovered
+production-code pairs above,
+is released alongside
+this manuscript as originally reported, but the specific run seeds, logs, and driver
+invocations that would substantiate the $681$-edge, $1\,076$-trial statistic are not supplied,
+and we no longer believe \texttt{c4free\_sa.py} as released is what
+produced either the $Q_7$ or the $Q_8$ solutions (see the recoveries
+above for what we now believe did).
+This process-level claim should be read as the authors' record of the
+search that was run, not as an independently reproducible certificate in
+the same sense as the edge sets. Worse, as detailed
+below, we found
 on direct execution that the released, unmodified
 \texttt{c4free\_sa.py} frequently cannot progress at all from a fresh
 random start under the documented parameter ranges, for a structural
 reason (not merely slow convergence); we could not identify parameters
 under which it reaches the target edge count with zero violations. A
-reader wishing to verify the exact process-level statistics should
-therefore not assume rerunning the released code as documented will
+reader wishing to verify the exact $681$-edge process-level statistics should
+therefore not assume rerunning \texttt{c4free\_sa.py} as documented will
 reproduce them, or indeed complete a single trial successfully; see
-Section~\ref{sec:method} for the specifics and for what remains an
-open provenance question about the actual search method used.
+below for the specifics.
 
 Beyond the aggregate counts, each released $Q_7$ record itself carries
-undocumented provenance fields (\texttt{method}, \texttt{run},
-\texttt{trial}, \texttt{hash}, \texttt{elapsed}) that we did not
-explain in earlier versions of this manuscript. For completeness: of
+the provenance fields (\texttt{method}, \texttt{run},
+\texttt{trial}, \texttt{hash}, \texttt{elapsed}) explained above. of
 the $19\,866$ records, \texttt{method} is \texttt{auto} for $18\,206$,
 \texttt{auto\_seed} for $1\,347$, \texttt{repair} for $2$, and absent
 for $311$; a \texttt{run} field is present on only $8$ records (one
 with \texttt{run=0}, seven with \texttt{run=2}); and $19\,858$ records
 carry a \texttt{trial} field with values up to at least seven figures.
-We do not know what distinction \texttt{auto} vs.\ \texttt{auto\_seed}
-vs.\ \texttt{repair} marks, what unit of independence \texttt{run} or
-\texttt{trial} refers to, or why only $8$ records carry a \texttt{run}
-field, since this was not documented at the time of the original
-search and we do not want to guess retrospectively. These fields
-should therefore be treated as additional unexplained search-history
-metadata, in the same category as the process-level claims discussed
-above, not as a resolved provenance record.
+These fields are now explained by the recovered
+\texttt{sa\_search.py}/\texttt{sa\_collect304.py} pipeline above: this
+is a fully resolved provenance record for $Q_7$, not merely
+unexplained metadata (contrast with the $Q_8$ situation, which remains
+open).
 
 \subsection{Two-phase simulated annealing}
 
