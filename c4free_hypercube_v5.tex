@@ -514,9 +514,14 @@ Vannimenus~\cite{DPTV79} and, for $D=8$, by Marinari, Parisi, and
 Ritort~\cite{MPR95}: the ground-state energy is (up to an affine rescaling)
 the number of negative edges, $|E(Q_n)|-|E|$. In the language of signed
 graphs, $|E(Q_n)|-g(n)$ is the \emph{frustration index} of the fully
-frustrated signature on $Q_n$; see also~\cite{LNSW26} for a recent treatment
-of this quantity in the context of Huang's proof of the sensitivity
-conjecture. This sign convention matches the one used by the reconstruction
+frustrated signature on $Q_n$. Laplante, Naserasr, Sunny, and
+Wang~\cite{LNSW26} study this frustration index directly (in the
+context of Huang's proof of the sensitivity conjecture) and explicitly
+establish a connection between it and Erd\H{o}s's question on the
+largest $C_4$-free subgraph of the hypercube, giving lower and upper
+bounds on the frustration index of the fully frustrated signature that
+match when $n$ is a power of $4$; our $g(6),g(7),g(8)$ results above
+sharpen this connection to exact values at $n=6,7,8$ specifically. This sign convention matches the one used by the reconstruction
 script \texttt{generate\_q8\_682.py} (Section~\ref{sec:oddsquareverify}),
 where $E$ is exactly the set of edges with $J(x,\mathrm{dim})\,s(x)s(y)=+1$;
 for a vertex $v$ of degree $\deg_E(v)$ in $E$, we call
@@ -590,7 +595,7 @@ non-odd-square $Q_8$ Solution~B of Section~\ref{sec:q8} ($1016\ne1024$)
 is therefore not explained by odd-squareness as such: Solution~B has an
 asymmetric degree distribution between $U$ and its complement
 ($\{4^3,5^{82},6^{43}\}$ vs.\ $\{4^4,5^{80},6^{44}\}$), whereas
-Solution~A, both the $Q_7$ solutions, and the $682$-edge witness all
+Solution~A, all $19\,866$ $Q_7$ solutions, and the $682$-edge witness all
 have symmetric $U$/complement degree distributions. This symmetry is
 not itself implied by odd-squareness, however: a small odd-square
 counterexample in $Q_3$ (vertices $0,\ldots,7$,
@@ -924,7 +929,7 @@ $\{48,48,48,40,40,40,40\}$ & 101\\
 $\{46,46,46,42,42,42,40\}$ & 78\\
 \midrule
 Total odd-square & 389\\
-Non-odd-square (remaining 16 profile types) & 19\,477\\
+Total non-odd-square & 19\,477\\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -1158,7 +1163,12 @@ principle, verify on the dual side.
     $19\,866$ known $304$-edge $Q_7$ solutions are odd-square.) Does
     $g(n)=\ex(Q_n,C_4)$ continue to hold for $n=9,10,\ldots$ (once
     $\ex(Q_n,C_4)$ is itself determined), or does the gap
-    $\ex(Q_n,C_4)-g(n)$ become positive at some $n$?
+    $\ex(Q_n,C_4)-g(n)$ become positive at some $n$? Laplante et
+    al.~\cite{LNSW26} give general lower and upper bounds on the
+    frustration index $|E(Q_n)|-g(n)$ that match only when $n$ is a
+    power of $4$; whether $g(n)=\ex(Q_n,C_4)$ persists beyond $n=8$ is,
+    in their language, a question about when this frustration-index
+    gap and the $C_4$-free extremal gap coincide.
 \end{enumerate}
 
 \section*{Acknowledgements}
