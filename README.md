@@ -67,6 +67,21 @@ sha256sum -c ORIGINAL_DATA_SHA256SUMS.txt         # Linux
 sha256sum -c ODDSQUARE_BRIDGE_SHA256SUMS.txt      # odd-square material
 ```
 
+### Dependencies for the search/solver scripts
+
+`verify.py`, `generate_q8_682.py`, and `audit_q7_odd_square.py` use only
+the Python standard library, as noted above. The recovered
+production-history scripts, by contrast, need third-party packages not
+declared anywhere else in this repository (no `requirements.txt` is
+provided; install as needed):
+
+- `source.py`, `source_72h.py` (not bundled): `highspy` (tested with
+  1.15.1)
+- `source_cbc_origin.py`: `pulp`, `networkx`, `numpy`
+- `sa_search.py`, `sa_collect304.py`, `sa_q8.py`, `c4free_sa.py`:
+  standard library only (`random`, `json`, `time`, `math`, `os`,
+  `hashlib`)
+
 ## Paper and code
 
 | File | Description |

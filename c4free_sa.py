@@ -18,8 +18,11 @@ Diversification:
     Before each trial, apply a random element of Aut(Q_n)
     (random bit permutation + random bit flip) to the current best.
 
-    KNOWN BUG (documented, not fixed, to preserve the exact code that
-    produced the released solutions): the automorphism-transformed
+    KNOWN BUG (documented, not fixed, to preserve this script exactly
+    as it was released -- see the accompanying manuscript's
+    "Update: the released c4free_sa.py and its known defect" section
+    for why this script is now understood to postdate, and not to
+    explain the provenance of, the released Q7/Q8 solutions): the automorphism-transformed
     "start" computed in search() below is never passed into
     phase1_sa(), which always initialises from a fresh
     rng.sample(...) draw instead. This diversification mechanism is
@@ -28,7 +31,9 @@ Diversification:
     does versus what this docstring originally (incorrectly) claimed.
 
     SECOND, MORE SERIOUS KNOWN BUG (documented, not fixed, same
-    reason): phase1_sa's per-step proposal is rejected outright
+    reason -- preserving this script exactly as released, now known
+    to be a retrospective addition rather than the original production
+    code): phase1_sa's per-step proposal is rejected outright
     whenever it would exceed viol_cap (drawn per trial from [6,40]).
     Since a single-edge toggle changes V by at most n-1, if the fresh
     random start's V exceeds viol_cap+(n-1) -- which we found to be

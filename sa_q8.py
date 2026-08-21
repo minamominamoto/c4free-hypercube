@@ -5,6 +5,12 @@ Q8: 256頂点, 1024辺, C4数=1792
 Brass公式下限 (n=8, 0.9√n版):
   f(8) >= 1/2 * (8 + 0.9*√8) * 2^7 ≈ 675辺
 
+NOTE (added retrospectively): Brass's 0.9*sqrt(n) bound is only proven
+for n>=9; the n=8 value above is an unproven extrapolation, not a
+proven lower bound, per the accompanying manuscript's discussion of
+this same constant. Preserved as originally run, comment unchanged
+elsewhere in this file for provenance.
+
 目標: 675辺超を確認し、さらに上を狙う
 
 戦略:

@@ -70,6 +70,13 @@ def delta_remove(e, edge_set):
 # ==============================
 # 初期解ロード
 # ==============================
+# NOTE (added retrospectively): this load is unconditional -- no
+# try/except -- so running this script with no selected_edges_best.json
+# present in the working directory raises FileNotFoundError
+# immediately. There is no random/greedy fallback: this script
+# searches for improvements starting from an existing solution, not a
+# from-scratch discovery mechanism. See the accompanying manuscript's
+# Computational Method section for what this means for provenance.
 best_file = 'selected_edges_best.json'
 with open(best_file) as f:
     data = json.load(f)

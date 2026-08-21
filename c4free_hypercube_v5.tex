@@ -712,8 +712,9 @@ Solution~A, all $19\,866$ $Q_7$ solutions, and the $682$-edge witness all
 have symmetric $U$/complement degree distributions. This symmetry is
 not itself implied by odd-squareness, however: a small odd-square
 counterexample in $Q_3$ (vertices $0,\ldots,7$,
-$E=\{(0,2),(2,6),(3,7),(4,5),(4,6),(6,7)\}$, whose six squares meet $E$
-in $1,1,3,1,3,3$ edges) has $U$-degree multiset $\{1,1,1,3\}$ against
+$E=\{(0,2),(2,6),(3,7),(4,5),(4,6),(6,7)\}$, whose six squares meet $E$,
+in the direction-pair-then-base enumeration order of Lemma~\ref{lem:c4},
+in $1,3,1,3,3,1$ edges) has $U$-degree multiset $\{1,1,1,3\}$ against
 $\{0,2,2,2\}$ on the complement, while still satisfying
 $\sum_{v\in U}h(v)^2=\sum_{v\in U^c}h(v)^2=12=3\cdot2^2$ on each side
 separately. We do not characterise the identity's full
@@ -745,20 +746,32 @@ the Lemma's hypothesis applies to every one of them; we independently
 verified $h(v)\ge0$ for all $v\in U$ holds on all $389$, with no
 counterexample, consistent with (and not merely assumed by) the Lemma.
 
-Given Lemmas~\ref{lem:fieldbound} and~\ref{lem:nonneg}, $|E|=(n\cdot2^{n-1}+\sum_{v\in U}h(v))/2$
+Given Lemma~\ref{lem:fieldbound} alone, $|E|=(n\cdot2^{n-1}+\sum_{v\in U}h(v))/2$
 is bounded above by relaxing to the integer optimisation problem of
 maximising $\sum_{v\in U}h(v)$ subject to the \emph{fixed}
 sum of squares $\sum_{v\in U}h(v)^2=n\cdot2^{n-1}$ over the $2^{n-1}$
-nonnegative integers $h(v)$ of fixed parity (we use only that every
+integers $h(v)$ of fixed parity (we use only that every
 realisable $h$-vector satisfies these constraints, not the converse
 that every integer vector satisfying them is realisable as an
 odd-square signature; the bound obtained is therefore an upper bound on
-$|E|$, tight whenever a matching witness is exhibited). Both cases
+$|E|$, tight whenever a matching witness is exhibited). The two-point
+convexity trick below holds for \emph{every} integer $h$ of the
+correct parity, negative values included -- the parabola
+$(h-a)(h-b)$ (roots $a,b$ two apart) is negative only strictly between
+its roots, an open interval containing no integer of the same parity
+as $a,b$ -- so Lemma~\ref{lem:nonneg} is \emph{not} needed for the
+upper bound itself; its role is instead to confirm, for configurations
+that actually attain the maximum, that $h(v)\ge0$ everywhere (matching
+what we verified computationally on all $389$ odd-square witnesses
+above) and hence that equality in the two-point inequality is achieved
+by $h(v)\in\{1,3\}$ (for $n=7$) or $\{2,4\}$ (for $n=8$) specifically,
+not e.g.\ $\{-1,3\}$ or other parity-matched pairs that would also
+satisfy the pointwise inequality. Both cases
 $n=7,8$ admit a
 short, fully elementary and self-contained upper bound on
 $\sum_{v\in U}h(v)$, without appeal to DPTV's Table~I:
 
-\textbf{$n=7$ (odd $h\ge0$).} For every odd integer $h\ge0$,
+\textbf{$n=7$.} For every odd integer $h$ (any sign),
 $(h-1)(h-3)\ge0$, i.e.\ $h^2\ge4h-3$, with equality exactly at $h\in\{1,3\}$.
 Summing over $v\in U$ ($|U|=64$) and using
 $\sum_{v}h(v)^2=448$:
@@ -773,9 +786,12 @@ and does not by itself exhibit an odd-square witness; what is needed is
 an explicit odd-square set achieving it. The odd-square audit
 (Section~\ref{sec:oddsquareaudit}) supplies $389$ such witnesses among
 the released $304$-edge $Q_7$ solutions; the first in file order is
-global index $34$ (\texttt{q7\_edges\_304.jsonl.part1}, line $35$,
-SHA-256 \texttt{2f2649ae9c4d1c901ba5a88f9825689de3cc19de1b742d86f5d66d\allowbreak
-bfd3aebec7}), with square-intersection histogram $\{1{:}96,\,3{:}576\}$,
+global index $34$ (\texttt{q7\_edges\_304.jsonl.part1}, line $35$; SHA-256
+below is of the canonicalised \texttt{edges} array -- matching
+\texttt{q7\_odd\_square\_389.csv}'s \texttt{solution\_sha256} column,
+not the JSONL line or any \texttt{hash} field:
+\texttt{2f2649ae9c4d1c901ba5a88f9825689de3cc19\allowbreak
+de1b742d86f5d66dbfd3aebec7}), with square-intersection histogram $\{1{:}96,\,3{:}576\}$,
 confirming it is genuinely odd-square and attains
 $\sum_{v\in U}h(v)=160$. (The file's very first record, by contrast,
 has histogram $\{1{:}36,\,2{:}120,\,3{:}516\}$ and is \emph{not}
@@ -784,7 +800,7 @@ because that identity holds regardless of odd-squareness.) This bound is
 therefore tight and
 $g(7)=(448+160)/2=304$ is established without external input.
 
-\textbf{$n=8$ (even $h\ge0$).} For every even integer $h\ge0$,
+\textbf{$n=8$.} For every even integer $h$ (any sign),
 $(h-2)(h-4)\ge0$, i.e.\ $h^2\ge6h-8$, with equality exactly at
 $h\in\{2,4\}$. Summing over $v\in U$ ($|U|=128$) and using
 $\sum_v h(v)^2=1024$:
@@ -1212,8 +1228,9 @@ duration with the same solver-internal randomisation), but the
 mechanism at each step is now either independently executed by us, or directly documented by a
 recovered log or chat transcript, rather than merely claimed, closing the previously-unarchived
 gap about the search method (though not a bit-for-bit
-replay of any specific historical run). Unlike
-\texttt{phase1\_sa}, this method never needs to escape a
+replay of any specific historical run). Turning now to
+\texttt{sa\_collect304.py}: unlike
+\texttt{phase1\_sa}, this collector never needs to escape a
 far-from-feasible random state: it always starts already at zero
 violations and only removes a small number of edges before repairing,
 so the search stays close to feasible throughout. We verified this
@@ -1234,7 +1251,13 @@ to each of the $19\,866$ released
 \texttt{q7\_edges\_304.jsonl.*} edge sets exactly reproduces the
 \texttt{hash} field already stored in that same record, for all
 $19\,866$ with zero mismatches -- without needing the recovered
-\texttt{solutions\_304.jsonl} at all. We must correct our own earlier
+\texttt{solutions\_304.jsonl} at all. (This $12$-hex-digit MD5
+\texttt{hash} field is unrelated to the full SHA-256
+\texttt{solution\_sha256} column reported by
+\texttt{audit\_q7\_odd\_square.py} and used elsewhere in this paper,
+e.g.\ for the global-index-$34$ witness above; the two are different
+hash schemes over the same underlying edge sets, not to be confused
+with each other.) We must correct our own earlier
 description of what this function does, however: we had described it
 as coordinate relabelling by descending per-direction edge count,
 followed by taking the lexicographically smallest of the $2^n$
