@@ -185,10 +185,12 @@ restarts each trial from the current best \emph{valid} (zero-violation)
 solution rather than from a fresh random sample, progressively
 improving it (initial greedy construction $\to$ intermediate saved
 states at $584,662,\ldots,679$ edges $\to$ $680$). We confirmed the two
-released files this recovered code produced, \texttt{q8\_edges\_680.txt}
-and \texttt{q8\_best.json}, match Solutions~A and~B respectively
+files this recovered code produced -- named \texttt{q8\_edges\_680.txt}
+and \texttt{q8\_best.json} in the recovered archive, released here as
+\texttt{q8\_solution\_a.txt} and \texttt{q8\_solution\_b.json} -- match Solutions~A and~B respectively
 exactly by edge set, and we confirmed the code makes genuine
-progress on direct execution: run once for $90$ seconds from a saved
+progress on direct execution: run once under an external $90$-second
+timeout from a saved
 $670$-edge intermediate state, it reduced the violation count at the
 $675$-edge target from $22$ to $8$. \texttt{sa\_q8.py} sets no random
 seed, so this specific numeric trajectory is a one-time observation,
@@ -397,7 +399,9 @@ production code has since been recovered and verified),
 then certified it by Lemma~\ref{lem:c4}'s algorithm.
 
 \begin{proposition}\label{prop:q7}
-The 304-edge construction has the following properties:
+The specific $304$-edge seed construction just described (the first
+solution found, not a generic member of the later $19\,866$-solution
+ensemble of Section~\ref{sec:structure}) has the following properties:
 \begin{enumerate}[label=(\roman*)]
   \item Degree sequence: 32 vertices of degree 4 and 96 of degree 5
     (degree sum $608=2\cdot304$).
@@ -687,7 +691,19 @@ odd-square condition), so it is sufficient for the identity to hold; it
 is not necessary. Testing against all $19\,866$ published $304$-edge
 $Q_7$ solutions -- odd-square and non-odd-square alike -- shows every
 one of them satisfies $\sum_{v\in U}h(v)^2=448$, including the
-$19\,477$ that are not odd-square. The identity's failure for the
+$19\,477$ that are not odd-square. This is explained, for these
+particular solutions, by a simpler fact that does not need
+odd-squareness either: every one of the $19\,866$ has all degrees in
+$\{4,5\}$ (Proposition~\ref{prop:rigid}), and since $Q_7$ is bipartite,
+$\sum_{v\in U}\deg(v)=|E|=304$ exactly (every edge has exactly one
+endpoint in $U$); writing $a,b$ for the number of degree-$4$,
+degree-$5$ vertices in $U$ ($a+b=64$), $4a+5b=304$ forces $b=48,a=16$
+regardless of which specific $304$-edge solution is chosen, so
+$h(v)=2\deg(v)-7\in\{1,3\}$ takes value $1$ on exactly $16$ vertices of
+$U$ and $3$ on the other $48$, giving
+$\sum_{v\in U}h(v)^2=16\cdot1^2+48\cdot3^2=16+432=448$ automatically.
+We verified the $U$-side split is indeed exactly $\{4^{16},5^{48}\}$
+for all $19\,866$, with no exceptions. The identity's failure for the
 non-odd-square $Q_8$ Solution~B of Section~\ref{sec:q8} ($1016\ne1024$)
 is therefore not explained by odd-squareness as such: Solution~B has an
 asymmetric degree distribution between $U$ and its complement
@@ -1201,9 +1217,6 @@ replay of any specific historical run). Unlike
 far-from-feasible random state: it always starts already at zero
 violations and only removes a small number of edges before repairing,
 so the search stays close to feasible throughout. We verified this
-far-from-feasible random state: it always starts already at zero
-violations and only removes a small number of edges before repairing,
-so the search stays close to feasible throughout. We verified this
 directly: the released script hardcodes \texttt{RUNTIME=36*3600} with
 no seed and no command-line override, so we edited the runtime down
 to $30$ seconds for this test; running it from its
@@ -1338,14 +1351,23 @@ edge set (we release these two files as
 \texttt{q8\_solution\_a.txt}/\texttt{q8\_solution\_b.json} alongside
 this revision, so a reader can repeat this edge-set comparison
 directly); second, by direct execution -- resuming from the $670$-edge
-intermediate state for $90$ seconds -- that the code makes
+intermediate state under an external $90$-second wall-clock cutoff
+(\texttt{timeout 90 python3 sa\_q8.py}, not the script's own
+\texttt{RUNTIME} variable) -- that the code makes
 genuine progress, reducing the violation count at the $675$-edge
-target from $22$ to $8$ within a single trial. We release
-this $670$-edge checkpoint as \texttt{q8\_checkpoint\_670.json}
-(renamed to \texttt{q8\_best.json} to match \texttt{sa\_q8.py}'s
-expected filename) so a reader can repeat this second test starting
-from the same point we did; \texttt{sa\_q8.py} sets no random seed,
-however, so a rerun will show the same qualitative
+target from $22$ to $8$ within that window. We release
+this $670$-edge checkpoint as \texttt{q8\_checkpoint\_670.json}; to
+repeat this second test, copy it to \texttt{q8\_best.json} in the
+same directory as \texttt{sa\_q8.py} before running (the script only
+autoloads a file named exactly \texttt{q8\_best.json}), and use an
+external timeout as above rather than editing the internal
+\texttt{RUNTIME} variable: \texttt{RUNTIME} is checked only once per
+outer trial, while each trial's inner Phase-1 loop runs a fixed
+$2$--$12$ million steps with no time check inside it, so setting
+\texttt{RUNTIME} to a small value does not reliably stop execution
+near that value -- only an external, process-level timeout does.
+\texttt{sa\_q8.py} sets no random seed,
+so a rerun will show the same qualitative
 monotonic-improvement behaviour (confirming the code is not frozen,
 unlike \texttt{phase1\_sa}) but not necessarily the same specific
 violation-count trajectory or the exact $22\to8$ figures -- this is a
@@ -1410,7 +1432,7 @@ below for the specifics.
 
 Beyond the aggregate counts, each released $Q_7$ record itself carries
 the provenance fields (\texttt{method}, \texttt{run},
-\texttt{trial}, \texttt{hash}, \texttt{elapsed}) explained above. of
+\texttt{trial}, \texttt{hash}, \texttt{elapsed}) explained above. Of
 the $19\,866$ records, \texttt{method} is \texttt{auto} for $18\,206$,
 \texttt{auto\_seed} for $1\,347$, \texttt{repair} for $2$, and absent
 for $311$; a \texttt{run} field is present on only $8$ records (one
