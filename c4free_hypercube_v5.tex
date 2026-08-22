@@ -315,7 +315,7 @@ Section~\ref{sec:q8}).
 
 Within the \emph{odd-square} subclass --- edge sets meeting every square in
 an odd number of edges --- the extremal value $g(n)$ is determined exactly
-for $n=7,8$:
+for $n=6,7,8$:
 
 \begin{theorem}\label{thm:oddsquare}
 $g(6)=132$, $g(7)=304$, and $g(8)=682$.
@@ -598,15 +598,16 @@ symmetric difference) to $\{\pm1\}$, since edges shared by two cycles cancel
 in their symmetric difference and likewise cancel in the product. The
 squares of $Q_n$ generate its cycle space (a standard fact for hypercubes:
 every cycle is a symmetric difference of squares; we independently
-verified this by direct $\mathrm{GF}(2)$ rank computation for
-$n=3,4,5,6$ -- cycle space dimension $E-V+1$ equal to the rank of the
-square vectors in every case -- and note $n=7$'s cycle space has
-dimension $321$, also matched by the squares' rank), so this homomorphism is
+verified this by direct $\mathrm{GF}(2)$ rank computation for every
+$n$ used in this paper, $n=3,\ldots,8$ -- cycle space dimension
+$E-V+1$ equal to the rank of the
+square vectors in every case, including $n=7$'s dimension $321$ and
+$n=8$'s dimension $769$), so this homomorphism is
 determined by its values on the squares; since it is $+1$ on every square,
 it is $+1$ on every cycle. A signature with product $+1$ on every cycle of
 a connected graph is a \emph{coboundary}: $\tau(x,y)=t(x)t(y)$ for some
-$t:V\to\{\pm1\}$ (the classical balance theorem for signed graphs, e.g.\
-via Harary's theorem). Solving for $\sigma_2$ gives the claim.
+$t:V\to\{\pm1\}$ (the classical balance theorem for signed graphs,
+Harary~\cite{Har53}). Solving for $\sigma_2$ gives the claim.
 \end{proof}
 
 Lemma~\ref{lem:switching} says any two odd-square signatures are related by
@@ -689,8 +690,14 @@ together with the independently proved exact value from~\cite{HN94}, not
 on our own machine verification of the specific bond configuration.
 
 \begin{lemma}[Self-contained bound for $n=7,8$]\label{lem:fieldbound}
-For any odd-square edge set $E$ in $Q_n$, writing $U$ for one part of
-the bipartition ($|U|=2^{n-1}$) and $h(v)=2\deg_E(v)-n$ as before, every
+For any odd-square edge set $E$ in $Q_n$, writing $U=\{v\in\{0,1\}^n:
+v \text{ has an even number of } 1\text{-bits}\}$ for the
+even-parity part of
+the bipartition of $Q_n$ ($|U|=2^{n-1}$; the argument below is
+symmetric in $U$ and its complement, so this choice is only for
+concreteness and all numerical values reported for $U$ throughout this
+paper, e.g.\ Proposition~\ref{prop:q8oddsquare}'s $h$-distribution,
+use this same convention) and $h(v)=2\deg_E(v)-n$ as before, every
 $h(v)$ with $v\in U$ is an integer of the same parity as $n$, and
 \[
 \sum_{v\in U}h(v)^2=n\cdot2^{n-1}.
@@ -845,14 +852,24 @@ $\sum_v h(v)^2=1024$:
 \quad\text{so}\quad
 \sum_{v\in U}h(v)\le\frac{1024+1024}{6}=341.\overline{3}.
 \]
-Since $\sum_{v\in U}h(v)$ is a sum of even integers it is itself even, so
+Since $h(v)=2\deg_E(v)-n=2\deg_E(v)-8$ is twice an integer minus an
+even number, each $h(v)$ is itself even, so $\sum_{v\in U}h(v)$ is a
+sum of even integers and is itself even, so
 $\sum_{v\in U}h(v)\le340$. The released $682$-edge witness attains
 $\sum_{v\in U}h(v)=340$ exactly, with $h$-distribution on $U$ equal to
 $\{0{:}1,\,2{:}84,\,4{:}43\}$ (independently recomputed from the released
-edge list); this three-value distribution is not two-valued, consistent
-with the equality cases $h\in\{2,4\}$ of the inequality above together
-with the single $h=0$ vertex, whose contribution the bound already
-prices in without requiring it to vanish. This bound is therefore also
+edge list). To be precise about what ``tight'' means here: the bound
+$\sum h\le340$ is a bound on the \emph{sum}, established by summing
+the pointwise inequality $(h-2)(h-4)\ge0$ over all $128$ vertices of
+$U$; it does not require pointwise equality $(h-2)(h-4)=0$ at every
+individual vertex, only that the sum of all $128$ pointwise excesses
+equals the total slack between $1024$ and $6\cdot340-8\cdot128=2032-1024=1016$,
+i.e.\ exactly $8$. The single $h=0$ vertex contributes
+$(0-2)(0-4)=8$ of pointwise excess by itself, while every $h=2$ or
+$h=4$ vertex contributes $0$; the $128$ excesses therefore sum to
+exactly $8$, matching the total, so the sum bound $\sum h\le340$ is
+attained exactly even though one vertex is not at either of the
+pointwise-equality values $\{2,4\}$. This bound is therefore also
 tight, giving $g(8)=(1024+340)/2=682$ without external input.
 
 Both upper bounds $g(7)\le304$ and $g(8)\le682$ are thus established
@@ -1185,14 +1202,14 @@ from the released edge lists alone. We release
 \texttt{analyze\_q7\_structure.py} alongside this revision, which
 recomputes this section's degree-sequence, dimension-profile,
 spectral-radius-range, exhaustive Hamming-distance, and Type-$18$
-automorphism-existence claims directly from
-\texttt{q7\_edges\_304.jsonl.part1--3} in about two minutes; running it
-reproduces every number reported above and in
-Section~\ref{sec:structure} exactly. (It confirms nontrivial-automorphism
-existence for all $101$ Type-$18$ solutions but does not itself
-determine automorphism order; the $46/101$ order-$3$ figure elsewhere
-in this paper was established by the more detailed check described
-there, not by this script alone.)
+nontrivial-automorphism-existence claims directly from
+\texttt{q7\_edges\_304.jsonl.part1--3} in about three minutes (peak
+memory approximately $100$MB); running it
+reproduces all of those specific numbers exactly. It does not
+determine automorphism \emph{order}: the $46/101$ order-$3$ figure
+elsewhere in this paper was established by a separate, more detailed
+check (verifying $\sigma^3=\mathrm{id}\ne\sigma,\sigma^2$ directly for
+each automorphism found), not included in this script.
 
 \noindent\textbf{Update: the $Q_7$ production code has been recovered
 and verified, with one important caveat.} Earlier versions of this manuscript reported the $Q_7$
@@ -1743,15 +1760,13 @@ solve of the ILP.
 
 We independently re-solved \texttt{q6\_ilp.mps} with HiGHS~1.15.1
 (Python bindings via \texttt{highspy}; default settings, single thread,
-single-threaded x86\_64 Linux VM, Intel Xeon @ 2.10GHz, 4GB RAM;
-invocation: \texttt{Highs().readModel(...)} then \texttt{run()} with
-\texttt{time\_limit} set to 60 and 260 seconds respectively). A
+single-threaded x86\_64 Linux VM, Intel Xeon @ 2.10GHz, 4GB RAM). A
 feasible solution matching the released 132-edge construction was
 found quickly, but the solver did not close the optimality gap within
-several minutes: after 60s the gap was 6.82\% (dual bound $-141$), and
-after 260s it was 6.06\% (dual bound $-140$), against the primal bound
-of $-132$ throughout. As these figures are implementation- and
-machine-dependent, they should be read as evidence that the gap does
+several minutes under these default settings (a several-percent gap,
+dual bound not yet at the $-132$ primal value).
+As this figure is implementation- and
+machine-dependent, it should be read as evidence that the gap does
 not close quickly under a generic default-settings solve, not as a
 precise benchmark. This is
 consistent with the large automorphism group of $Q_6$
@@ -1885,6 +1900,8 @@ arXiv:1201.3587, 2012.
 \bibitem{EMR92} M.\,R.~Emamy-K., P.~Guan, and P.\,I.~Rivera-Vega, On the
   characterization of the maximum squareless subgraphs of the 5-cube,
   \textit{Congr.\ Numer.}\ \textbf{88} (1992), 97--109.
+\bibitem{Har53} F.~Harary, On the notion of balance of a signed graph,
+  \textit{Michigan Math.\ J.}\ \textbf{2} (1953), 143--146.
 \bibitem{Erd84} P.~Erd\H{o}s, On some problems in graph theory, combinatorial
   analysis and combinatorial number theory, in: \textit{Graph Theory and
   Combinatorics} (B.~Bollob\'as, ed.), Academic Press, 1984, pp.~1--17.

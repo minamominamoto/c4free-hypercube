@@ -158,7 +158,8 @@ def main(paths):
     max_dist = -1
     dist_hist = np.zeros(2 * 304 + 2, dtype=np.int64)
 
-    CHUNK = 500
+    CHUNK = 50  # keeps peak memory to roughly 100MB; see README for the
+                # memory/CHUNK-size tradeoff if you increase this
     for start in range(0, n_sols, CHUNK):
         end = min(start + CHUNK, n_sols)
         block = bits[start:end]
