@@ -21,7 +21,10 @@ Q8 result — see "What changed" below.
 Within the **odd-square subclass** (edge sets meeting every 4-cycle an odd
 number of times, equivalent to fully frustrated signed hypercubes), the
 paper proves the subclass value g(n) exactly: **g(6)=132, g(7)=304,
-g(8)=682**. This does not resolve ex(Q7,C4) or ex(Q8,C4) themselves, which
+g(8)=682**. All three are self-contained here: each upper bound follows
+from the paper's field-bound lemma plus an elementary quantisation
+argument, and each lower bound has an explicit odd-square edge list in
+this repository, machine-checked by `verify.py`. This does not resolve ex(Q7,C4) or ex(Q8,C4) themselves, which
 remain open — see the paper's Open Problems.
 
 ## What changed from the original (v1–v4) submission
@@ -39,6 +42,10 @@ Marinari–Parisi–Ritort 1995). This led to:
 - An audit of the original 19,866 Q7 solutions: only 389 of them are
   odd-square; the rest are not, so the odd-square construction does not
   explain the bulk of the structural classification.
+- A Q6 odd-square witness (`q6_odd_square_132.json`) and an exact
+  solution of the field-bound integer programme, which together remove
+  the paper's earlier reliance on Harborth–Nienborg and on DPTV79's
+  unreconstructed D=6 configuration for the value g(6)=132.
 
 ## Reproducibility: one command
 
@@ -52,9 +59,10 @@ python3 verify.py
 `verify.py` reads each solution, checks that every edge is a valid Q_n edge
 with no loops or duplicates and exactly the claimed edge count, certifies
 C4-freeness by **exhaustively enumerating all four-cycles** of Q_n, and
-(for the Q8 odd-square witness) additionally checks the stronger odd-square
-condition (every square has exactly 1 or 3 edges, not merely not-4). It
-prints the SHA-256 of each data file and exits 0 iff every check passes.
+(for the Q6 and Q8 odd-square witnesses) additionally checks the stronger
+odd-square condition (every square has exactly 1 or 3 edges, not merely
+not-4). It prints the SHA-256 of each data file and exits 0 iff every
+check passes.
 Four-cycles enumerated per solution ( C(n,2) · 2^(n-2) ): Q6 = 240,
 Q7 = 672 (for all 19,866 solutions), Q8 = 1,792.
 
@@ -69,8 +77,9 @@ sha256sum -c ODDSQUARE_BRIDGE_SHA256SUMS.txt      # odd-square material
 
 ### Dependencies for the search/solver scripts
 
-`verify.py`, `generate_q8_682.py`, and `audit_q7_odd_square.py` use only
-the Python standard library, as noted above. The recovered
+`verify.py`, `generate_q6_132.py`, `search_q6.py`, `generate_q8_682.py`,
+`audit_q7_odd_square.py`, and `solve_field_ip.py` use only the Python
+standard library, as noted above. The recovered
 production-history scripts, by contrast, need third-party packages not
 declared anywhere else in this repository (no `requirements.txt` is
 provided; install as needed):
@@ -96,6 +105,9 @@ provided; install as needed):
 | `sa_q8.py`, `q8_solution_a.txt`, `q8_solution_b.json` | **Verified, working production code for the Q8 680-edge results.** `sa_q8.py` is a penalty-SA hill-climber that, unlike `c4free_sa.py`, always restarts each trial from the current best *valid* (zero-violation) solution rather than from a fresh random sample, so it never has to escape a large initial violation count. `q8_solution_a.txt`/`q8_solution_b.json` are the recovered outputs, verified to match released Solution A and Solution B exactly by edge set. The separate `1,076`-trial statistic at 681 edges (attempts to exceed 680) remains unsubstantiated by any recovered script or log. |
 | `q8_checkpoint_670.json` | A recovered 670-edge intermediate solution. To reproduce our finding that the code makes genuine progress (an external 90-second timeout reduces the violation count at the 675-edge target from 22 to 8 in one run — exact numbers won't repeat, since `sa_q8.py` sets no random seed): `cp q8_checkpoint_670.json q8_best.json`, then `timeout 90 python3 sa_q8.py` in the same directory. Use an external timeout, not the script's internal `RUNTIME` variable — `RUNTIME` is only checked once per outer trial, while each trial's inner Phase-1 loop runs 2–12 million steps with no time check inside it, so editing `RUNTIME` alone won't reliably stop execution near that value. Without `q8_best.json` present, `sa_q8.py` instead starts from a fresh greedy construction. |
 | `verify.py` | Dependency-free verifier (re-checks every certificate from scratch, including the Q8 odd-square condition) |
+| `generate_q6_132.py` | Regenerates and self-checks the 132-edge Q6 odd-square witness from its 64-bit spin configuration, using the same canonical fully frustrated coupling as the Q8 script. |
+| `search_q6.py` | The fixed-seed (20260823) simulated-annealing search that produced that spin configuration; reached 132 edges on its first trial, and reproduces exactly because the seed is fixed. Also verifies that the coupling is fully frustrated on Q6 (all 240 squares). |
+| `solve_field_ip.py` | Solves the paper's field-bound integer programme exhaustively by dynamic programming (no sign restriction), returning optima 72 / 160 / 340 for n = 6 / 7 / 8 and enumerating the 3 / 1 / 2 optimal local-field distributions. A cross-check on the paper's closed-form argument, not a substitute for it. |
 | `generate_q8_682.py` | Regenerates and self-checks the 682-edge Q8 odd-square witness from its 256-bit spin configuration, derived by the author (17-18 Aug 2026) using MPR's canonical fully frustrated coupling and independently cross-checked by S. Lai; see the paper (Section 5.3) for the full account. |
 | `audit_q7_odd_square.py` | Audits the 19,866 released Q7 solutions against the odd-square condition (389 satisfy it) |
 | `ORIGINAL_DATA_SHA256SUMS.txt` | SHA-256 certificate for the original data files and `c4free_sa.py` |
@@ -105,12 +117,13 @@ provided; install as needed):
 
 | File | Description |
 | --- | --- |
-| `q6_edges_132.jsonl` | 132-edge C4-free subgraph of Q6 (lower-bound witness) |
+| `q6_edges_132.jsonl` | 132-edge C4-free subgraph of Q6 (lower-bound witness for ex(Q6,C4); *not* odd-square — see `q6_odd_square_132.json`) |
 | `q6_ilp.mps` | ILP in MPS format (192 variables, 240 constraints) for the Q6 upper bound. Optimality was not independently closed within a practical runtime with a generic solver (see paper, Section 8.2); the upper bound ex(Q6,C4)≤132 rests on Harborth–Nienborg's combinatorial proof. |
 | `q6_ilp_edge_map.csv` | Reconstructed x_i ↔ Q6-edge correspondence for `q6_ilp.mps` (not originally recorded; reconstructed by matching the MPS's variable-constraint incidence against Q6's known edge-square structure, verified to reproduce all 240 constraints exactly). |
 | `q7_edges_304.jsonl.part{1,2,3}` | The 19,866 distinct 304-edge C4-free subgraphs of Q7 (split into 3 parts) |
 | `analyze_q7_structure.py` | Recomputes the paper's Section 6 structural/statistical claims (degree sequence, dimension-profile classification, spectral-radius range, exhaustive pairwise Hamming-distance stats, Type-18 nontrivial-automorphism existence) directly from `q7_edges_304.jsonl.part1-3`. Standard library + numpy only. Verified: reproduces every reported number exactly in ~3 minutes, peak memory ~100MB (the Hamming-distance computation processes solutions in small batches to keep memory low; increasing the internal `CHUNK` constant trades memory for speed). Does not itself determine automorphism *order* (the 46/101 order-3 figure elsewhere in the paper used a separate, more detailed check). |
 | `q8_edges_680.jsonl` | Two distinct 680-edge C4-free subgraphs of Q8 (Solution A and Solution B; see paper for how they differ) |
+| `q6_odd_square_132.json` | The 132-edge odd-square witness for Q6. **Not the same edge set as `q6_edges_132.jsonl`** — the two differ in 62 edges; both are 132-edge C4-free subgraphs of Q6, but only this one is odd-square (square histogram `{1:30, 3:210}` vs `{1:8, 2:44, 3:188}`). |
 | `q8_odd_square_682.json` | The 682-edge odd-square witness for Q8 (current headline lower bound) |
 | `q7_odd_square_389.csv` | The 389 (of 19,866) Q7 solutions that satisfy the odd-square condition, with their dimension profiles |
 

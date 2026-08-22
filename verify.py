@@ -15,11 +15,16 @@ For each n in {6, 7, 8} this script:
     and confirming none of them is fully present;
   - prints the SHA-256 of each data file as a fixed-version certificate.
 
-Additionally, for the Q8 odd-square reconstruction (q8_odd_square_682.json)
-this script independently checks the stronger odd-square condition: every
-square must meet the edge set in exactly 1 or 3 edges (not merely "not 4").
-This check is independent of the self-check performed by
-generate_q8_682.py; it does not import or reuse that script's logic.
+Additionally, for the two odd-square witnesses (q6_odd_square_132.json and
+q8_odd_square_682.json) this script independently checks the stronger
+odd-square condition: every square must meet the edge set in exactly 1 or 3
+edges (not merely "not 4"). These checks are independent of the self-checks
+performed by generate_q6_132.py and generate_q8_682.py; this script does not
+import or reuse either script's logic.
+
+Note that q6_edges_132.jsonl and q6_odd_square_132.json are two DIFFERENT
+132-edge C4-free subgraphs of Q6. Only the latter is odd-square; the former
+is checked for C4-freeness alone, above.
 
 Usage:
     python3 verify.py
@@ -45,6 +50,7 @@ TARGETS = [
 
 # Odd-square targets are checked separately (stronger condition than C4-free).
 ODDSQUARE_TARGETS = [
+    (6, 132, 1, ["q6_odd_square_132.json"]),
     (8, 682, 1, ["q8_odd_square_682.json"]),
 ]
 

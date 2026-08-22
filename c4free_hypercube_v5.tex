@@ -98,14 +98,13 @@ constructions are not machine-readable in the same sense: DPTV79 give
 an explicit recursive scaling construction (their bond configurations
 for $H_5,H_6,H_7$, described in prose and figures, not released as a
 computer-readable edge list), while MPR95 report only an energy value
-for $D=8$, without publishing a spin configuration at all. For $n=6$
-we instead combine an
-explicit odd-square construction already given in~\cite{DPTV79} itself
-(lower bound $g(6)\ge132$, which we have not independently
-reconstructed as an edge list -- see the caveat after
-Theorem~\ref{thm:oddsquare} below) with the independent exact value
-$\ex(Q_6,C_4)=132$ of Harborth and Nienborg~\cite{HN94}, which bounds
-$g(6)$ from above since every odd-square set is $C_4$-free. This settles
+for $D=8$, without publishing a spin configuration at all. The same
+holds at $n=6$, where DPTV79's own $D=6$ configuration is described in
+prose; we construct an independent 132-edge odd-square edge list
+instead, which happens to realise the local-field distribution they
+report. The exact value $\ex(Q_6,C_4)=132$ of Harborth and
+Nienborg~\cite{HN94} is therefore no longer needed to bound $g(6)$ from
+above, though it remains the source for the unrestricted value. This settles
 the odd-square subclass completely for $n=6,7,8$ without resolving the
 unrestricted problem $\ex(Q_n,C_4)$, since a general $C_4$-free subgraph
 need not be odd-square.
@@ -140,21 +139,20 @@ For $Q_8$, the reconstructed 682-edge odd-square witness is locally maximal
 in a strong sense: all 342 non-edges of $Q_8$ create at least 3 new $C_4$s
 upon addition (compared with the earlier 680-edge simulated-annealing
 Solution~B, for which 2 of 344 non-edges created only 1 or 2 new $C_4$s;
-see Section~\ref{sec:q8} for both 680-edge solutions released). All
-$C_4$-free-construction bounds are witnessed by explicit edge-list
-constructions with
-machine-verifiable certificates -- the sole exception being the
-odd-square lower bound $g(6)\ge132$, which rests on Derrida et al.'s
-$D=6$ bond configuration (Section~\ref{sec:oddsquare-exact}), not
-reconstructed by us; the released $132$-edge $Q_6$ witness
-(\texttt{q6\_edges\_132.jsonl}) is a genuine, machine-verified $C_4$-free
-construction establishing $\ex(Q_6,C_4)\ge132$, but its square-intersection
-histogram $\{1{:}8,\,2{:}44,\,3{:}188\}$ shows it is \emph{not} itself an
-odd-square witness. For all other bounds, a complete, deterministic enumeration of
+see Section~\ref{sec:q8} for both 680-edge solutions released). Every
+$C_4$-free-construction bound reported here, and every one of the three
+odd-square values, is witnessed by an explicit edge-list construction
+with a machine-verifiable certificate. Two distinct $132$-edge $Q_6$
+constructions are released and should not be conflated:
+\texttt{q6\_edges\_132.jsonl} is $C_4$-free but not odd-square (its
+square-intersection histogram is $\{1{:}8,\,2{:}44,\,3{:}188\}$) and
+establishes $\ex(Q_6,C_4)\ge132$, while
+\texttt{q6\_odd\_square\_132.json} is the odd-square witness for
+$g(6)\ge132$ (histogram $\{1{:}30,\,3{:}210\}$). For every bound, a complete, deterministic enumeration of
 all four-cycles (240 for $Q_6$, 672 for $Q_7$, 1\,792 for $Q_8$) establishes
 $C_4$-freeness, and every \emph{construction} certificate reported here
-(the edge sets themselves, their $C_4$-freeness, and the $Q_8$
-odd-square condition) is reproducible by an independent,
+(the edge sets themselves, their $C_4$-freeness, and the $Q_6$ and
+$Q_8$ odd-square conditions) is reproducible by an independent,
 dependency-free verifier (\texttt{verify.py}), with the $Q_7$
 odd-square membership of individual solutions separately reproducible
 via \texttt{audit\_q7\_odd\_square.py}. The further structural and
@@ -330,15 +328,19 @@ for $n=6,7,8$:
 $g(6)=132$, $g(7)=304$, and $g(8)=682$.
 \end{theorem}
 
-\noindent Unlike $g(7)$ and $g(8)$, whose lower bounds have explicit,
-machine-verified odd-square witnesses among the released data, the
-$g(6)\ge132$ lower bound rests on Derrida et al.'s $D=6$ bond
-configuration~\cite{DPTV79}, not reconstructed as an edge-list witness
-here (Section~\ref{sec:oddsquare-exact}); the released
-132-edge $Q_6$ construction (\texttt{q6\_edges\_132.jsonl}) is a
-genuine, independently machine-verified $C_4$-free witness for
-$\ex(Q_6,C_4)\ge132$, but it is not itself odd-square, so it is not a
-witness for $g(6)\ge132$ specifically.
+\noindent All three values are self-contained within the released
+materials: each upper bound follows from Lemma~\ref{lem:fieldbound} and
+Lemma~\ref{lem:quant} (Section~\ref{sec:oddsquare-exact}), and each
+lower bound is witnessed by an explicit, machine-verified odd-square
+edge list released with this paper
+(Section~\ref{sec:oddsquareverify}). The citations
+to~\cite{DPTV79,MPR95} record historical priority for the values, not a
+dependency of the proofs. One point of possible confusion: the released
+132-edge $Q_6$ construction \texttt{q6\_edges\_132.jsonl} is a genuine,
+independently machine-verified $C_4$-free witness for
+$\ex(Q_6,C_4)\ge132$, but it is \emph{not} odd-square; the odd-square
+witness for $g(6)\ge132$ is the separate file
+\texttt{q6\_odd\_square\_132.json}.
 
 \noindent Theorem~\ref{thm:oddsquare} is proved in
 Section~\ref{sec:oddsquare}. Combined with $g(n)\le\ex(Q_n,C_4)$, it in
@@ -361,7 +363,12 @@ published 304-edge $Q_7$ solutions, only 389 are odd-square
   $n=5,6$ entries are not covered by either stated form (marked n/a)
   and the $n=7,8$ entries are extrapolations of the $n\ge9$ form
   \emph{beyond} its stated domain, included for illustrative comparison
-  only, not as a proven bound.}
+  only, not as a proven bound.
+  In the Source column, ``value; witness ours'' means the numerical
+  value has historical priority in the cited work, which published no
+  machine-readable edge list or spin configuration for it; the explicit
+  certificate released here is the present author's own and is not
+  claimed to reproduce any configuration of the cited work.}
 \label{tab:values}\medskip
 \begin{tabular}{ccccl}
 \toprule
@@ -370,8 +377,8 @@ $n$ & $|E(Q_n)|$ & $\ex(Q_n,C_4)$ & BHN (Eq.~\ref{eq:bounds}) & Source\\
 4 &   32 & 24  & $24$ (tight, $n=4^1$) & Chung~\cite{Chu92}\\
 5 &   80 & 56  & n/a (outside domain) & Emamy-K et al.~\cite{EMR92}\\
 6 &  192 & 132 & n/a (outside domain) & Harborth--Nienborg~\cite{HN94}\\
-7 &  448 & $\ge\mathbf{304}$ & $\approx300.2$ (extrapol.) & Derrida et al.~\cite{DPTV79}\\
-8 & 1024 & $\ge\mathbf{682}$ & $\approx674.9$ (extrapol.) & witness for~\cite{MPR95} bound (recon.)\\
+7 &  448 & $\ge\mathbf{304}$ & $\approx300.2$ (extrapol.) & value~\cite{DPTV79}; witness ours\\
+8 & 1024 & $\ge\mathbf{682}$ & $\approx674.9$ (extrapol.) & value~\cite{MPR95}; witness ours\\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -679,11 +686,14 @@ for a vertex $v$ of degree $\deg_E(v)$ in $E$, we call
 $h(v)=2\deg_E(v)-n$ its \emph{local field} under this convention (matching
 the local-field histogram reported in Proposition~\ref{prop:q8oddsquare}
 below). We do not reproduce Derrida et al.'s derivation of the local-field
-lower bound here; Section~\ref{sec:oddsquare-exact} cites it as an external
-result, established for $D\le7$ by explicit construction and used by
-Marinari--Parisi--Ritort's $D=8$ construction, which we reconstruct and
-verify independently in Section~\ref{sec:oddsquareverify} without relying on
-the bound's derivation.
+lower bound here, and do not need to: Section~\ref{sec:oddsquare-exact}
+derives the bounds it uses from Lemmas~\ref{lem:fieldbound}
+and~\ref{lem:quant} directly, and cites~\cite{DPTV79,MPR95} only for
+historical priority. Their results are stated there for reference ---
+established for $D\le7$ by explicit construction, and used by
+Marinari--Parisi--Ritort at $D=8$ --- and the corresponding witnesses
+are constructed and verified independently in
+Section~\ref{sec:oddsquareverify}.
 
 This connection was brought to our attention, after the original circulation
 of this manuscript, by S.~Lai (see Acknowledgements), who identified the
@@ -702,12 +712,16 @@ $192-60=132$ positive (unfrustrated) edges, with the construction
 guaranteed fully frustrated (every square meeting it in an odd number
 of negative edges) by their general recursive method. Under the
 correspondence of Section~\ref{sec:oddsquare} this is an explicit
-odd-square witness with $132$ edges, so $g(6)\ge132$; combined with
-$g(6)\le\ex(Q_6,C_4)=132$~\cite{HN94}, this gives $g(6)=132$. We did not
-reconstruct this $D=6$ configuration ourselves (unlike the $D=7,8$
-cases below); the value $132$ rests on the quoted primary-source count
-together with the independently proved exact value from~\cite{HN94}, not
-on our own machine verification of the specific bond configuration.
+odd-square witness with $132$ edges, so $g(6)\ge132$. We cite this for
+historical priority only: the lower bound $g(6)\ge132$ is established
+below by an explicit odd-square edge list of our own
+(Section~\ref{sec:oddsquareverify}, \texttt{q6\_odd\_square\_132.json}),
+and the matching upper bound $g(6)\le132$ follows from
+Lemma~\ref{lem:fieldbound} and Lemma~\ref{lem:quant} without appeal
+to~\cite{HN94}. We did not reconstruct DPTV's specific $D=6$ bond
+configuration; our witness is an independent one, which however turns
+out to realise the same local-field distribution they report (see
+Section~\ref{sec:oddsquareverify}).
 
 \begin{lemma}[Self-contained bound for $n=7,8$]\label{lem:fieldbound}
 For any odd-square edge set $E$ in $Q_n$, writing $U=\{v\in\{0,1\}^n:
@@ -803,48 +817,88 @@ verified $h(v)\ge0$ for all $v\in U$ holds on all $389$, with no
 counterexample, consistent with (and not merely assumed by) the Lemma.
 
 Given Lemma~\ref{lem:fieldbound} alone, $|E|=(n\cdot2^{n-1}+\sum_{v\in U}h(v))/2$
-is bounded above by relaxing to the integer optimisation problem of
+is bounded above by the integer optimisation problem of
 maximising $\sum_{v\in U}h(v)$ subject to the \emph{fixed}
 sum of squares $\sum_{v\in U}h(v)^2=n\cdot2^{n-1}$ over the $2^{n-1}$
 integers $h(v)$ of fixed parity (we use only that every
 realisable $h$-vector satisfies these constraints, not the converse
 that every integer vector satisfying them is realisable as an
 odd-square signature; the bound obtained is therefore an upper bound on
-$|E|$, tight whenever a matching witness is exhibited). The two-point
-convexity trick below holds for \emph{every} integer $h$ of the
-correct parity, negative values included -- the parabola
-$(h-a)(h-b)$ (roots $a,b$ two apart) is negative only strictly between
-its roots, an open interval containing no integer of the same parity
-as $a,b$ -- so Lemma~\ref{lem:nonneg} is \emph{not} needed for the
-upper bound itself; its role is instead to confirm, for configurations
-that actually attain the maximum, that $h(v)\ge0$ everywhere (matching
-what we verified computationally on all $389$ odd-square witnesses
-above) and hence that equality in the two-point inequality is achieved
-by $h(v)\in\{1,3\}$ (for $n=7$) or $\{2,4\}$ (for $n=8$) specifically,
-not e.g.\ $\{-1,3\}$ or other parity-matched pairs that would also
-satisfy the pointwise inequality. To avoid a possible confusion here:
-the two-point inequality $(h-a)(h-b)\ge0$ itself is \emph{not} a
-restatement of Lemma~\ref{lem:nonneg} and does not assume or require
-$h\ge0$ -- it is an unconditional algebraic fact about integers of the
-given parity, true for negative $h$ as well (e.g.\ $h=-1$ gives
-$(-2)(-4)=8\ge0$ for the $n=7$ case), which is exactly why summing it
-gives a bound with no sign hypothesis on $h$ anywhere in the
-derivation. Both cases
-$n=7,8$ admit a
-short, fully elementary and self-contained upper bound on
-$\sum_{v\in U}h(v)$, without appeal to DPTV's Table~I:
+$|E|$, tight whenever a matching witness is exhibited). No sign
+hypothesis enters: the constraints admit negative $h$, and
+Lemma~\ref{lem:nonneg} is \emph{not} used in the derivation. Its role
+is the separate one of describing configurations that actually attain
+the maximum (matching what we verified computationally on all $389$
+odd-square $Q_7$ witnesses above).
 
-\textbf{$n=7$.} For every odd integer $h$ (any sign),
-$(h-1)(h-3)\ge0$, i.e.\ $h^2\ge4h-3$, with equality exactly at $h\in\{1,3\}$.
-Summing over $v\in U$ ($|U|=64$) and using
-$\sum_{v}h(v)^2=448$:
+The following elementary observation is what makes this integer problem
+solvable in closed form, and is the only ingredient beyond the classical
+two-point convexity inequality.
+
+\begin{lemma}[Quantised two-point inequality]\label{lem:quant}
+Let $a$ be an integer of the same parity as $n$ and put $b=a+2$. Then for
+every integer $h$ of the same parity as $n$,
 \[
-448=\sum_{v\in U}h(v)^2\ge4\sum_{v\in U}h(v)-3\cdot64,
-\quad\text{so}\quad
-\sum_{v\in U}h(v)\le\frac{448+192}{4}=160.
+(h-a)(h-b)\ \ge\ 0
+\qquad\text{and}\qquad
+(h-a)(h-b)\equiv0 \pmod 8 .
+\]
+In particular $(h-a)(h-b)\in\{0,8,24,48,\ldots\}$, so it is either $0$
+(exactly when $h\in\{a,b\}$) or at least $8$.
+\end{lemma}
+\begin{proof}
+$h-a$ is even, say $h-a=2u$ with $u\in\mathbb{Z}$; then $h-b=2u-2$, so
+$(h-a)(h-b)=4u(u-1)$. Consecutive integers $u,u-1$ have product
+$\ge0$ and even, so $4u(u-1)$ is a nonnegative multiple of $8$. It
+vanishes exactly when $u\in\{0,1\}$, i.e.\ $h\in\{a,b\}$.
+\end{proof}
+
+Summing Lemma~\ref{lem:quant} over $v\in U$ and writing
+$S=\sum_{v\in U}h(v)$, $m=|U|=2^{n-1}$, $Q=\sum_{v\in U}h(v)^2=n\cdot2^{n-1}$
+gives the single inequality used for all three values of $n$:
+\begin{equation}\label{eq:quantsum}
+\Delta \ :=\ \sum_{v\in U}(h(v)-a)(h(v)-b)\ =\ Q-(a+b)S+ab\,m
+\ \ge\ 0,
+\qquad \Delta\equiv0\!\!\pmod 8 .
+\end{equation}
+The nonnegativity is the classical bound $S\le(Q+ab\,m)/(a+b)$; the
+congruence is what removes the residual gap between that real bound and
+the true integer optimum. We apply \eqref{eq:quantsum} with the pair
+$(a,b)$ of parity-correct integers straddling the root-mean-square field
+$\sqrt{Q/m}=\sqrt n$, namely $(1,3)$ for $n=7$ ($\sqrt7\approx2.65$)
+and $(2,4)$ for $n=6,8$ ($\sqrt6\approx2.45$, $\sqrt8\approx2.83$);
+this is the choice minimising the real bound $(Q+ab\,m)/(a+b)$.
+
+\textbf{$n=6$.} Here $m=32$, $Q=192$, $(a,b)=(2,4)$, so
+$\Delta=448-6S$. Nonnegativity alone gives only
+$S\le74.\overline{6}$, hence $S\le74$ by parity; but
+$448\equiv0\pmod 8$ forces $6S\equiv0\pmod8$, i.e.\ $S\equiv0\pmod4$.
+The largest such $S$ below $74.\overline{6}$ is
+\[
+S\le72,
+\qquad\text{whence}\qquad
+g(6)\le\frac{192+72}{2}=132 .
+\]
+At $S=72$ we have $\Delta=16$, and since each vertex contributes $0$ or
+at least $8$, exactly two vertices of $U$ contribute $8$ each, i.e.\
+exactly two have $h\in\{0,6\}$ and the remaining $30$ have
+$h\in\{2,4\}$. The witness of
+Section~\ref{sec:oddsquareverify} attains $S=72$ with $h$-distribution
+$\{0{:}2,\,2{:}24,\,4{:}6\}$ on $U$, so the bound is tight and
+$g(6)=132$ is established without external input --- in particular
+without~\cite{HN94}, which we retain only for the unrestricted value
+$\ex(Q_6,C_4)=132$ (Section~\ref{sec:q6}).
+
+\textbf{$n=7$.} Here $m=64$, $Q=448$, $(a,b)=(1,3)$, so
+$\Delta=640-4S\ge0$ gives $S\le160$, attained with $\Delta=0$. By
+Lemma~\ref{lem:quant} equality $\Delta=0$ forces $h(v)\in\{1,3\}$ at
+\emph{every} $v\in U$; combined with $\sum h=160$ and $|U|=64$ this
+pins the distribution to $\{1{:}16,\,3{:}48\}$ uniquely. Hence
+\[
+g(7)\le\frac{448+160}{2}=304 .
 \]
 Since $|E|=(n\cdot2^{n-1}+\sum_{v\in U}h(v))/2$ for \emph{any} $304$-edge
-set (odd-square or not), attaining $\sum_{v\in U}h(v)=160$ is automatic
+set (odd-square or not), attaining $S=160$ is automatic
 and does not by itself exhibit an odd-square witness; what is needed is
 an explicit odd-square set achieving it. The odd-square audit
 (Section~\ref{sec:oddsquareaudit}) supplies $389$ such witnesses among
@@ -855,49 +909,53 @@ below is of the canonicalised \texttt{edges} array -- matching
 not the JSONL line or any \texttt{hash} field:
 \texttt{2f2649ae9c4d1c901ba5a88f9825689de3cc19\allowbreak
 de1b742d86f5d66dbfd3aebec7}), with square-intersection histogram $\{1{:}96,\,3{:}576\}$,
-confirming it is genuinely odd-square and attains
-$\sum_{v\in U}h(v)=160$. (The file's very first record, by contrast,
-has histogram $\{1{:}36,\,2{:}120,\,3{:}516\}$ and is \emph{not}
-odd-square, despite also satisfying $\sum_{v\in U}h(v)=160$ -- exactly
-because that identity holds regardless of odd-squareness.) This bound is
-therefore tight and
-$g(7)=(448+160)/2=304$ is established without external input.
+confirming it is genuinely odd-square and attains $S=160$. (The file's
+very first record, by contrast, has histogram
+$\{1{:}36,\,2{:}120,\,3{:}516\}$ and is \emph{not} odd-square, despite
+also satisfying $S=160$ -- exactly because that identity holds
+regardless of odd-squareness.) So $g(7)=304$.
 
-\textbf{$n=8$.} For every even integer $h$ (any sign),
-$(h-2)(h-4)\ge0$, i.e.\ $h^2\ge6h-8$, with equality exactly at
-$h\in\{2,4\}$. Summing over $v\in U$ ($|U|=128$) and using
-$\sum_v h(v)^2=1024$:
+\textbf{$n=8$.} Here $m=128$, $Q=1024$, $(a,b)=(2,4)$, so
+$\Delta=2048-6S$. Nonnegativity gives $S\le341.\overline{3}$; the
+congruence $2048\equiv0\pmod8$ again forces $S\equiv0\pmod4$, so
 \[
-1024=\sum_{v\in U}h(v)^2\ge6\sum_{v\in U}h(v)-8\cdot128,
-\quad\text{so}\quad
-\sum_{v\in U}h(v)\le\frac{1024+1024}{6}=341.\overline{3}.
+S\le340,
+\qquad\text{whence}\qquad
+g(8)\le\frac{1024+340}{2}=682 .
 \]
-Since $h(v)=2\deg_E(v)-n=2\deg_E(v)-8$ is twice an integer minus an
-even number, each $h(v)$ is itself even, so $\sum_{v\in U}h(v)$ is a
-sum of even integers and is itself even, so
-$\sum_{v\in U}h(v)\le340$. The released $682$-edge witness attains
-$\sum_{v\in U}h(v)=340$ exactly, with $h$-distribution on $U$ equal to
-$\{0{:}1,\,2{:}84,\,4{:}43\}$ (independently recomputed from the released
-edge list). To be precise about what ``tight'' means here: the bound
-$\sum h\le340$ is a bound on the \emph{sum}, established by summing
-the pointwise inequality $(h-2)(h-4)\ge0$ over all $128$ vertices of
-$U$; it does not require pointwise equality $(h-2)(h-4)=0$ at every
-individual vertex, only that the sum of all $128$ pointwise excesses
-equals the total slack between $1024$ and $6\cdot340-8\cdot128=2040-1024=1016$,
-i.e.\ exactly $8$. The single $h=0$ vertex contributes
-$(0-2)(0-4)=8$ of pointwise excess by itself, while every $h=2$ or
-$h=4$ vertex contributes $0$; the $128$ excesses therefore sum to
-exactly $8$, matching the total, so the sum bound $\sum h\le340$ is
-attained exactly even though one vertex is not at either of the
-pointwise-equality values $\{2,4\}$. This bound is therefore also
-tight, giving $g(8)=(1024+340)/2=682$ without external input.
+At $S=340$ we have $\Delta=8$: \emph{exactly one} vertex of $U$
+contributes, and it has $h\in\{0,6\}$, the other $127$ having
+$h\in\{2,4\}$. Pointwise equality $h(v)\in\{2,4\}$ everywhere is
+therefore \emph{impossible} at the optimum for $n=8$ --- in contrast
+with $n=7$, where $\Delta=0$ does force it. The released $682$-edge
+witness attains $S=340$ with $h$-distribution
+$\{0{:}1,\,2{:}84,\,4{:}43\}$ on $U$ (independently recomputed from the
+released edge list), consistent with this description, so the bound is
+tight and $g(8)=682$.
 
-Both upper bounds $g(7)\le304$ and $g(8)\le682$ are thus established
-directly from Lemma~\ref{lem:fieldbound} and elementary inequalities,
-independently of DPTV's Table~I; we retain the citations to
+We stress that Lemma~\ref{lem:quant} solves these three instances
+exactly, not merely up to rounding: an independent exhaustive solution
+of the integer programme
+$\max\{\sum h : \sum h^2=n\cdot2^{n-1},\ h\equiv n\ (2),\ |h|\le n\}$
+by dynamic programming over the sum-of-squares budget returns optima
+$72$, $160$, $340$ for $n=6,7,8$ respectively, matching the bounds
+above, and returns exactly $3$, $1$ and $2$ optimal $h$-distributions
+respectively --- for $n=6$,
+$\{2{:}30,6{:}2\}$, $\{0{:}1,2{:}27,4{:}3,6{:}1\}$ and
+$\{0{:}2,2{:}24,4{:}6\}$; for $n=7$, $\{1{:}16,3{:}48\}$; for $n=8$,
+$\{2{:}87,4{:}40,6{:}1\}$ and $\{0{:}1,2{:}84,4{:}43\}$. In each case
+the witness released with this paper realises one of them. This
+computation is reproducible with the bundled
+\texttt{solve\_field\_ip.py} (standard library only, seconds to run);
+it is a check on the closed-form argument above, not a substitute for
+it.
+
+All three upper bounds $g(6)\le132$, $g(7)\le304$ and $g(8)\le682$ are thus established
+directly from Lemma~\ref{lem:fieldbound} and Lemma~\ref{lem:quant},
+independently of DPTV's Table~I and of~\cite{HN94}; we retain the citations to
 Derrida et al.~\cite{DPTV79} and Marinari--Parisi--Ritort~\cite{MPR95}
 for historical priority and for the connection that prompted this
-section (Section~\ref{sec:oddsquare-exact}), not because the upper-bound
+section, not because the upper-bound
 proof depends on them.
 
 Marinari, Parisi, and Ritort~\cite{MPR95} report having exhibited, by
@@ -938,13 +996,69 @@ the explicit
 witness realising it
 is due to the present reconstruction, prompted by S.~Lai's
 identification of the connection to~\cite{DPTV79,MPR95}. Together with
-the $D\le7$ case this gives Theorem~\ref{thm:oddsquare}: $g(6)=132$,
-$g(7)=304$, and $g(8)=682$.
+the matching witnesses at $n=6,7$ this gives
+Theorem~\ref{thm:oddsquare}: $g(6)=132$, $g(7)=304$, and $g(8)=682$,
+each half of each equality now carried by material released with this
+paper.
 
 \subsection{Verification}\label{sec:oddsquareverify}
 
-We reconstructed explicit witnesses for both values and machine-verified
-them independently of~\cite{DPTV79,MPR95}.
+We constructed explicit witnesses for all three values and
+machine-verified them independently of~\cite{DPTV79,MPR95,HN94}.
+
+\textbf{$Q_6$, $g(6)=132$.} We obtained a 132-edge odd-square witness
+for $Q_6$ by the same route used for $Q_8$ below: the canonical fully
+frustrated coupling
+\[
+J(x,\mathrm{dim})=(-1)^{\mathrm{popcount}(x\,\&\,(2^{\mathrm{dim}}-1))},
+\]
+verified fully frustrated on $Q_6$ (all $240$ squares have coupling
+product $-1$, no exceptions), together with a $64$-bit spin
+configuration. Because switching preserves frustration, the set of
+edges on which $J(x,y)s_xs_y=+1$ is odd-square for \emph{every} spin
+assignment, so the construction reduces to maximising that edge count,
+i.e.\ to a ground-state search. We ran a fixed-seed simulated
+annealing over the $64$ spins (\texttt{search\_q6.py}, seed
+$20260823$), which reached $132$ edges on its first trial; the run is
+exactly reproducible from the released script. The resulting witness is
+regenerated and self-checked by \texttt{generate\_q6\_132.py} and
+released as \texttt{q6\_odd\allowbreak\_square\_132.json}.
+
+\begin{proposition}\label{prop:q6oddsquare}
+The $Q_6$ witness edge set satisfies:
+\begin{enumerate}[label=(\roman*)]
+  \item $132$ edges, all valid $Q_6$ edges, no repetitions.
+  \item Square-intersection histogram $\{1\!:\!30,\;3\!:\!210\}$ over all
+    $240$ squares: the odd-square condition holds everywhere, and in
+    particular the set is $C_4$-free.
+  \item Degree sequence $\{3^4,\,4^{48},\,5^{12}\}$; degree sum
+    $264=2\cdot132$.
+  \item Local-field histogram on $U$ equal to
+    $\{0\!:\!2,\,2\!:\!24,\,4\!:\!6\}$, giving
+    $\sum_{v\in U}h(v)=72$ and $\sum_{v\in U}h(v)^2=192=6\cdot2^5$,
+    as required by Lemma~\ref{lem:fieldbound}; the complementary side
+    of the bipartition has the same histogram.
+  \item Local maximality: no edge of $Q_6$ can be added to it while
+    preserving $C_4$-freeness.
+\end{enumerate}
+\end{proposition}
+
+The distribution in (iv) is one of the exactly three optimal
+$h$-distributions enumerated in Section~\ref{sec:oddsquare-exact}, so
+the witness attains the upper bound $S\le72$ there and settles
+$g(6)=132$. Two further remarks. First, it coincides in multiplicities
+with the local-field distribution Derrida et al.\ report for their
+$D=6$ configuration, ``$n(4)=6$; $n(2)=24$; $n(0)=2$''~\cite[p.~622]{DPTV79};
+we did not reconstruct their configuration and do not claim the two
+edge sets agree, only that our independently found witness realises the
+same distribution. Second, this witness is \emph{not} the released
+132-edge $Q_6$ construction \texttt{q6\_edges\_132.jsonl} of
+Section~\ref{sec:q6}: the two edge sets differ in $62$ edges, and the
+latter is $C_4$-free but not odd-square (square-intersection histogram
+$\{1\!:\!8,\,2\!:\!44,\,3\!:\!188\}$, and
+$\sum_{v\in U}h(v)^2=176\ne192$). Both are $132$-edge $C_4$-free
+subgraphs of $Q_6$; only the new one is a witness for $g(6)$
+specifically.
 
 \textbf{$Q_7$, $g(7)=304$.} The 304-edge odd-square value coincides with our
 originally announced $Q_7$ lower bound (Theorem~\ref{thm:main}(i)); of the
