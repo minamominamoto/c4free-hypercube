@@ -79,17 +79,26 @@ states for $d\le7$ (giving $g(6)$ and $g(7)$ under the correspondence
 below), and Marinari, Parisi, and Ritort~\cite{MPR95} report having
 obtained, by simulated annealing, a $D=8$ ground state attaining
 Derrida et al.'s improved energy lower bound (giving $g(8)$ under the
-same correspondence). Our contribution is not these three numbers as
-such, but: (i) an explicit graph-theoretic
-formulation of the odd-square extremal problem and its precise
-equivalence to the physics ground-state problem (Section~\ref{sec:oddsquare}); (ii) for $n=7,8$, a
-self-contained, elementary proof of the upper bound $g(n)\le\{304,682\}$
+same correspondence). The graph-theoretic formulation of the
+fully-frustrated signed hypercube and its connection to the $C_4$-free
+extremal problem is itself not new either: Laplante, Naserasr, Sunny,
+and Wang~\cite{LNSW26} explicitly formulate the frustration index of
+the fully-frustrated signature and its relation to Erd\H{o}s's
+$C_4$-free hypercube question (Section~\ref{sec:oddsquare-exact}
+below). Our contribution is: (i) for $n=7,8$, a
+self-contained, elementary proof of the upper bounds $g(7)\le304$ and $g(8)\le682$
 (a quadratic field-sum identity together with
 elementary parity constraints, proved here directly rather than cited
-from DPTV's Table~I); and (iii) explicit, machine-verifiable edge-list
+from DPTV's Table~I, and sharpening LNSW26's general bounds -- tight
+only when $n$ is a power of $4$ -- to exact values at $n=6,7,8$
+specifically); and (ii) explicit, machine-verifiable edge-list
 certificates for both bounds at $n=7,8$, released alongside this paper
-(Section~\ref{sec:oddsquareverify}), where the prior literature reports
-only energy values, not spin configurations or edge lists. For $n=6$
+(Section~\ref{sec:oddsquareverify}). Here the prior literature's
+constructions are not machine-readable in the same sense: DPTV79 give
+an explicit recursive scaling construction (their bond configurations
+for $H_5,H_6,H_7$, described in prose and figures, not released as a
+computer-readable edge list), while MPR95 report only an energy value
+for $D=8$, without publishing a spin configuration at all. For $n=6$
 we instead combine an
 explicit odd-square construction already given in~\cite{DPTV79} itself
 (lower bound $g(6)\ge132$, which we have not independently
@@ -478,7 +487,8 @@ They differ as follows:
   \item Solution~A: degree sequence $\{4^8,\,5^{160},\,6^{88}\}$
     (degree sum $1360=2\cdot680$); square-intersection histogram
     $\{1\!:\!308,\,3\!:\!1484\}$ over the $1\,792$ squares (incidentally
-    odd-square, though not constructed as such); non-edge violation
+    odd-square, though not constructed as such -- see below for the
+    implication of this); non-edge violation
     distribution $\{2\!:\!3,\,3\!:\!48,\,4\!:\!144,\,5\!:\!136,\,6\!:\!13\}$
     (minimum $2$ new $C_4$s per non-edge).
   \item Solution~B: degree sequence $\{4^7,\,5^{162},\,6^{87}\}$
@@ -489,6 +499,16 @@ They differ as follows:
     (minimum $1$ new $C_4$, attained by exactly one non-edge).
 \end{enumerate}
 \end{proposition}
+
+Solution~A's odd-squareness has a notable implication for the timeline
+of results in this paper: since it was originally announced (before
+the $682$-edge odd-square reconstruction of
+Section~\ref{sec:oddsquare} existed) and is itself odd-square, the
+bound $g(8)\ge680$ was already achieved within the odd-square subclass
+at that earlier point, not only via the later, deliberately-constructed
+$682$-edge witness. We did not notice or exploit this at the time; it
+is recorded here as a fact about the released data, confirmed
+independently by direct square-by-square enumeration.
 
 \begin{remark}
 Brass--Harborth--Nienborg's tight bound $\tfrac12(n+\sqrt n)\cdot2^{n-1}$
@@ -863,7 +883,7 @@ $\sum h\le340$ is a bound on the \emph{sum}, established by summing
 the pointwise inequality $(h-2)(h-4)\ge0$ over all $128$ vertices of
 $U$; it does not require pointwise equality $(h-2)(h-4)=0$ at every
 individual vertex, only that the sum of all $128$ pointwise excesses
-equals the total slack between $1024$ and $6\cdot340-8\cdot128=2032-1024=1016$,
+equals the total slack between $1024$ and $6\cdot340-8\cdot128=2040-1024=1016$,
 i.e.\ exactly $8$. The single $h=0$ vertex contributes
 $(0-2)(0-4)=8$ of pointwise excess by itself, while every $h=2$ or
 $h=4$ vertex contributes $0$; the $128$ excesses therefore sum to
@@ -928,7 +948,7 @@ them independently of~\cite{DPTV79,MPR95}.
 
 \textbf{$Q_7$, $g(7)=304$.} The 304-edge odd-square value coincides with our
 originally announced $Q_7$ lower bound (Theorem~\ref{thm:main}(i)); of the
-$19\,866$ solutions found by simulated annealing (Section~\ref{sec:q7}),
+$19\,866$ solutions obtained via the SA-seed-plus-collector pipeline (Section~\ref{sec:q7}),
 389 are themselves odd-square witnesses of $g(7)=304$
 (Section~\ref{sec:structure}), independently confirming reachability of this
 value without reference to~\cite{DPTV79}.
@@ -1082,7 +1102,11 @@ Rank & Profile $\pi$ & Solutions & $H$ & $\lambda_1$ (mean)\\
 \end{tabular}
 \end{table}
 
-Observations: (1) $\lambda_1$ lies in $[4.787,4.789]$ across all 20 types.
+Observations: (1) the profile-wise \emph{mean} values of $\lambda_1$ shown
+in the table lie in $[4.787,4.789]$ across all 20 types (this is
+distinct from, and narrower than, the exhaustive range
+$[4.78543,4.79129]$ over all $19\,866$ individual solutions reported
+in Proposition~\ref{prop:rigid} below).
 (2) $H$ ranges from $2.801$ to $2.807$, all near $\log_27\approx2.807$.
 (3) All 101 Type-18 solutions have a genuine $\mathrm{Aut}(Q_7)$-automorphism
 (coordinate permutation combined with a bitwise XOR, i.e.\ the full
@@ -1205,10 +1229,16 @@ spectral-radius-range, exhaustive Hamming-distance, and Type-$18$
 nontrivial-automorphism-existence claims directly from
 \texttt{q7\_edges\_304.jsonl.part1--3} in about three minutes (peak
 memory approximately $100$MB); running it
-reproduces all of those specific numbers exactly. It does not
-determine automorphism \emph{order}: the $46/101$ order-$3$ figure
-elsewhere in this paper was established by a separate, more detailed
-check (verifying $\sigma^3=\mathrm{id}\ne\sigma,\sigma^2$ directly for
+reproduces all of those specific numbers exactly. This script confirms
+only that \emph{some} nontrivial automorphism fixes each Type-$18$
+solution; it does not check the stronger claim made in
+Section~\ref{sec:structure} that such an automorphism nontrivially
+permutes at least two of the three tied $48$-edge directions, nor does
+it determine automorphism \emph{order}: both the direction-permuting
+property and the $46/101$ order-$3$ figure elsewhere in this paper
+were established by a separate, more detailed check (verifying the
+automorphism's action on directions, and
+$\sigma^3=\mathrm{id}\ne\sigma,\sigma^2$, directly for
 each automorphism found), not included in this script.
 
 \noindent\textbf{Update: the $Q_7$ production code has been recovered
@@ -1358,13 +1388,28 @@ released implementation for the first published solution (the true
 lexicographic minimum is attained at XOR mask $107$, not reproduced by
 the actual code), and for $92$ of the first $100$ released solutions,
 this correctly-described alternative hash does not match the
-\texttt{hash} field actually stored. The $19\,866/19\,866$ match we
+\texttt{hash} field actually stored. There is a second, independent
+gap in this function's canonicalisation beyond the flip-loop: the
+coordinate-permutation step sorts directions by descending edge count,
+but ties are broken only by Python's stable sort (original label
+order), not by any canonical rule; two graphs in the same
+$\mathrm{Aut}(Q_7)$-orbit that differ only by permuting two
+equal-count directions can therefore receive different hashes. We
+confirmed this directly: the first released solution has direction
+edge-counts $[44,43,44,42,43,44,44]$ (four tied at $44$), hash
+\texttt{79014e2f4aed}; swapping two of the tied $44$-edge directions
+(an automorphism of $Q_7$) changes the computed hash to
+\texttt{0ba97c019106}. The $19\,866/19\,866$ match we
 report above is against the code exactly as implemented (with this
-defect), which is what we release and what actually produced the
+defect and the flip-loop defect above), which is what we release and
+what actually produced the
 stored \texttt{hash} values; it is not evidence that full
-translation-class canonicalisation is occurring, and the released
+translation-class \emph{or} coordinate-permutation canonicalisation is
+occurring, and the released
 $19\,866$ solutions should not be assumed de-duplicated across the
-$\mathbb{Z}_2^n$ translation subgroup on this basis. We do not know
+full automorphism group $\mathrm{Aut}(Q_7)$ on this basis (only that
+they are $19\,866$ pairwise distinct \emph{labelled} edge sets, as
+already stated in Proposition~\ref{prop:rigid}). We do not know
 whether the intended, fully-canonicalising version was ever the one
 actually run in production, or whether this defect was present
 throughout; we did not attempt to guess or silently correct it, for
@@ -1629,17 +1674,23 @@ $V=0$ from a fresh random start for these targets. Consequently, our
 earlier claim that fresh per-trial random initialisation explains the
 diversity of the released solutions should be read with this caveat:
 we can confirm the released \emph{solutions} are valid (independently
-verified $C_4$-free certificates), but we cannot confirm that the
-released, unmodified \texttt{phase1\_sa} -- run as literally
-documented -- is what actually produced them. Either the historical
-production code differed from what is released here (e.g.\ a
-different \texttt{viol\_cap} range or a different acceptance rule),
-or some other undocumented step was involved; we do not know which,
-and we did not attempt to guess and silently "fix" the released code,
-since that would misrepresent what was actually run. This is a
-genuine, unresolved gap in the provenance of the search
-\emph{method} (as distinct from the search \emph{outputs}, which
-remain independently verified).
+verified $C_4$-free certificates), but the released, unmodified
+\texttt{phase1\_sa} -- run as literally
+documented -- cannot be what produced them, for the structural reason
+just demonstrated (not merely bad luck with parameters). We now know why: as detailed in
+Section~\ref{sec:c4freesa} above, \texttt{c4free\_sa.py} was itself
+written after the fact (dated $2026$-$03$-$28$), once the $Q_7$ and
+$Q_8$ results already existed via the separately-recovered scripts
+described above, and validated only at the much smaller $Q_5$ scale at
+the time -- it was never a candidate for the historical production
+code in the first place, so there is no remaining question of whether
+some undocumented earlier version of \emph{this script} matches a
+different historical parameter setting. The genuine remaining gaps are
+narrower and specific: the very first sub-$304$-edge bootstrap step of
+\texttt{sa\_search.py}'s own lineage (Section~\ref{sec:method} above),
+and the unarchived $681$-edge/$1\,076$-trial statistic
+(Section~\ref{sec:q8}), neither of which this section's finding about
+\texttt{phase1\_sa} bears on directly.
 
 The diversity actually
 observed across the $19\,866$ collected solutions is therefore not
