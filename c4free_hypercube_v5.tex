@@ -109,10 +109,14 @@ figures and prose for $n\le7$ only, $n=8$ being left open by them and
 later claimed, without any released data, by Marinari, Parisi, and
 Ritort~\cite{MPR95}; this paper's $n=8$ witness is thus the first
 machine-checkable one for that case, and its $n=6$ witness the first
-for any case; and (iii) a targeted computational investigation, in Section~\ref{sec:oddsquareverify},
+for any case; and (iii) an exhaustive decision, in Section~\ref{sec:oddsquareverify},
 of a question DPTV posed and left open in 1979 -- which of the
-several $n=6$ optima described in their Table~I are actually
-realisable by a spin configuration. Here the prior literature's
+several $n=6$ optima described in their Table~I are actually realisable by a
+spin configuration. MPR95 had already addressed this question by simulated
+annealing, reporting that only the first is realisable and that ``the other''
+seems not to be; we reduce it to a finite ($2^{32}$) search, decide it in
+seconds, and thereby upgrade that tentative report to a proof covering
+\emph{both} non-realisable distributions. Here the prior literature's
 constructions are not machine-readable in the same sense: DPTV79 give
 an explicit recursive scaling construction (their bond configurations
 for $H_5,H_6,H_7$, described in prose and figures, not released as a
@@ -133,8 +137,8 @@ never reaches either, plateauing at the same nonzero distance from
 target across every one of 40 and 20 independent random seeds
 respectively, while the same search method reaches the realised
 distribution in every trial. This is computational evidence, not a
-proof, but it corroborates and sharpens MPR95's own remark on this
-point (Section~\ref{sec:oddsquareverify}). The exact value
+proof; Proposition~\ref{prop:q6realizability} now supplies one
+(Section~\ref{sec:oddsquareverify}). The exact value
 $\ex(Q_6,C_4)=132$ of Harborth and Nienborg~\cite{HN94} is therefore no
 longer needed to bound $g(6)$ from above, though it remains the source
 for the unrestricted value. This settles
@@ -159,8 +163,11 @@ alone has a stabiliser of size $3$ in
 $\mathrm{Aut}(Q_7)\cong(\mathbb{Z}_2)^7\rtimes S_7$ (order $645\,120$;
 exhaustive check over all $645\,120$ elements), consisting of the
 identity and two nontrivial elements, both coordinate permutation
-$+$ XOR pairs -- $(5,1,2,3,4,6,0)$ with XOR mask $33=0100001_2$, and
-its square $(6,1,2,3,4,0,5)$ with XOR mask $96=1100000_2$, together
+$+$ XOR pairs. Under the convention $v\mapsto \pi(v\oplus m)$ (XOR first,
+then permute) these are $(5,1,2,3,4,6,0)$ with mask $m=33=0100001_2$ and its
+square $(6,1,2,3,4,0,5)$ with $m=96=1100000_2$; under the opposite convention
+$v\mapsto \pi(v)\oplus m$ used in \texttt{type18\_automorphisms.py} the two
+masks are interchanged. They together
 forming a cyclic group of order $3$ -- so its orbit alone has size $645\,120/3=215\,040>19\,866$. What
 remains open is whether the $19\,866$ released solutions represent
 every $\mathrm{Aut}(Q_7)$-orbit of 304-edge $C_4$-free subgraphs (i.e.\
@@ -191,10 +198,16 @@ odd-square membership of individual solutions separately reproducible
 via \texttt{audit\_q7\_odd\_square.py}. The further structural and
 statistical claims reported below (spectral-radius ranges, pairwise
 Hamming extrema, Type-18 automorphism counts, non-edge violation
-distributions, and similar) were independently recomputed during this
-paper's preparation but are not packaged into a single bundled
-verifier; a reader wishing to check them would need to recompute them
-from the released edge lists using the definitions given in the text.
+distributions, and similar) are largely recomputable from the released
+code: \texttt{analyze\_q7\_structure.py} reproduces the degree sequence,
+the 20 direction profiles, the spectral-radius range, and the exhaustive
+pairwise Hamming statistics (minimum $6$, maximum $274$, mean
+$195.396108\ldots$, median $196$), and \texttt{type18\_automorphisms.py}
+reproduces the Type-18 automorphism counts; \texttt{reproduce\_core.py}
+drives these in one command. Two quantities reported below are not emitted
+directly by those scripts and require a short additional tally from the
+same data: the count of $636$ minimum-distance pairs and their breakdown
+into $28$ profile-type combinations.
 
 The $Q_7$ solutions were found by a two-stage process that we have
 since traced and partly re-verified (the two stages have different
@@ -309,8 +322,8 @@ Tur\'an \emph{density} $\pi_e=\limsup_n\ex(Q_n,C_4)/(n2^{n-1})$, not a
 pointwise inequality valid at every finite $n$; the constant $0.60318$
 is due to Baber~\cite{Bab12}, who used the semidefinite flag algebra
 method to improve the earlier bound of Thomason and Wagner~\cite{TW09};
-the intermediate value $0.6068$ was obtained independently by
-Baber~\cite{Bab12} and by Balogh, Hu, Lidick\'y, and Liu~\cite{BHLL12}.
+the intermediate value $0.6068$ is due to Balogh, Hu, Lidick\'y, and
+Liu~\cite{BHLL12}.
 For general $n\ge9$, the weaker bound
 $\tfrac{1}{2}(n+0.9\sqrt{n})\cdot2^{n-1}$ applies~\cite{BHN95}.
 Exact values have been determined for small $n$; Harborth and Nienborg~\cite{HN94}
@@ -1049,7 +1062,8 @@ each has $682$ edges, square-intersection histogram $\{1{:}301,3{:}1491\}$
 (odd-square), and $\sum_{v\in U}h(v)^2=1024=8\cdot2^7$ (\checkmark). All
 three $n=8$ witnesses are distinct edge sets.
 For $n=6$, only distribution~C $=\{0{:}2,2{:}24,4{:}6\}$ is realised;
-distributions A and B are not (Section~\ref{sec:oddsquareverify}).
+distributions A and B are provably not realisable
+(Proposition~\ref{prop:q6realizability}, an exhaustive finite decision).
 For $n=7$, the unique optimal distribution is necessarily realised. Thus $n=8$
 is qualitatively different from $n=6$: \emph{all} optimal field distributions
 for $n=8$ admit a realisation, while for $n=6$ only one does. In each case
@@ -1171,7 +1185,12 @@ The $Q_6$ witness edge set satisfies:
   \item $132$ edges, all valid $Q_6$ edges, no repetitions.
   \item Square-intersection histogram $\{1\!:\!30,\;3\!:\!210\}$ over all
     $240$ squares: the odd-square condition holds everywhere, and in
-    particular the set is $C_4$-free.
+    particular the set is $C_4$-free. (Given odd-squareness and $|E|$, the
+    split is forced, not independent information: each edge of $Q_n$ lies in
+    exactly $n-1$ squares, so double counting gives
+    $N_1+3N_3=(n-1)|E|$ and $N_1+N_3=\binom{n}{2}2^{n-2}$, whence
+    $N_3=\bigl((n-1)|E|-\binom{n}{2}2^{n-2}\bigr)/2$. This applies equally to
+    the $Q_7$, $Q_8$ and Solution~A histograms quoted elsewhere in this paper.)
   \item Degree sequence $\{3^4,\,4^{48},\,5^{12}\}$; degree sum
     $264=2\cdot132$.
   \item Local-field histogram on $U$ equal to
@@ -1201,33 +1220,74 @@ $\sum_{v\in U}h(v)^2=176\ne192$). Both are $132$-edge $C_4$-free
 subgraphs of $Q_6$; only the new one is a witness for $g(6)$
 specifically.
 
-\noindent\textbf{Non-realizability investigation for the other two optimal $n=6$ field
-distributions.} The exhaustive field-bound DP (Section~\ref{sec:oddsquare-exact};
-\texttt{solve\_field\_ip.py}) identifies exactly three optimal $h$-distributions
-on $U$ for $n=6$: distribution~C~$=\{0{:}2,2{:}24,4{:}6\}$ (realised above),
+\noindent\textbf{Realizability of the other two optimal $n=6$ field
+distributions: an exhaustive decision.} The field-bound DP
+(Section~\ref{sec:oddsquare-exact}; \texttt{solve\_field\_ip.py}) identifies
+exactly three optimal $h$-distributions on $U$ for $n=6$:
+distribution~C~$=\{0{:}2,2{:}24,4{:}6\}$ (realised above),
 A~$=\{2{:}30,6{:}2\}$, and B~$=\{0{:}1,2{:}27,4{:}3,6{:}1\}$.
-DPTV79 (p.~621) noted that other solutions besides their first were listed in
-Table~I and asked whether any is realisable; MPR95 later reported that ``the other
-solution of the Diophantine equation \emph{seems not to} correspond to any spin
-configuration'' (single solution, in the singular). We conducted a targeted
-computational search for A and B, using simulated annealing with objective
-minimising the $L_1$ distance between the current $h$-histogram on $U$ and the
-target (distinct from the edge-count objective used in \texttt{search\_q6.py}).
-As a positive control, the same search reaches distribution~C in every trial.
-The protocol and seeds are fixed and fully reproducible; the results are archived
-in \texttt{q6\_other\_distributions.py},
-\texttt{q6\_other\_distributions\_summary.json}, and
-\texttt{q6\_realized\_control\_summary.json} (seeds for A/B are the new deterministic
-reproducibility protocol specified for this release, not recovered historical seeds;
-this is noted explicitly in the summary JSON).
-Target A was searched over 40 independent seeds with 300,000 iterations each;
-all 40 runs plateau at $L_1$ distance exactly 16 (never 0). Target B was searched
-over 20 seeds with 300,000 iterations each; all 20 plateau at distance exactly 8.
-This is computational evidence, not a proof of non-realisability, as the paper
-notes. The uniformity of the plateau (all runs stop at the same distance)
-qualitatively matches the $n=6$ situation for~C and distinguishes the result from
-a case where the search merely failed to find a realisable distribution: for~C the
-same method succeeds in every trial, while for A and B it fails in every trial.
+DPTV79 (p.~622) noted that other solutions besides their first were listed in
+Table~I and asked whether any is realisable (``We do not know if the other
+solutions \ldots\ are realizable'', in the plural). MPR95 reported, by simulated
+annealing, that at $D=6$ only configurations corresponding to the first solution
+of DPTV's Table~I are realisable and that ``the other solution of the Diophantine
+equation \emph{seems not to} correspond to any spin configuration'' -- a
+tentative negative finding, in the singular, with no released configuration or
+decision procedure. Since Proposition~\ref{prop:q6oddsquare} identifies
+C with DPTV's first solution by multiplicity, the question is whether A and B
+are realisable. We settle it exhaustively rather than heuristically.
+
+\begin{proposition}[Exhaustive decision]\label{prop:q6realizability}
+Under the canonical fully frustrated coupling on $Q_6$, distribution~C is
+realisable by a spin configuration and distributions A and B are not.
+\end{proposition}
+\begin{proof}
+Write $s_v=(-1)^{t_v}$ with $t_v\in\{0,1\}$, and let $b(v,w)=1$ exactly when
+$J(v,w)=-1$; an edge $vw$ is positive iff $t_v\oplus t_w=b(v,w)$. As $Q_6$ is
+bipartite, every neighbour of $v\in U$ lies in $U^{c}$, so
+\[
+k(v)\;=\;\#\{\,i:\;t_{v\oplus e_i}\oplus b(v,i)=1\,\}
+\]
+depends only on the $32$ spins on $U^{c}$, and
+$\deg(v)=k(v)$ if $t_v=1$, $\deg(v)=6-k(v)$ if $t_v=0$. Hence each $t_v$
+($v\in U$) is a free independent choice, and the achievable degree at $v$ is
+exactly one of $k(v)$, $6-k(v)$. With $h=2\deg-6$, the achievable nonnegative
+field is $h=6-2m(v)$ where $m(v)=\min(k(v),6-k(v))\in\{0,1,2,3\}$, so
+$m=0,1,2,3$ correspond to $h=6,4,2,0$ respectively. A target $h$-histogram on
+$U$ is therefore realisable if and only if the multiset $\{m(v):v\in U\}$ equals
+the induced $m$-multiset for some assignment of the $32$ spins on $U^{c}$. The
+$m$-multisets are $\{0{:}2,2{:}30\}$ for A, $\{0{:}1,1{:}3,2{:}27,3{:}1\}$ for
+B, and $\{1{:}6,2{:}24,3{:}2\}$ for C. This is a finite ($2^{32}$) decision
+problem, and depth-first search with counter-overflow pruning settles it in
+seconds: a $v\in U$ has $m(v)$ determined as soon as its six neighbours are
+assigned, so any partial assignment exceeding a target count is cut. Global spin
+flip fixes every $h$, so one $U^{c}$ spin may be pinned. The search finds a
+realisation for C ($501$ nodes visited) and exhausts the space for A
+($655{,}359$ nodes) and B ($22{,}129{,}151$ nodes) without a realisation;
+without the symmetry reduction the counts double and the verdicts are unchanged.
+\end{proof}
+
+The decision procedure is released as
+\texttt{q6\_decide\_realizability.py} (standard library only, seconds to run).
+Its correctness is anchored at both ends: the reduction is checked against the
+released witness (recomputing $m$ from the spins in
+\texttt{q6\_odd\_square\_132.json} gives $\{1{:}6,2{:}24,3{:}2\}$, i.e.\ C), and
+the C branch of the search reconstructs a full spin vector whose recomputed
+$h$-histogram and edge count are $\{0{:}2,2{:}24,4{:}6\}$ and $132$.
+Proposition~\ref{prop:q6realizability} thus closes the question DPTV79 left open
+in 1979 and upgrades MPR95's tentative ``seems not to'' to a proof --
+for both of the non-realisable distributions, where MPR95 spoke of one.
+
+Earlier revisions of this manuscript reported instead a heuristic search
+(simulated annealing on the $L_1$ distance between the current and target
+$h$-histograms; 40 seeds for A and 20 for B at $300{,}000$ iterations each,
+all plateauing at distance $16$ and $8$ respectively, against a positive control
+reaching C in $20/20$ runs at $60{,}000$ iterations). Those runs and their logs
+remain in the release (\texttt{q6\_other\_distributions.py} and the
+accompanying CSV/JSON) as a record, but they are superseded by
+Proposition~\ref{prop:q6realizability} and are no longer offered as evidence:
+a plateau is not a proof, and the asymmetry in iteration budget between the
+targets and the control makes the phrase ``the same search'' inexact.
 
 \textbf{$Q_7$, $g(7)=304$.} The 304-edge odd-square value coincides with our
 originally announced $Q_7$ lower bound (Theorem~\ref{thm:main}(i)); of the
@@ -1329,8 +1389,8 @@ Each witness in \texttt{q8\_B\_witnesses.json} satisfies:
     $1{,}792$ squares (odd-square; $C_4$-free).
   \item $h$-histogram $\{2{:}87,\,4{:}40,\,6{:}1\}$ on $U$,
     $\sum h=340$, $\sum h^2=1024$ (\checkmark).
-  \item Distinct spin vectors, edge sets,
-    and from \texttt{q8\_odd\_square\_682.json}.
+  \item Distinct spin vectors and edge sets, and distinct from
+    \texttt{q8\_odd\_square\_682.json}.
 \end{enumerate}
 \end{proposition}
 
@@ -1474,7 +1534,7 @@ pairs) and $3$/$5$ ($87$ pairs), with combinations such as $2$/$4$,
 $2$/$5$, $2$/$6$, $2$/$10$, and $6$/$8$ each occurring dozens of
 times, down to a single occurrence for one combination
 ($3$/$20$, 1 pair) and two occurrences for three others
-($12$/$19$, $16$/$17$, and $9$/$14$). Type-$1$/type-$2$ pairs, our earlier illustrative
+($12$/$17$, $16$/$17$, and $9$/$14$). Type-$1$/type-$2$ pairs, our earlier illustrative
 example, do occur ($22$ of the $636$) but are far from
 representative of the minimum's structure.
 
@@ -1504,6 +1564,20 @@ odd-square; the remaining $19\,477$ are not. Table~\ref{tab:oddsquareaudit}
 gives the dimension-profile breakdown of the 389 odd-square solutions; each
 belongs to one of only 4 of the 20 profile types of
 Table~\ref{tab:types} (ranks 5, 7, 10, and 18 there).
+
+Most of that restriction is forced, not empirical. Fix directions $i\ne j$.
+There are $2^{n-2}$ $(i,j)$-squares, and each edge in direction $i$ lies in
+exactly one of them (likewise for $j$), so
+$\sum_{(i,j)\text{-squares}}|E\cap C|=e_i+e_j$. Odd-squareness makes each
+summand odd, and there are $2^{n-2}$ summands, so for $n\ge3$ the total is
+even: $e_i+e_j$ is even for every pair, i.e.\ \emph{all $e_i$ have the same
+parity}. For $n=7$ with $\sum_ie_i=304$ even, that parity must be even. Of the
+20 profiles in Table~\ref{tab:types}, only five (ranks 5, 7, 10, 17, 18) have
+all direction counts even, so the other fifteen are excluded a priori --- and
+indeed contain no odd-square solution. The genuinely empirical content is
+therefore the single remaining fact that rank~17
+($[46,46,44,42,42,42,42]$, 107 solutions) has all counts even yet contains no
+odd-square solution.
 
 \begin{table}[ht]
 \centering
@@ -1558,8 +1632,10 @@ from the released edge lists alone. We release
 recomputes this section's degree-sequence, dimension-profile,
 spectral-radius-range, exhaustive Hamming-distance, and Type-$18$
 nontrivial-automorphism-existence claims directly from
-\texttt{q7\_edges\_304.jsonl.part1--3} in about three minutes (peak
-memory approximately $100$MB); running it
+\texttt{q7\_edges\_304.jsonl.part1--3} in about a single pass over the $19\,866$ solutions and all
+$\binom{19\,866}{2}\approx1.97\times10^{8}$ pairs (peak resident memory
+around $700$--$800$MB, dominated by the Python object representation of
+the solution store); running it
 reproduces all of those specific numbers exactly. This script confirms
 only that \emph{some} nontrivial automorphism fixes each Type-$18$
 solution; it does not check the stronger claim made in

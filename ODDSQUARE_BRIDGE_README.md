@@ -92,9 +92,9 @@ iterations each. As a control, the same method reaches the realised
 distribution `{0:2,2:24,4:6}` immediately from any seed. Neither of the
 other two is ever reached; both plateau at an identical nonzero distance
 (16 and 8 respectively) regardless of seed. This is computational evidence,
-not a proof, that only the first solution is realisable -- consistent with
-and sharpening MPR95's remark, which does not report having tested this
-systematically.
+not a proof, that only distribution C is reachable at the budgets tested.
+We do not map MPR95's formulation onto the A/B/C labels used here, so we
+make no claim about whether this corroborates their specific remark.
 
 ## Q7 audit
 
