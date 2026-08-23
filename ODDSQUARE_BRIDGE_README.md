@@ -77,7 +77,7 @@ has exactly three optimal local-field distributions on U:
 the one realised above. Derrida et al. (1979) list multiple solutions in
 their Table I for d=6 and state they do not know if the others besides the
 first are realisable; Marinari-Parisi-Ritort (1995) report that "the other
-solution doesn't seem to correspond to any spin configuration".
+solution of the Diophantine equation *seems not to* correspond to any spin configuration".
 
 Run:
 

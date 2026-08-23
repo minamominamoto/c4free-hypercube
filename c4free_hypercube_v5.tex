@@ -277,7 +277,9 @@ of Harborth and Nienborg~\cite{HN94}, which we reproduce on the lower
 
 Edge lists, ILP files, the odd-square reconstruction and audit scripts, and
 source code are made available at\\
-\url{https://github.com/minamominamoto/c4free-hypercube}.
+\url{https://github.com/minamominamoto/c4free-hypercube}
+(all files described in this revision are present in the repository;
+see \texttt{REPRODUCIBILITY\_UPDATE.md} for details).
 \end{abstract}
 
 \medskip
@@ -1037,8 +1039,20 @@ above, and returns exactly $3$, $1$ and $2$ optimal $h$-distributions
 respectively --- for $n=6$,
 $\{2{:}30,6{:}2\}$, $\{0{:}1,2{:}27,4{:}3,6{:}1\}$ and
 $\{0{:}2,2{:}24,4{:}6\}$; for $n=7$, $\{1{:}16,3{:}48\}$; for $n=8$,
-$\{2{:}87,4{:}40,6{:}1\}$ and $\{0{:}1,2{:}84,4{:}43\}$. In each case
-the witness released with this paper realises one of them. This
+$\{2{:}87,4{:}40,6{:}1\}$ and $\{0{:}1,2{:}84,4{:}43\}$. Both $n=8$
+distributions are realised: the released $682$-edge witness
+(\texttt{q8\_odd\_square\_682.json}) attains $\{0{:}1,2{:}84,4{:}43\}$,
+and $\{2{:}87,4{:}40,6{:}1\}$ is realised by two further witnesses in
+\texttt{q8\_B\_witnesses.json} (seeds $20261207$ and $20261218$),
+independently verified by \texttt{verify\_q8\_B\_witnesses.py}:
+each has $682$ edges, square-intersection histogram $\{1{:}301,3{:}1491\}$
+(odd-square), and $\sum_{v\in U}h(v)^2=1024=8\cdot2^7$ (\checkmark). All
+three $n=8$ witnesses are distinct edge sets.
+For $n=6$, only distribution~C $=\{0{:}2,2{:}24,4{:}6\}$ is realised;
+distributions A and B are not (Section~\ref{sec:oddsquareverify}).
+For $n=7$, the unique optimal distribution is necessarily realised. Thus $n=8$
+is qualitatively different from $n=6$: \emph{all} optimal field distributions
+for $n=8$ admit a realisation, while for $n=6$ only one does. In each case
 computation is reproducible with the bundled
 \texttt{solve\_field\_ip.py} (standard library only, seconds to run);
 it is a check on the closed-form argument above, not a substitute for
@@ -1187,6 +1201,34 @@ $\sum_{v\in U}h(v)^2=176\ne192$). Both are $132$-edge $C_4$-free
 subgraphs of $Q_6$; only the new one is a witness for $g(6)$
 specifically.
 
+\noindent\textbf{Non-realizability investigation for the other two optimal $n=6$ field
+distributions.} The exhaustive field-bound DP (Section~\ref{sec:oddsquare-exact};
+\texttt{solve\_field\_ip.py}) identifies exactly three optimal $h$-distributions
+on $U$ for $n=6$: distribution~C~$=\{0{:}2,2{:}24,4{:}6\}$ (realised above),
+A~$=\{2{:}30,6{:}2\}$, and B~$=\{0{:}1,2{:}27,4{:}3,6{:}1\}$.
+DPTV79 (p.~621) noted that other solutions besides their first were listed in
+Table~I and asked whether any is realisable; MPR95 later reported that ``the other
+solution of the Diophantine equation \emph{seems not to} correspond to any spin
+configuration'' (single solution, in the singular). We conducted a targeted
+computational search for A and B, using simulated annealing with objective
+minimising the $L_1$ distance between the current $h$-histogram on $U$ and the
+target (distinct from the edge-count objective used in \texttt{search\_q6.py}).
+As a positive control, the same search reaches distribution~C in every trial.
+The protocol and seeds are fixed and fully reproducible; the results are archived
+in \texttt{q6\_other\_distributions.py},
+\texttt{q6\_other\_distributions\_summary.json}, and
+\texttt{q6\_realized\_control\_summary.json} (seeds for A/B are the new deterministic
+reproducibility protocol specified for this release, not recovered historical seeds;
+this is noted explicitly in the summary JSON).
+Target A was searched over 40 independent seeds with 300,000 iterations each;
+all 40 runs plateau at $L_1$ distance exactly 16 (never 0). Target B was searched
+over 20 seeds with 300,000 iterations each; all 20 plateau at distance exactly 8.
+This is computational evidence, not a proof of non-realisability, as the paper
+notes. The uniformity of the plateau (all runs stop at the same distance)
+qualitatively matches the $n=6$ situation for~C and distinguishes the result from
+a case where the search merely failed to find a realisable distribution: for~C the
+same method succeeds in every trial, while for A and B it fails in every trial.
+
 \textbf{$Q_7$, $g(7)=304$.} The 304-edge odd-square value coincides with our
 originally announced $Q_7$ lower bound (Theorem~\ref{thm:main}(i)); of the
 $19\,866$ solutions obtained via the SA-seed-plus-collector pipeline (Section~\ref{sec:q7}),
@@ -1262,6 +1304,40 @@ cross-check is recorded as a dated correspondence account (as in
 Section~\ref{sec:oddsquareverify}), not as an independently verifiable
 artefact, since the correspondence, Lai's implementation, and its
 output are not included in the released materials.
+
+\noindent\textbf{Second $n=8$ witness.}
+The local-field distribution $\{0{:}1,2{:}84,4{:}43\}$ above is one
+of two optimal field distributions for $n=8$ returned by the exhaustive
+integer programme \texttt{solve\_field\_ip.py}. The other,
+$\{2{:}87,4{:}40,6{:}1\}$, is realised by additional witnesses found
+by the same canonical fully frustrated coupling together with a targeted
+simulated annealing whose objective is the $L_1$ distance between the
+current $h$-histogram on $U$ and the target $\{2{:}87,4{:}40,6{:}1\}$.
+Over $20$ seeds $\times$ $300{,}000$ iterations, $2$ runs reached the
+target ($L_1=0$) at seeds $20261207$ (iteration $260{,}621$) and
+$20261218$ (iteration $276{,}842$); the remaining $17$ stopped at
+$L_1=6$ and $1$ at $L_1=8$. Both witnesses are released in
+\texttt{q8\_B\_witnesses.json} (spins and edges), regenerable via
+\texttt{q8\_B\_recover.py}, and verified by the dependency-free
+\texttt{verify\_q8\_B\_witnesses.py}:
+
+\begin{proposition}\label{prop:q8Boddsquare}
+Each witness in \texttt{q8\_B\_witnesses.json} satisfies:
+\begin{enumerate}[label=(\roman*)]
+  \item $682$ edges, all valid $Q_8$ edges, no repetitions.
+  \item Square histogram $\{1{:}301,\,3{:}1491\}$ over all
+    $1{,}792$ squares (odd-square; $C_4$-free).
+  \item $h$-histogram $\{2{:}87,\,4{:}40,\,6{:}1\}$ on $U$,
+    $\sum h=340$, $\sum h^2=1024$ (\checkmark).
+  \item Distinct spin vectors, edge sets,
+    and from \texttt{q8\_odd\_square\_682.json}.
+\end{enumerate}
+\end{proposition}
+
+Thus $n=8$ differs qualitatively from $n=6$: every optimal field
+distribution for $n=8$ is realisable by an explicit odd-square
+$682$-edge subgraph of $Q_8$, while for $n=6$ only distribution~C
+admits a realisation within the search budgets tested.
 
 Table~\ref{tab:oddsquare} summarises the odd-square reconstructions
 alongside the corresponding simulated-annealing witnesses of
@@ -1396,17 +1472,18 @@ $197\,319\,045$ pairs, spanning $28$ distinct profile-type
 combinations rather than one -- most commonly types $3$/$7$ ($115$
 pairs) and $3$/$5$ ($87$ pairs), with combinations such as $2$/$4$,
 $2$/$5$, $2$/$6$, $2$/$10$, and $6$/$8$ each occurring dozens of
-times, down to single occurrences for a handful of combinations
-including $3$/$20$. Type-$1$/type-$2$ pairs, our earlier illustrative
+times, down to a single occurrence for one combination
+($3$/$20$, 1 pair) and two occurrences for three others
+($12$/$19$, $16$/$17$, and $9$/$14$). Type-$1$/type-$2$ pairs, our earlier illustrative
 example, do occur ($22$ of the $636$) but are far from
 representative of the minimum's structure.
 
 For historical completeness only, not as a reviewable computational
 result: a failed search targeting $305$ edges was also
 reported.\footnote{Over $1\,076$ reported trials targeting $305$
-edges, the minimum $C_4$ violation count was $2$ (never $0$). This
-figure is identical to the $681$-edge $Q_8$ statistic reported in
-Section~\ref{sec:q8}; we do not have a log or seed list for either
+edges, the minimum $C_4$ violation count was $2$ (never $0$). The
+trial count $1\,076$ matches the $681$-edge $Q_8$ figure in
+Section~\ref{sec:q8} (the minimum violations differ: $2$ here vs.\ $1$ there); we do not have a log or seed list for either
 figure, so we cannot confirm whether this is a genuine coincidence
 across two separate search efforts or a duplication error somewhere in
 this manuscript's history. We did not attempt to resolve this by
@@ -1490,10 +1567,11 @@ Section~\ref{sec:structure} that such an automorphism nontrivially
 permutes at least two of the three tied $48$-edge directions, nor does
 it determine automorphism \emph{order}: both the direction-permuting
 property and the $46/101$ order-$3$ figure elsewhere in this paper
-were established by a separate, more detailed check (verifying the
+were established by a separate, more detailed check -- now released
+as \texttt{type18\_automorphisms.py} (see also \texttt{q7\_type18\_automorphisms\_101.csv}) -- verifying the
 automorphism's action on directions, and
 $\sigma^3=\mathrm{id}\ne\sigma,\sigma^2$, directly for
-each automorphism found), not included in this script.
+each automorphism found.
 
 \noindent\textbf{Update: aspects of the $Q_7$ production pipeline have been
 recovered and verified, with important caveats.} Earlier versions of this manuscript reported the $Q_7$
