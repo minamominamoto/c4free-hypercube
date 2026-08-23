@@ -4,14 +4,19 @@
 Default mode uses only the Python standard library and checks:
   1. all released C4-free / odd-square certificates (verify.py);
   2. the exact field integer programme for n=6,7,8 (solve_field_ip.py);
-  3. byte-for-byte regeneration of the Q6 odd-square witness;
-  4. byte-for-byte regeneration of the Q8 odd-square witness;
-  5. the exhaustive Q7 odd-square audit and its released CSV;
-  6. the exact Type-18 automorphism claims, including 46/101 order-3 cases.
+  3. the exhaustive Q6 realizability decision: distributions A and B are not
+     realisable, C is (q6_decide_realizability.py);
+  4. the two Q8 witnesses for the second optimal field distribution
+     {2:87,4:40,6:1} (verify_q8_B_witnesses.py);
+  5. byte-for-byte regeneration of the Q6 odd-square witness;
+  6. byte-for-byte regeneration of the Q8 odd-square witness;
+  7. the exhaustive Q7 odd-square audit and its released CSV;
+  8. the exact Type-18 automorphism claims, including 46/101 order-3 cases.
 
 Optional modes:
-  --structural   also run analyze_q7_structure.py and q7_hamming_tally.py
-                 (both require numpy; analyze_q7_structure.py is expensive)
+  --structural   also run analyze_q7_structure.py, q7_hamming_tally.py and
+                 q7_order3_automorphisms.py (all require numpy;
+                 analyze_q7_structure.py is the expensive one)
   --experiments  rerun the deterministic Q6 A/B targeted SA protocol and compare
                  its logs with the bundled canonical logs
   --all          run both optional modes

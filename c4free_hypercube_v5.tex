@@ -759,7 +759,7 @@ sharpen this connection to exact values at $n=6,7,8$ specifically. To
 quantify that sharpening: our exact frustration indices are $60,144,342$
 at $n=6,7,8$ (i.e.\ $|E(Q_n)|-g(n)$). A baseline lower bound LNSW26
 state as Theorem~5.2 (attributed by them to an implication of Bialostocki's
-work) --- and which is, in our notation, exactly the Cauchy--Schwarz relaxation
+work~\cite{Bia83}) --- and which is, in our notation, exactly the Cauchy--Schwarz relaxation
 $S\le\sqrt{Q\,m}=\sqrt n\,2^{n-1}$ of Lemma~\ref{lem:fieldbound}, already
 recorded by DPTV79 (p.~620) as giving ``a first lower bound for the ground
 state energy'' ---
@@ -917,8 +917,9 @@ This is a corollary of, not an alternative to, Lemma~\ref{lem:switching}:
 the argument uses only that flipping one vertex's spin preserves
 odd-squareness (immediate from the switching correspondence) and counts
 the resulting change in $|E|$ directly. All $389$ released
-odd-square $Q_7$ solutions have $304$ edges, the maximum shown below
-(Section~\ref{sec:oddsquareaudit}), so
+odd-square $Q_7$ solutions have $304$ edges, which is the maximum by the
+upper bound $g(7)\le304$ proved below in Section~\ref{sec:oddsquare-exact}
+(the audit locating these 389 solutions is Section~\ref{sec:oddsquareaudit}), so
 the Lemma's hypothesis applies to every one of them; we independently
 verified $h(v)\ge0$ for all $v\in U$ holds on all $389$, with no
 counterexample, consistent with (and not merely assumed by) the Lemma.
@@ -993,8 +994,10 @@ the true integer optimum. We apply \eqref{eq:quantsum} with the pair
 $(a,b)$ of parity-correct integers straddling the root-mean-square field
 $\sqrt{Q/m}=\sqrt n$, namely $(1,3)$ for $n=7$ ($\sqrt7\approx2.65$)
 and $(2,4)$ for $n=6,8$ ($\sqrt6\approx2.45$, $\sqrt8\approx2.83$);
-we verified directly, by evaluating $(Q+ab\,m)/(a+b)$ over every valid
-parity-correct pair with $a+b>0$ (pairs with $a+b=0$ make
+we verified directly, by evaluating $(Q+ab\,m)/(a+b)$ over every
+parity-correct pair with $a+b>0$ and $|a|,|b|\le n+2$ --- beyond that range
+$ab\,m$ grows faster than $a+b$ and the bound is worse than the minimum
+already found, so the search is finite --- (pairs with $a+b=0$ make
 \eqref{eq:quantsum} degenerate, giving no bound on $S$, while
 $a+b<0$ reverses the inequality and gives a \emph{lower} rather than
 upper bound), that this is
@@ -1158,8 +1161,10 @@ rule, both independent of any bound established elsewhere in this
 paper: at $D=9$, $\sqrt9=3$ is itself an integer of the right parity,
 so the field-bound optimum is the unique uniform distribution $h\equiv3$,
 giving $S=768$, $H/N=-1/2$ exactly, and $768\times(-1/2)=-384$ --
-an \emph{exact} match to MPR95's own stated $D=9$ value, not merely a
-rounding one. At $D=10$, $m=512$, $Q=5120$, $(a,b)=(2,4)$ gives
+an \emph{exact} match to MPR95's own stated $D=9$ value. This point,
+however, is where the scale factor $768$ is itself pinned down, so it
+corroborates the conversion without being independent of it; the two
+independent checks are $D=8$ and $D=10$. At $D=10$, $m=512$, $Q=5120$, $(a,b)=(2,4)$ gives
 $\Delta=9216-6S$, so $S\le1536$ (with $\Delta=0$, distribution
 $\{2{:}256,4{:}256\}$), and
 $768\times(-1536/(1024\sqrt{10}))\approx-364.29\approx-364$, matching
@@ -1259,7 +1264,11 @@ DPTV79 (p.~622) noted that solutions besides their first were listed in
 Table~I and asked whether any is realisable (``We do not know if the other
 solutions \ldots\ are realizable'', in the plural; we rely on that sentence for
 the existence of at least two further solutions, not on a reading of the
-typeset table itself, which we could not extract). MPR95 reported, by simulated
+typeset table itself, which we could not extract). Since DPTV's constraints
+are the ones solved here and the exhaustive enumeration returns exactly three
+optimal distributions, their ``other solutions'' are necessarily A and B; the
+identification is forced by the completeness of the enumeration rather than by
+transcription of the table. MPR95 reported, by simulated
 annealing, that at $D=6$ only configurations corresponding to the first solution
 of DPTV's Table~I are realisable and that ``the other solution of the Diophantine
 equation \emph{seems not to} correspond to any spin configuration'' -- a
@@ -1294,7 +1303,10 @@ the induced $m$-multiset for some assignment of the $32$ spins on $U^{c}$.
 (This step uses that the target histogram has no negative entry, so that the
 achievable field at each $v$ is the single value $6-2m(v)$; A, B and C are all
 nonnegative, and by the remark after Lemma~\ref{lem:fieldbound} no optimal
-distribution can have one.) The
+distribution can have one. It also suffices to decide the question on $U$:
+translation by $e_0$ is an automorphism of $Q_6$ exchanging $U$ and $U^{c}$ and
+preserving edge sets, so a distribution realised on one side is realised on the
+other.) The
 $m$-multisets are $\{0{:}2,2{:}30\}$ for A, $\{0{:}1,1{:}3,2{:}27,3{:}1\}$ for
 B, and $\{1{:}6,2{:}24,3{:}2\}$ for C. This is a finite ($2^{32}$) decision
 problem, and depth-first search with counter-overflow pruning settles it in
@@ -1303,9 +1315,13 @@ assigned, so any partial assignment exceeding a target count is cut. Global spin
 flip fixes every $h$, so one $U^{c}$ spin may be pinned. The search finds a
 realisation for C ($501$ nodes visited) and exhausts the space for A
 ($655{,}359$ nodes) and B ($22{,}129{,}151$ nodes) without a realisation;
-without the symmetry reduction every node count is exactly doubled, since the
-global flip pairs off search branches; the released script reports the doubled
-figure and recomputes it on request (\texttt{-{}-full}).
+Without the symmetry reduction the two non-realisable searches, which exhaust
+the space, visit exactly twice as many nodes ($1\,310\,718$ and $44\,258\,302$),
+since the global flip pairs off branches; the realisable case~C is not doubled,
+because the search returns at the first witness found and may find it on either
+side of the pairing. The released script reports the doubled figure as an
+expectation for the exhausted cases and recomputes both on request
+(\texttt{-{}-full}).
 \end{proof}
 
 The decision procedure is released as
@@ -1568,7 +1584,7 @@ Every solution in the $19\,866$ satisfies:
 \end{enumerate}
 \end{proposition}
 
-Item (vii) deserves comment, since it was not anticipated. An element of
+Item (vi) deserves comment, since it was not anticipated. An element of
 $\mathrm{Aut}(Q_7)$ acts on edges by permuting directions, so it preserves the
 per-direction edge counts; an order-$3$ element must therefore have an order-$3$
 coordinate permutation preserving the solution's own direction-count vector
@@ -2350,24 +2366,25 @@ principle, verify on the dual side.
     via \texttt{march\_cu} and direct solving via CaDiCaL and Kissat)
     was attempted over several weeks and did not reach a conclusion:
     the cube-generation step itself repeatedly failed to complete, and
-    direct solver runs of over $17$ days of process time returned
-    \texttt{UNKNOWN} rather than a SAT/UNSAT verdict. A second,
-    independent attempt using a different encoding (Sinz's sequential
-    at-most-$143$ cardinality encoding on the negated edge variables,
-    arriving at the same $64\,512$-variable, $129\,104$-clause scale by
-    a different construction) and solving directly with Kissat (no
-    cube splitting) was run for over $408$ hours ($17$ days) of
-    wall-clock time and likewise terminated with no SAT/UNSAT verdict
-    logged. A third, independent approach -- direct branch-and-bound on
-    the original $448$-variable ILP with added symmetry-breaking
-    constraints ($685$ rows total), using HiGHS and warm-started from
-    the known $304$-edge solution -- ran for over $365\,000$ seconds
-    ($\sim101$ hours) without closing the optimality gap, which
+    direct solver runs returned \texttt{UNKNOWN} rather than a
+    SAT/UNSAT verdict. A second, independent attempt using a different
+    encoding (Sinz's sequential at-most-$143$ cardinality encoding on
+    the negated edge variables, arriving at the same
+    $64\,512$-variable, $129\,104$-clause scale by a different
+    construction) and solving directly with Kissat (no cube splitting)
+    likewise terminated with no SAT/UNSAT verdict logged. A third,
+    independent approach -- direct branch-and-bound on the original
+    $448$-variable ILP with added symmetry-breaking constraints
+    ($685$ rows total), using HiGHS and warm-started from the known
+    $304$-edge solution -- did not close the optimality gap, which
     remained at $5.26\%$ (best bound $\approx-320.0$ against the
-    incumbent $-304$) when the log ends. We record all three
-    as unsuccessful attempts, not as evidence either way; the
-    hardness suggests this instance is not easily settled by
-    off-the-shelf SAT or MIP solvers at current scale.
+    incumbent $-304$) when the log ends. Each run was allowed to
+    continue for days rather than hours; we do not quote wall-clock
+    figures, since they are hardware-dependent and unfalsifiable for a
+    reader, and the instance sizes above are the reproducible content.
+    We record all three as unsuccessful attempts, not as evidence
+    either way; the hardness suggests this instance is not easily
+    settled by off-the-shelf SAT or MIP solvers at current scale.
   \item\label{op:q8exact} Determine $\ex(Q_8,C_4)$ exactly. Is it $682$, or can a
     non-odd-square construction exceed $g(8)=682$? The $Q_7$ audit of
     Section~\ref{sec:oddsquareaudit} shows the two questions are genuinely
@@ -2470,6 +2487,9 @@ arXiv:1201.3587, 2012.
 \bibitem{Erd84} P.~Erd\H{o}s, On some problems in graph theory, combinatorial
   analysis and combinatorial number theory, in: \textit{Graph Theory and
   Combinatorics} (B.~Bollob\'as, ed.), Academic Press, 1984, pp.~1--17.
+\bibitem{Bia83} A.~Bialostocki, Some Ramsey type results regarding the graph
+  $H$, \textit{Ars Combin.}\ \textbf{16-A} (1983), 39--48. (Cited
+  via~\cite{LNSW26}; not consulted in the original by the present author.)
 \bibitem{HN94} H.~Harborth and H.~Nienborg, Maximum number of edges in a
   six-cube without four-cycles, \textit{Bull.\ ICA}\ \textbf{12} (1994), 55--60.
 \bibitem{LNSW26} S.~Laplante, R.~Naserasr, A.~Sunny, and Z.~Wang,
