@@ -78,11 +78,12 @@ sha256sum -c ODDSQUARE_BRIDGE_SHA256SUMS.txt      # odd-square material
 ### Dependencies for the search/solver scripts
 
 `verify.py`, `generate_q6_132.py`, `search_q6.py`, `generate_q8_682.py`,
-`audit_q7_odd_square.py`, and `solve_field_ip.py` use only the Python
-standard library, as noted above. The recovered
-production-history scripts, by contrast, need third-party packages not
-declared in `requirements.txt` (added in the reproducibility layer; see
-provided; install as needed):
+`audit_q7_odd_square.py`, `solve_field_ip.py`, `q6_decide_realizability.py`,
+and `reproduce_core.py` use only the Python standard library, as noted above.
+`q7_hamming_tally.py` and `q7_order3_automorphisms.py` additionally need
+`numpy`. The recovered production-history scripts need further third-party
+packages. All of these are pinned in the provided `requirements.txt`
+(install as needed):
 
 - `source.py` (bundled): `highspy`
 - `source_72h.py` (not bundled): `highspy` (tested with

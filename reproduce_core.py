@@ -207,6 +207,12 @@ def main(argv=None):
             [PYTHON, ROOT / "q7_hamming_tally.py"],
         )
         step += 1
+        run_step(
+            step,
+            "order-3 automorphism check on all 19,866 solutions",
+            [PYTHON, ROOT / "q7_order3_automorphisms.py"],
+        )
+        step += 1
 
     print("\n" + "=" * 72)
     print("RESULT: ALL REQUESTED REPRODUCIBILITY CHECKS PASSED")
