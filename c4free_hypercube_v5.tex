@@ -99,9 +99,10 @@ contribution at $n=6,7,8$ is narrower than a first reading of
 Theorem~\ref{thm:oddsquare} might suggest, and consists of three
 parts, none of which is the numerical values $72,160,340$ themselves:
 (i) a closed-form proof (Lemma~\ref{lem:quant}, a mod-$8$ refinement of
-the classical two-point inequality) that DPTV's tabulated optima are
-exact and complete, replacing what their paper presents as a
-table lookup with a short, independently checkable argument;
+the classical two-point inequality) establishing that DPTV's tabulated optima
+are exact and complete, turning DPTV's argument (observe that the optimal
+distribution concentrates near $\sqrt n$, then tabulate) into a short,
+self-contained, independently checkable inequality;
 (ii) explicit, machine-verifiable edge-list certificates realising the
 bound at all three of $n=6,7,8$ -- DPTV's own realisations are
 figures and prose for $n\le7$ only, $n=8$ being left open by them and
@@ -115,11 +116,12 @@ realisable by a spin configuration. Here the prior literature's
 constructions are not machine-readable in the same sense: DPTV79 give
 an explicit recursive scaling construction (their bond configurations
 for $H_5,H_6,H_7$, described in prose and figures, not released as a
-computer-readable edge list), while MPR95 report only a single sentence
-asserting a $D=8$ ground state matching their improved energy bound, with
-no spin configuration, no $D=8$ energy value, and no method described --
-an existence claim we can neither verify nor extend, only match
-independently. The same holds at $n=6$, where DPTV79's own $D=6$
+computer-readable edge list), while MPR95 report in a single sentence that they exhibited a $D=8$ ground
+state matching the improved energy bound, with a method description (simulated
+annealing) and the bound value ($-361$ on their integer comparison scale),
+but no machine-checkable certificate: no spin configuration, no edge list,
+and no graph-theoretic translation -- an existence claim we can neither
+independently verify nor extend beyond matching its numerical value. The same holds at $n=6$, where DPTV79's own $D=6$
 configuration is described in prose; we construct an independent
 132-edge odd-square edge list instead, which happens to realise the
 local-field distribution they report as their table's first solution.
@@ -488,8 +490,8 @@ ensemble of Section~\ref{sec:structure}) has the following properties:
   \item Degree sequence: 32 vertices of degree 4 and 96 of degree 5
     (degree sum $608=2\cdot304$).
   \item Spectral radius $\lambda_1\approx4.787$ (a genuine computed
-    quantity for this construction); $\lambda_n\approx-4.787$, i.e.\
-    $\lambda_1+\lambda_n=0$ to machine precision, which is automatic
+    quantity for this construction); $\lambda_{\min}\approx-4.787$, i.e.\
+    $\lambda_1+\lambda_{\min}=0$ to machine precision, which is automatic
     for any subgraph of the bipartite $Q_7$ and serves here only as a
     sanity check on the eigenvalue computation, not as an independent
     structural finding.
@@ -530,7 +532,7 @@ Solution~A and Solution~B as if they belonged to a single construction.
 Both 680-edge solutions are $C_4$-free and locally maximal (every
 non-edge of $Q_8$ creates at least one $C_4$ upon addition), with edge
 density $680/1024=66.4\%$ (compared with $304/448=67.9\%$ for the $Q_7$
-construction) and $\lambda_1+\lambda_n=0$ (automatic for any subgraph of
+construction) and $\lambda_1+\lambda_{\min}=0$ (automatic for any subgraph of
 the bipartite $Q_8$; not by itself a distinguishing structural feature).
 They differ as follows:
 \begin{enumerate}[label=(\roman*)]
@@ -725,8 +727,7 @@ match when $n$ is a power of $4$; our $g(6),g(7),g(8)$ results above
 sharpen this connection to exact values at $n=6,7,8$ specifically. To
 quantify that sharpening: our exact frustration indices are $60,144,342$
 at $n=6,7,8$ (i.e.\ $|E(Q_n)|-g(n)$). A baseline lower bound LNSW26
-state, attributed by them to an implication of Bialostocki's work
-rather than presented as their own new contribution, is
+state as Theorem~5.2 (attributed by them to an implication of Bialostocki's work),
 $F(H_n,\sigma^*)\ge(n-\sqrt n)\cdot2^{n-2}$, which evaluates to
 $\ge57,\ge140,\ge331$ at $n=6,7,8$ respectively -- looser than our exact
 values by $3,4,11$. LNSW26's own contribution beyond this baseline is
@@ -1061,7 +1062,7 @@ rather than from a separate argument.
 
 All three upper bounds $g(6)\le132$, $g(7)\le304$ and $g(8)\le682$ are thus established
 directly from Lemma~\ref{lem:fieldbound} and Lemma~\ref{lem:quant} --
-reproducing, by a closed-form argument rather than table lookup, the
+reproducing, by a closed-form argument that makes the reasoning self-contained, the
 same optima DPTV79's Table~I already gives for $n\le10$, and settling
 $n=8$'s realisability where DPTV79 explicitly left it open
 (Section~\ref{sec:oddsquareverify}); we retain the citations to
@@ -1371,7 +1372,7 @@ Every solution in the $19\,866$ satisfies:
   \item Degree sequence $\{4^{32},5^{96}\}$.
   \item $\lambda_1$ ranges over $[4.78543,4.79129]$ across all $19\,866$
     solutions (exhaustively computed; not a single shared three-decimal
-    value), with $\lambda_1+\lambda_n=0$ throughout, automatic for any
+    value), with $\lambda_1+\lambda_{\min}=0$ throughout, automatic for any
     subgraph of the bipartite $Q_7$ (sanity check, not an independent
     finding). The type-wise means of Table~\ref{tab:types} round to
     $4.787$--$4.789$.
@@ -1494,8 +1495,8 @@ automorphism's action on directions, and
 $\sigma^3=\mathrm{id}\ne\sigma,\sigma^2$, directly for
 each automorphism found), not included in this script.
 
-\noindent\textbf{Update: the $Q_7$ production code has been recovered
-and verified, with one important caveat.} Earlier versions of this manuscript reported the $Q_7$
+\noindent\textbf{Update: aspects of the $Q_7$ production pipeline have been
+recovered and verified, with important caveats.} Earlier versions of this manuscript reported the $Q_7$
 provenance question as unresolved, based on the released
 \texttt{c4free\_sa.py} (Section~\ref{sec:c4freesa} below), whose
 \texttt{phase1\_sa} we found cannot progress from a fresh random start
@@ -1726,7 +1727,7 @@ the sense described below; only the $680$-edge \emph{solutions}
 themselves (not the $681$-edge negative-search statistics) have since
 also been traced to verified code, described next.
 
-\subsection{Update: the \texorpdfstring{$Q_8$}{Q8} 680-edge production code has also been recovered}
+\subsection{Update: aspects of the \texorpdfstring{$Q_8$}{Q8} 680-edge production pipeline have also been recovered}
 
 We have since also located and verified the actual
 production code for the two released $Q_8$ $680$-edge solutions:
@@ -2144,6 +2145,13 @@ principle, verify on the dual side.
     and is minimum degree $4$ necessary at these edge counts for
     $n\ge9$? (At $n=6$ it is already not necessary; see
     Section~\ref{sec:regularity}.)
+  \item The field bound makes $n=9$ the simplest case beyond $n=8$:
+    $\sqrt9=3$ is a parity-correct integer, so the optimal $h$-distribution
+    is the uniform $h\equiv3$ and the upper bound $g(9)\le\tfrac{2304+768}{2}=1536$
+    follows without Lemma~\ref{lem:quant}. MPR95 explicitly report failing to
+    find a $D=9$ ground state by simulated annealing. We have not applied
+    the fully frustrated search of Section~\ref{sec:oddsquareverify} to $n=9$;
+    whether the field bound is tight there ($g(9)=1536$?) is unknown.
   \item We now know $g(6)=\ex(Q_6,C_4)=132$ (Theorem~\ref{thm:oddsquare}
     combined with~\cite{HN94}). For $n=7,8$, Theorem~\ref{thm:oddsquare}
     only establishes $g(7)=304$ and $g(8)=682$; whether
