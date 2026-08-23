@@ -71,30 +71,53 @@ C4-free subgraphs of Q6, but only this one is odd-square.
 
 ## Q6: are the other two optimal distributions realisable?
 
-The field-bound optimisation for n=6 (Section "Exact values" of the paper)
-has exactly three optimal local-field distributions on U:
-`{2:30,6:2}`, `{0:1,2:27,4:3,6:1}`, and `{0:2,2:24,4:6}` -- the last being
-the one realised above. Derrida et al. (1979) list multiple solutions in
-their Table I for d=6 and state they do not know if the others besides the
-first are realisable; Marinari-Parisi-Ritort (1995) report that "the other
-solution of the Diophantine equation *seems not to* correspond to any spin configuration".
+The field-bound optimisation for n=6 has exactly three optimal local-field
+distributions on U: A = `{2:30,6:2}`, B = `{0:1,2:27,4:3,6:1}`, and
+C = `{0:2,2:24,4:6}` (the one realised by `q6_odd_square_132.json`).
+Derrida et al. (1979) listed multiple solutions in their Table I for d=6 and
+stated they did not know whether any but the first is realisable;
+Marinari-Parisi-Ritort (1995) reported by simulated annealing that "the other
+solution of the Diophantine equation *seems not to* correspond to any spin
+configuration".
 
-Run:
+**This is now decided, not estimated.** Run:
 
 ```bash
-python3 q6_other_distributions.py
+python3 q6_decide_realizability.py
 ```
 
-This targets each of the other two distributions directly (simulated
-annealing that minimises L1 distance from the target histogram, not "reach
-132 edges by any route") across 20-40 independent seeds and up to 300,000
-iterations each. As a control, the same method reaches the realised
-distribution `{0:2,2:24,4:6}` immediately from any seed. Neither of the
-other two is ever reached; both plateau at an identical nonzero distance
-(16 and 8 respectively) regardless of seed. This is computational evidence,
-not a proof, that only distribution C is reachable at the budgets tested.
-We do not map MPR95's formulation onto the A/B/C labels used here, so we
-make no claim about whether this corroborates their specific remark.
+Because Q6 is bipartite, every neighbour of a vertex in U lies in U^c, so the
+quantity k(v) depends only on the 32 spins on U^c while the spin at v itself is
+free. The achievable non-negative field at v is therefore determined by
+m(v) = min(k(v), 6-k(v)), and a target histogram is realisable exactly when the
+multiset {m(v) : v in U} matches. That is a finite (2^32) decision, settled by
+depth-first search with counter pruning:
+
+| target | nodes visited | verdict |
+| --- | ---: | --- |
+| A `{2:30,6:2}` | 655,359 | NOT REALISABLE |
+| B `{0:1,2:27,4:3,6:1}` | 22,129,151 | NOT REALISABLE |
+| C `{0:2,2:24,4:6}` | 501 | REALISABLE (132 edges reconstructed) |
+
+Wall time is about 19 seconds total on one modern core; the C branch also
+rebuilds a full spin vector and re-derives the histogram and edge count as an
+end-to-end check. `--full` additionally repeats each search without the
+global-spin-flip symmetry reduction, exactly doubling every node count.
+
+By the switching lemma the odd-square edge sets of Q6 are precisely the
+positive-edge sets of spin configurations under any fixed fully frustrated
+coupling, so this verdict does not depend on the particular coupling used.
+
+### Superseded heuristic experiment
+
+`q6_other_distributions.py` and its CSV/JSON logs record an earlier simulated
+annealing study of the same question (40 seeds for A, 20 for B, 300,000
+iterations each, all plateauing at L1 distance 16 and 8; a positive control
+reached C in 20/20 runs at 60,000 iterations). These files remain in the release
+as a record of how the question was first approached, but they are **superseded
+by `q6_decide_realizability.py` and are no longer offered as evidence** — a
+plateau is not a proof, and the iteration budgets for the targets and the
+control were not equal.
 
 ## Q7 audit
 

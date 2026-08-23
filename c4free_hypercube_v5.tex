@@ -204,10 +204,12 @@ the 20 direction profiles, the spectral-radius range, and the exhaustive
 pairwise Hamming statistics (minimum $6$, maximum $274$, mean
 $195.396108\ldots$, median $196$), and \texttt{type18\_automorphisms.py}
 reproduces the Type-18 automorphism counts; \texttt{reproduce\_core.py}
-drives these in one command. Two quantities reported below are not emitted
-directly by those scripts and require a short additional tally from the
-same data: the count of $636$ minimum-distance pairs and their breakdown
-into $28$ profile-type combinations.
+drives these in one command. The count of $636$ minimum-distance
+pairs and their breakdown into $28$ profile-type combinations are produced by
+\texttt{q7\_hamming\_tally.py}, which recovers all pairwise distances from a
+single blocked matrix product (using
+$|E\triangle E'|=2(304-|E\cap E'|)$) in a few seconds and optionally writes
+the minimum-distance pairs to CSV.
 
 The $Q_7$ solutions were found by a two-stage process that we have
 since traced and partly re-verified (the two stages have different
@@ -291,8 +293,13 @@ of Harborth and Nienborg~\cite{HN94}, which we reproduce on the lower
 Edge lists, ILP files, the odd-square reconstruction and audit scripts, and
 source code are made available at\\
 \url{https://github.com/minamominamoto/c4free-hypercube}
-(all files described in this revision are present in the repository;
-see \texttt{REPRODUCIBILITY\_UPDATE.md} for details).
+. The repository is synchronised with each released revision; readers should
+check the commit corresponding to this version, since files introduced by a
+revision (here, among others, \texttt{q6\_decide\_realizability.py},
+\texttt{solve\_field\_ip.py} and the $Q_8$ second-distribution witnesses)
+appear only from that commit onward. The authoritative file list for this
+revision, with SHA-256 sums, is \texttt{ORIGINAL\_DATA\_SHA256SUMS.txt} and
+\texttt{ODDSQUARE\_BRIDGE\_SHA256SUMS.txt} in the accompanying archive.
 \end{abstract}
 
 \medskip
@@ -988,10 +995,11 @@ S\le72,
 \qquad\text{whence}\qquad
 g(6)\le\frac{192+72}{2}=132 .
 \]
-At $S=72$ we have $\Delta=16$, and since each vertex contributes $0$ or
-at least $8$, exactly two vertices of $U$ contribute $8$ each, i.e.\
-exactly two have $h\in\{0,6\}$ and the remaining $30$ have
-$h\in\{2,4\}$. The witness of
+At $S=72$ we have $\Delta=16$. By Lemma~\ref{lem:quant} each vertex
+contributes a value in $\{0,8,24,48,\ldots\}$ (the set $4u(u-1)$,
+$u\in\mathbb{Z}$); since $16$ is not in that set, the only decomposition of
+$16$ is $8+8$, so exactly two vertices of $U$ have $h\in\{0,6\}$ and the
+remaining $30$ have $h\in\{2,4\}$. The witness of
 Section~\ref{sec:oddsquareverify} attains $S=72$ with $h$-distribution
 $\{0{:}2,\,2{:}24,\,4{:}6\}$ on $U$, so the bound is tight and
 $g(6)=132$ is established without external input --- in particular
@@ -1238,10 +1246,14 @@ C with DPTV's first solution by multiplicity, the question is whether A and B
 are realisable. We settle it exhaustively rather than heuristically.
 
 \begin{proposition}[Exhaustive decision]\label{prop:q6realizability}
-Under the canonical fully frustrated coupling on $Q_6$, distribution~C is
-realisable by a spin configuration and distributions A and B are not.
+Among $132$-edge odd-square subgraphs of $Q_6$, distribution~C is realised and
+distributions A and B are not realised by any such subgraph.
 \end{proposition}
 \begin{proof}
+By Lemma~\ref{lem:switching} the odd-square edge sets of $Q_6$ are exactly the
+positive-edge sets arising from spin configurations under \emph{any} fixed fully
+frustrated coupling, so it suffices to decide the question for the canonical
+coupling used throughout; the conclusion is independent of that choice.
 Write $s_v=(-1)^{t_v}$ with $t_v\in\{0,1\}$, and let $b(v,w)=1$ exactly when
 $J(v,w)=-1$; an edge $vw$ is positive iff $t_v\oplus t_w=b(v,w)$. As $Q_6$ is
 bipartite, every neighbour of $v\in U$ lies in $U^{c}$, so
@@ -1397,7 +1409,7 @@ Each witness in \texttt{q8\_B\_witnesses.json} satisfies:
 Thus $n=8$ differs qualitatively from $n=6$: every optimal field
 distribution for $n=8$ is realisable by an explicit odd-square
 $682$-edge subgraph of $Q_8$, while for $n=6$ only distribution~C
-admits a realisation within the search budgets tested.
+admits a realisation (Proposition~\ref{prop:q6realizability}).
 
 Table~\ref{tab:oddsquare} summarises the odd-square reconstructions
 alongside the corresponding simulated-annealing witnesses of
@@ -1413,7 +1425,7 @@ Sections \ref{sec:q7} and \ref{sec:q8}.
 Parameter & $Q_7$ odd-square & $Q_8$ odd-square\\
 \midrule
 Edges (value of $g(n)$) & 304 & 682\\
-Source & one of 389 verified SA sols. & witness for~\cite{MPR95} bound (reconstructed here)\\
+Source & one of 389 verified SA sols. & independent witness attaining~\cite{MPR95}'s bound\\
 Non-odd-square comparison witness & n/a (19\,477 exist,~\ref{sec:oddsquareaudit}) & 680 (Solution~B,~\ref{sec:q8})\\
 Improvement over that witness & --- & $+2$\\
 \bottomrule
@@ -1584,17 +1596,17 @@ odd-square solution.
 \caption{Dimension-profile breakdown of the 389 odd-square solutions among
   the $19\,866$ published 304-edge $Q_7$ solutions.}
 \label{tab:oddsquareaudit}\medskip
-\begin{tabular}{lc}
+\begin{tabular}{clc}
 \toprule
-Dimension profile (sorted) & Count\\
+Rank in Table~\ref{tab:types} & Dimension profile (sorted) & Count\\
 \midrule
-$\{46,46,46,42,42,42,40\}$ & 78\\
-$\{44,44,44,44,44,44,40\}$ & 127\\
-$\{44,44,44,44,44,42,42\}$ & 83\\
-$\{48,48,48,40,40,40,40\}$ & 101\\
+ 5 & $\{46,46,46,42,42,42,40\}$ & 78\\
+ 7 & $\{44,44,44,44,44,44,40\}$ & 127\\
+10 & $\{44,44,44,44,44,42,42\}$ & 83\\
+18 & $\{48,48,48,40,40,40,40\}$ & 101\\
 \midrule
-Total odd-square & 389\\
-Total non-odd-square & 19\,477\\
+\multicolumn{2}{l}{Total odd-square} & 389\\
+\multicolumn{2}{l}{Total non-odd-square} & 19\,477\\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -1634,7 +1646,7 @@ spectral-radius-range, exhaustive Hamming-distance, and Type-$18$
 nontrivial-automorphism-existence claims directly from
 \texttt{q7\_edges\_304.jsonl.part1--3} in about a single pass over the $19\,866$ solutions and all
 $\binom{19\,866}{2}\approx1.97\times10^{8}$ pairs (peak resident memory
-around $700$--$800$MB, dominated by the Python object representation of
+around $600$--$800$MB, dominated by the Python object representation of
 the solution store); running it
 reproduces all of those specific numbers exactly. This script confirms
 only that \emph{some} nontrivial automorphism fixes each Type-$18$
@@ -1806,9 +1818,11 @@ $\mathrm{Aut}(Q_7)$-orbit that differ only by permuting two
 equal-count directions can therefore receive different hashes. We
 confirmed this directly: the first released solution has direction
 edge-counts $[44,43,44,42,43,44,44]$ (four tied at $44$), hash
-\texttt{79014e2f4aed}; swapping two of the tied $44$-edge directions
-(an automorphism of $Q_7$) changes the computed hash to
-\texttt{0ba97c019106}. The $19\,866/19\,866$ match we
+\texttt{79014e2f4aed}; swapping directions $0$ and $2$, two of the four
+tied at $44$ (an automorphism of $Q_7$), changes the computed hash to
+\texttt{0ba97c019106}. The other five transpositions of tied directions
+give five further distinct values, so the instability is systematic
+rather than an isolated collision. The $19\,866/19\,866$ match we
 report above is against the code exactly as implemented (with this
 defect and the flip-loop defect above), which is what we release and
 what actually produced the
@@ -2046,7 +2060,19 @@ solution; the automorphism-based restart is dead code in the released
 implementation. (The script's own docstring originally described this
 mechanism without noting the bug; we have appended a note to the
 docstring documenting it, without altering any functional code, so
-that a reader of the code alone is not misled.)
+that a reader of the code alone is not misled.) The same applies to two
+further recovered scripts: \texttt{sa\_search.py} and \texttt{sa\_q8.py}
+each carry a comment marked \texttt{NOTE (added retrospectively)} --- in
+\texttt{sa\_search.py} recording that the seed load is unconditional, in
+\texttt{sa\_q8.py} recording that the Brass--Harborth--Nienborg figure the
+script prints as a ``lower bound'' at start-up is an extrapolation outside
+the cited domain and not a proven bound at $n=8$
+(Section~\ref{sec:regularity}). These three files ---
+\texttt{c4free\_sa.py}, \texttt{sa\_search.py}, \texttt{sa\_q8.py} --- are the
+complete list of released scripts carrying annotations we added after
+recovery; in each case only comments or docstrings were touched, and the
+SHA-256 sums in \texttt{ORIGINAL\_DATA\_SHA256SUMS.txt} are those of the
+annotated files, not of the historical originals.
 
 \noindent\textbf{A more serious defect in \texttt{phase1\_sa}.} On
 direct execution, we found that the released \texttt{phase1\_sa} is
@@ -2063,7 +2089,13 @@ a rare occurrence but the typical case: reproducing the exact RNG state
 of trial 1 for \texttt{-{}-n 7 -{}-target 304 -{}-seed 42}, the initial
 violation count is $V=152$ against $\texttt{viol\_cap}=14$ (best
 single-toggle result: $147$, still far above cap), and running
-\texttt{phase1\_sa} for $100\,000$ steps leaves $V=152$ unchanged.
+\texttt{phase1\_sa} for $100\,000$ steps leaves $V=152$ unchanged.\footnote{To
+reproduce these RNG states, note that \texttt{search()} draws its five
+per-trial parameters and \emph{then} performs one further, unused draw
+\texttt{start = rng.sample(range(ne), target)} that is never passed to
+\texttt{phase1\_sa} (this is the dead-code diversification restart described
+above). That draw must be consumed before generating the initial edge set;
+skipping it gives $V=129$ instead of $152$.}
 Reproducing trial 1 of \texttt{-{}-n 8 -{}-target 680 -{}-seed 0}
 similarly gives initial $V=333$ against $\texttt{viol\_cap}=38$,
 frozen after $50\,000$ steps. Sampling $10\,000$ independent uniform-random

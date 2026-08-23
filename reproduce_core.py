@@ -10,7 +10,8 @@ Default mode uses only the Python standard library and checks:
   6. the exact Type-18 automorphism claims, including 46/101 order-3 cases.
 
 Optional modes:
-  --structural   also run analyze_q7_structure.py (requires numpy; expensive)
+  --structural   also run analyze_q7_structure.py and q7_hamming_tally.py
+                 (both require numpy; analyze_q7_structure.py is expensive)
   --experiments  rerun the deterministic Q6 A/B targeted SA protocol and compare
                  its logs with the bundled canonical logs
   --all          run both optional modes
@@ -103,6 +104,18 @@ def main(argv=None):
     step += 1
     run_step(step, "exact field integer programme", [PYTHON, ROOT / "solve_field_ip.py"])
     step += 1
+    run_step(
+        step,
+        "exhaustive Q6 realizability decision (A/B not realisable, C realisable)",
+        [PYTHON, ROOT / "q6_decide_realizability.py"],
+    )
+    step += 1
+    run_step(
+        step,
+        "Q8 second-distribution witnesses ({2:87,4:40,6:1})",
+        [PYTHON, ROOT / "verify_q8_B_witnesses.py"],
+    )
+    step += 1
 
     with tempfile.TemporaryDirectory(prefix="c4free-repro-") as td:
         tmp = Path(td)
@@ -186,6 +199,12 @@ def main(argv=None):
             step,
             "full Q7 structural/statistical analysis (numpy)",
             [PYTHON, ROOT / "analyze_q7_structure.py", *Q7_PARTS],
+        )
+        step += 1
+        run_step(
+            step,
+            "Q7 pairwise Hamming tally (636 minimum pairs, 28 type combinations)",
+            [PYTHON, ROOT / "q7_hamming_tally.py"],
         )
         step += 1
 

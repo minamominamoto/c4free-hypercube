@@ -25,11 +25,15 @@ certificates.
 
 ## Important Q6 provenance distinction
 
-The new 40/20 seed lists are a **newly specified deterministic reproducibility
-protocol**. They are not claimed to be recovered historical seed lists. The
-manuscript should describe results from these archived logs as a new reproducible
-experiment, rather than implying that the exact historical seeds were recovered.
-Non-attainment remains computational evidence, not a proof of non-realisability.
+The 40/20 seed lists are a **newly specified deterministic reproducibility
+protocol**. They are not claimed to be recovered historical seed lists.
+
+**Update:** the realisability question these searches addressed is now settled
+exactly by `q6_decide_realizability.py`, which reduces it to a finite (2^32)
+decision and proves that distributions A and B are not realisable while C is.
+The simulated-annealing logs below are retained as a record of the earlier
+approach and are superseded as evidence; non-attainment in a heuristic search
+was never a proof, and the exhaustive decision now supplies one.
 
 ## Commands
 
