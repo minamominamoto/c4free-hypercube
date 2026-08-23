@@ -330,10 +330,16 @@ was raised by Erd\H{o}s~\cite{Erd84} and remains open in general.
 
 The best known asymptotic bounds are
 \begin{equation}\label{eq:bounds}
-\tfrac{1}{2}(n+\sqrt{n})\cdot2^{n-1}\;\le\;\ex(Q_n,C_4)\;\le\;(0.60318+o(1))\cdot n\cdot2^{n-1},
+\tfrac{1}{2}(n+\sqrt{n})\cdot2^{n-1}\;\le\;\ex(Q_n,C_4)
+\quad (n=4^r),
+\qquad
+\ex(Q_n,C_4)\;\le\;(0.60318+o(1))\cdot n\cdot2^{n-1},
 \end{equation}
-where the lower bound (valid for $n=4^r$) is due to Brass, Harborth, and
-Nienborg~\cite{BHN95}. The upper bound is a statement about the edge
+where the lower bound is due to Brass, Harborth, and
+Nienborg~\cite{BHN95} and holds, in this form, only when $n$ is a power
+of~$4$; the side condition is attached to the displayed inequality rather
+than left to the surrounding text, since the two halves of~\eqref{eq:bounds}
+have different scopes. The upper bound is a statement about the edge
 Tur\'an \emph{density} $\pi_e=\limsup_n\ex(Q_n,C_4)/(n2^{n-1})$, not a
 pointwise inequality valid at every finite $n$; the constant $0.60318$
 is due to Baber~\cite{Bab12}, who used the semidefinite flag algebra
@@ -433,8 +439,9 @@ published 304-edge $Q_7$ solutions, only 389 are odd-square
   $n=4^r$ and its weaker form only for $n\ge9$~\cite{BHN95}, so the
   $n=5,6$ entries are not covered by either stated form (marked n/a)
   and the $n=7,8$ entries are extrapolations of the $n\ge9$ form
-  \emph{beyond} its stated domain, included for illustrative comparison
-  only, not as a proven bound.
+  \emph{beyond} its stated domain: entries marked $\dagger$ are
+  extrapolations included for illustrative comparison only, never as proven
+  bounds, and no claim in this paper depends on them.
   In the Source column, ``value; witness ours'' means the numerical
   value has historical priority in the cited work, which published no
   machine-readable edge list or spin configuration for it; the explicit
@@ -448,8 +455,8 @@ $n$ & $|E(Q_n)|$ & $\ex(Q_n,C_4)$ & BHN (Eq.~\ref{eq:bounds}) & Source\\
 4 &   32 & 24  & $24$ (tight, $n=4^1$) & Chung~\cite{Chu92}\\
 5 &   80 & 56  & n/a (outside domain) & Emamy-K et al.~\cite{EMR92}\\
 6 &  192 & 132 & n/a (outside domain) & Harborth--Nienborg~\cite{HN94}\\
-7 &  448 & $\ge\mathbf{304}$ & $\approx300.2$ (extrapol.) & value~\cite{DPTV79}; witness ours\\
-8 & 1024 & $\ge\mathbf{682}$ & $\approx674.9$ (extrapol.) & value~\cite{MPR95}; witness ours\\
+7 &  448 & $\ge\mathbf{304}$ & $\approx300.2^{\dagger}$ & value~\cite{DPTV79}; witness ours\\
+8 & 1024 & $\ge\mathbf{682}$ & $\approx674.9^{\dagger}$ & value~\cite{MPR95}; witness ours\\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -716,7 +723,7 @@ Harary~\cite{Har53}). Solving for $\sigma_2$ gives the claim.
 Lemma~\ref{lem:switching} says any two odd-square signatures are related by
 a \emph{vertex switching} $t$. For a \emph{fixed} coupling $J$, letting the
 spin configuration $s:V(Q_n)\to\{\pm1\}$ range over all $2^{2^n}$ choices
-(one sign per vertex of $Q_n$, which itself has $2^n$ vertices) produces
+(a sign at each of the $|V(Q_n)|=2^n$ vertices, hence $2^{|V|}=2^{2^n}$ assignments) produces
 exactly the
 signatures $\sigma_s(x,y)=J(x,y)s(x)s(y)$ in the switching class of $J$
 (writing $s=t\cdot s_0$ for a fixed reference $s_0$ realises every
@@ -1035,8 +1042,8 @@ pins the distribution to $\{1{:}16,\,3{:}48\}$ uniquely. Hence
 \[
 g(7)\le\frac{448+160}{2}=304 .
 \]
-Since $|E|=(n\cdot2^{n-1}+\sum_{v\in U}h(v))/2$ for \emph{any} $304$-edge
-set (odd-square or not), attaining $S=160$ is automatic
+Since $S=2|E|-n\,2^{n-1}$ holds for \emph{any} edge set of $Q_n$ at all,
+by bipartiteness alone, attaining $S=160$ at $|E|=304$ is automatic
 and does not by itself exhibit an odd-square witness; what is needed is
 an explicit odd-square set achieving it. The odd-square audit
 (Section~\ref{sec:oddsquareaudit}) supplies $389$ such witnesses among
@@ -1154,8 +1161,10 @@ values across dimensions on one common integer axis. Applying the same
 factor (as MPR95 themselves do for the $D=8$ figure) to our value gives $768\times(-0.4696\ldots)=-360.62\ldots
 \approx-361$, matching their reported integer to within rounding. The
 identification is not an accident of the rounding width: the neighbouring
-admissible values $S=336$ and $S=344$ give $-356$ and $-365$, so among
-values of $S$ of the right parity only $S=340$ rounds to $-361$. This
+admissible values $S=336$ and $S=344$ give $-356$ and $-365$, so among the
+values $S\equiv0\pmod4$ forced by $\Delta\equiv0\pmod8$, only $S=340$ rounds
+to $-361$ (the intermediate $S=338,342$, excluded by that congruence, would
+give $-358$ and $-363$). This
 single match is strengthened by two further checks under the identical
 rule, both independent of any bound established elsewhere in this
 paper: at $D=9$, $\sqrt9=3$ is itself an integer of the right parity,
@@ -1303,10 +1312,10 @@ the induced $m$-multiset for some assignment of the $32$ spins on $U^{c}$.
 (This step uses that the target histogram has no negative entry, so that the
 achievable field at each $v$ is the single value $6-2m(v)$; A, B and C are all
 nonnegative, and by the remark after Lemma~\ref{lem:fieldbound} no optimal
-distribution can have one. It also suffices to decide the question on $U$:
-translation by $e_0$ is an automorphism of $Q_6$ exchanging $U$ and $U^{c}$ and
-preserving edge sets, so a distribution realised on one side is realised on the
-other.) The
+distribution can have one. It also suffices to decide the question on $U$: translation by $e_0$ is an
+automorphism of $Q_6$ exchanging $U$ and $U^{c}$, and it carries edge sets to
+edge sets preserving both size and odd-squareness, so a distribution realised
+on one side is realised on the other.) The
 $m$-multisets are $\{0{:}2,2{:}30\}$ for A, $\{0{:}1,1{:}3,2{:}27,3{:}1\}$ for
 B, and $\{1{:}6,2{:}24,3{:}2\}$ for C. This is a finite ($2^{32}$) decision
 problem, and depth-first search with counter-overflow pruning settles it in
@@ -1344,7 +1353,13 @@ remain in the release (\texttt{q6\_other\_distributions.py} and the
 accompanying CSV/JSON) as a record, but they are superseded by
 Proposition~\ref{prop:q6realizability} and are no longer offered as evidence:
 a plateau is not a proof, and the asymmetry in iteration budget between the
-targets and the control makes the phrase ``the same search'' inexact.
+targets and the control makes the phrase ``the same search'' inexact. The two
+computations also range over different spaces: the annealing objective allows
+intermediate configurations with negative local fields (the archived logs
+record best-histogram entries at $h=-4$ and $h=-6$), whereas the reduction of
+Proposition~\ref{prop:q6realizability} works with the nonnegative field
+$6-2m(v)$ throughout. They agree on A and B, but they are not the same
+computation restricted.
 
 \textbf{$Q_7$, $g(7)=304$.} The 304-edge odd-square value coincides with our
 originally announced $Q_7$ lower bound (Theorem~\ref{thm:main}(i)); of the
@@ -1436,7 +1451,12 @@ $20261218$ (iteration $276{,}842$); the remaining $17$ stopped at
 $L_1=6$ and $1$ at $L_1=8$. Both witnesses are released in
 \texttt{q8\_B\_witnesses.json} (spins and edges), regenerable via
 \texttt{q8\_B\_recover.py}, and verified by the dependency-free
-\texttt{verify\_q8\_B\_witnesses.py}:
+\texttt{verify\_q8\_B\_witnesses.py}. Only the two successful runs are
+re-verifiable from the release: the summary and per-run CSV record the
+plateau distances of the other eighteen, but not their spin vectors, so the
+$20$-seed statistic is reproducible only by rerunning the protocol. Nothing in
+the claim depends on it --- the assertion is existence, and two certificates
+carry it:
 
 \begin{proposition}\label{prop:q8Boddsquare}
 Each witness in \texttt{q8\_B\_witnesses.json} satisfies:
@@ -1451,10 +1471,14 @@ Each witness in \texttt{q8\_B\_witnesses.json} satisfies:
 \end{enumerate}
 \end{proposition}
 
-Thus $n=8$ differs qualitatively from $n=6$: every optimal field
-distribution for $n=8$ is realisable by an explicit odd-square
-$682$-edge subgraph of $Q_8$, while for $n=6$ only distribution~C
-admits a realisation (Proposition~\ref{prop:q6realizability}).
+Thus $n=8$ differs from $n=6$: every optimal field distribution for $n=8$ is
+realisable by an explicit odd-square $682$-edge subgraph of $Q_8$, while for
+$n=6$ only distribution~C is (Proposition~\ref{prop:q6realizability}). The two
+halves of that contrast rest on different kinds of evidence, and the asymmetry
+should be stated: at $n=8$ both realisations are exhibited constructively,
+whereas at $n=6$ non-realisability is \emph{proved} exhaustively. We have not
+attempted the analogous decision at $n=8$, where the same reduction would face
+a $2^{128}$ space.
 
 Table~\ref{tab:oddsquare} summarises the odd-square reconstructions
 alongside the corresponding simulated-annealing witnesses of
@@ -1590,9 +1614,17 @@ per-direction edge counts; an order-$3$ element must therefore have an order-$3$
 coordinate permutation preserving the solution's own direction-count vector
 (a translation $v\mapsto v\oplus a$ alone has order $2$). Grouping the $19\,866$
 solutions by that vector leaves $2\,484$ classes, and testing the corresponding
-candidates as column permutations settles all of them:
-every solution is stabilised by at least one order-$3$ element, with no
-exceptions (\texttt{q7\_order3\_automorphisms.py}). The stabiliser of the first
+candidates as column permutations settles all of them. Care is needed with
+the order condition: for $g(v)=\pi(v)\oplus a$ one has
+$g^3(v)=\pi^3(v)\oplus(a\oplus\pi(a)\oplus\pi^2(a))$, so $g$ has order $3$
+exactly when $\pi$ does \emph{and} $a\oplus\pi(a)\oplus\pi^2(a)=0$; a
+candidate failing the second condition has order $6$ (its square is then an
+order-$3$ element stabilising the same solution, but the check must be stated
+correctly). With both conditions enforced, every solution is stabilised by at
+least one order-$3$ element, with no exceptions
+(\texttt{q7\_order3\_automorphisms.py}); the $2\,484$ classes here are the
+distinct \emph{unsorted} direction-count vectors, a finer partition than the
+$20$ sorted profiles of Table~\ref{tab:types}. The stabiliser of the first
 released solution, computed by exhaustive search over
 all $645\,120$ group elements, is thus not the special case it appeared to be but
 an instance of a property shared by the whole released catalogue.
@@ -2078,7 +2110,10 @@ the provenance fields (\texttt{method}, \texttt{run},
 \texttt{trial}, \texttt{hash}, \texttt{elapsed}) explained above. Of
 the $19\,866$ records, \texttt{method} is \texttt{auto} for $18\,206$,
 \texttt{auto\_seed} for $1\,347$, \texttt{repair} for $2$, and absent
-for $311$; a \texttt{run} field is present on only $8$ records (one
+for $311$ --- so of the collector's three restart strategies the third
+contributed essentially nothing to the released catalogue, a point worth
+keeping in mind when reading the description of the three as parallel
+options; a \texttt{run} field is present on only $8$ records (one
 with \texttt{run=0}, seven with \texttt{run=2}); and $19\,858$ records
 carry a \texttt{trial} field with values up to at least seven figures.
 These fields are now explained by the recovered
@@ -2334,8 +2369,9 @@ solve of the ILP.
 We independently re-solved \texttt{q6\_ilp.mps} with HiGHS~1.15.1
 (Python bindings via \texttt{highspy}; default settings, single thread,
 single-threaded x86\_64 Linux VM, Intel Xeon @ 2.10GHz, 4GB RAM). A
-feasible solution matching the released 132-edge construction was
-found quickly, but the solver did not close the optimality gap within
+feasible solution of value $132$, matching the released construction's edge
+count but not necessarily its edge set (the symmetry of $Q_6$ admits many
+optima), was found quickly, but the solver did not close the optimality gap within
 several minutes under these default settings (a several-percent gap,
 dual bound not yet at the $-132$ primal value).
 As this figure is implementation- and

@@ -22,13 +22,22 @@ Everything is vectorised: solutions of one profile are held as a
 permutation, so testing one element against every solution of that profile is
 one numpy comparison.
 
-An automorphism of order 3 must have pi of order 3 (if pi were the identity
-the map is v -> v XOR a, of order 2), so only order-3 coordinate permutations
-preserving the solution's own direction-count vector need be tried. Solutions
-are grouped by that vector, and for each group the candidate elements are
-tested as vectorised column permutations.
+For g(v) = pi(v) XOR a we have g^3(v) = pi^3(v) XOR (a XOR pi(a) XOR pi^2(a)),
+so g has order 3 exactly when pi has order 3 AND
 
-Requires numpy. Runtime: about a minute. Usage:
+    a XOR pi(a) XOR pi^2(a) = 0.
+
+Testing only "pi has order 3" is NOT sufficient: when the second condition
+fails, g has order 6. Both conditions are enforced below. (A pi of order 3 is
+necessary: if pi were the identity, g is v -> v XOR a, of order 2.)
+
+Since an automorphism preserves per-direction edge counts, only order-3
+permutations preserving the solution's own direction-count vector need be
+tried. Solutions are grouped by that vector, and for each group the candidate
+elements are tested as vectorised column permutations; the slot permutations
+are cached across groups, since the same (pi, a) recurs for many vectors.
+
+Requires numpy. Runtime: a few minutes. Usage:
     python3 q7_order3_automorphisms.py
 """
 import argparse
@@ -119,6 +128,31 @@ def block_perms(dc):
 
 
 
+_PERM_CACHE = {}
+
+
+def cached_slot_perm(pi, a):
+    key = (pi, a)
+    p = _PERM_CACHE.get(key)
+    if p is None:
+        p = slot_perm(pi, a)
+        _PERM_CACHE[key] = p
+    return p
+
+
+def affine_has_order_three(pi, a):
+    """g(v) = pi(v) XOR a has order 3 iff pi does and a ^ pi(a) ^ pi^2(a) = 0."""
+    pa = 0
+    ppa = 0
+    for d in range(N):
+        if a >> d & 1:
+            pa |= 1 << pi[d]
+    for d in range(N):
+        if pa >> d & 1:
+            ppa |= 1 << pi[d]
+    return (a ^ pa ^ ppa) == 0
+
+
 def order3_perms(dc):
     """Order-3 permutations preserving the direction-count vector dc."""
     groups = defaultdict(list)
@@ -161,20 +195,21 @@ def main():
     no_candidate = 0
     for dc, idxs in by_dc.items():
         cands = order3_perms(dc)
-        if not cands:
+        elems = [(pi, a) for pi in cands for a in range(V)
+                 if affine_has_order_three(pi, a)]
+        if not elems:
             no_candidate += len(idxs)
             continue
         rows = np.array(idxs)
         block = M[rows]
         acc = np.zeros(len(idxs), dtype=bool)
-        for pi in cands:
-            for a in range(V):
-                acc |= (block[:, slot_perm(pi, a)] == block).all(axis=1)
+        for pi, a in elems:
+            acc |= (block[:, cached_slot_perm(pi, a)] == block).all(axis=1)
             if acc.all():
                 break
         has3[rows] = acc
 
-    print(f'count vectors admitting no order-3 permutation '
+    print(f'count vectors admitting no order-3 affine element '
           f'(solutions): {no_candidate}')
     print(f'solutions WITH an order-3 automorphism: {int(has3.sum())}/{n}')
     print(f'solutions WITHOUT: {int((~has3).sum())}')

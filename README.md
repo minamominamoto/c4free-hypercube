@@ -49,6 +49,11 @@ Marinari–Parisi–Ritort 1995). This led to:
 
 ## Reproducibility: one command
 
+**Resource note.** `verify.py` (and hence `reproduce_core.py`) loads all 19,866
+Q7 solutions into memory at once; peak RSS is around 700 MB, comparable to
+`analyze_q7_structure.py`. Budget roughly 1 GB of free memory and a few
+minutes for the default run; `--structural` adds the expensive numpy passes.
+
 Every C4-free claim is independently re-checkable with a dependency-free
 script (standard library only; no third-party packages, no network):
 
