@@ -61,11 +61,40 @@ trial:
 python3 search_q6.py
 ```
 
-Because the seed is fixed, this run reproduces exactly.
+Because the seed is fixed, this run reproduces exactly. It now writes
+`q6_spins.txt` to the current working directory (an earlier version wrote to
+a hardcoded absolute path and failed outside the original environment).
 
 Note: `q6_odd_square_132.json` is NOT the same edge set as the separately
 released `q6_edges_132.jsonl`. The two differ in 62 edges; both are 132-edge
 C4-free subgraphs of Q6, but only this one is odd-square.
+
+## Q6: are the other two optimal distributions realisable?
+
+The field-bound optimisation for n=6 (Section "Exact values" of the paper)
+has exactly three optimal local-field distributions on U:
+`{2:30,6:2}`, `{0:1,2:27,4:3,6:1}`, and `{0:2,2:24,4:6}` -- the last being
+the one realised above. Derrida et al. (1979) list multiple solutions in
+their Table I for d=6 and state they do not know if the others besides the
+first are realisable; Marinari-Parisi-Ritort (1995) report that "the other
+solution doesn't seem to correspond to any spin configuration".
+
+Run:
+
+```bash
+python3 q6_other_distributions.py
+```
+
+This targets each of the other two distributions directly (simulated
+annealing that minimises L1 distance from the target histogram, not "reach
+132 edges by any route") across 20-40 independent seeds and up to 300,000
+iterations each. As a control, the same method reaches the realised
+distribution `{0:2,2:24,4:6}` immediately from any seed. Neither of the
+other two is ever reached; both plateau at an identical nonzero distance
+(16 and 8 respectively) regardless of seed. This is computational evidence,
+not a proof, that only the first solution is realisable -- consistent with
+and sharpening MPR95's remark, which does not report having tested this
+systematically.
 
 ## Q7 audit
 

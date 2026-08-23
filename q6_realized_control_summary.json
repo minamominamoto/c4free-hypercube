@@ -1,0 +1,43 @@
+{
+  "iterations_per_run": 60000,
+  "profile": "paper",
+  "provenance_note": "Seed lists are a newly specified deterministic reproducibility protocol for this released package, not recovered historical seeds.",
+  "targets": {
+    "C": {
+      "distance_histogram": {
+        "0": 20
+      },
+      "hits": 20,
+      "max_best_distance": 0,
+      "min_best_distance": 0,
+      "runs": 20,
+      "seeds": [
+        20261100,
+        20261101,
+        20261102,
+        20261103,
+        20261104,
+        20261105,
+        20261106,
+        20261107,
+        20261108,
+        20261109,
+        20261110,
+        20261111,
+        20261112,
+        20261113,
+        20261114,
+        20261115,
+        20261116,
+        20261117,
+        20261118,
+        20261119
+      ],
+      "target_histogram": {
+        "0": 2,
+        "2": 24,
+        "4": 6
+      }
+    }
+  }
+}

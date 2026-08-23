@@ -107,7 +107,7 @@ def main():
 
     spins = ''.join('1' if t == 1 else '0' for t in s)
     print('SPINS =', spins)
-    with open('/home/claude/work/q6_spins.txt', 'w') as f:
+    with open('q6_spins.txt', 'w') as f:
         f.write(spins + '\n')
 
 

@@ -1,0 +1,10 @@
+# Optional third-party dependencies used by historical/search/structural scripts.
+# The default reproducibility path (`python3 reproduce_core.py`) needs ONLY the
+# Python standard library; this file is not required for the core certificates.
+#
+# Pins selected for the 2026-08-23 reproducibility package. highspy 1.15.1 is
+# also the version documented as tested by the recovered HiGHS lineage.
+numpy==2.3.5
+networkx==3.6.1
+highspy==1.15.1
+PuLP==3.3.2

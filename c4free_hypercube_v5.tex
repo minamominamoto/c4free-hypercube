@@ -79,32 +79,63 @@ states for $d\le7$ (giving $g(6)$ and $g(7)$ under the correspondence
 below), and Marinari, Parisi, and Ritort~\cite{MPR95} report having
 obtained, by simulated annealing, a $D=8$ ground state attaining
 Derrida et al.'s improved energy lower bound (giving $g(8)$ under the
-same correspondence). The graph-theoretic formulation of the
-fully-frustrated signed hypercube and its connection to the $C_4$-free
-extremal problem is itself not new either: Laplante, Naserasr, Sunny,
-and Wang~\cite{LNSW26} explicitly formulate the frustration index of
-the fully-frustrated signature and its relation to Erd\H{o}s's
-$C_4$-free hypercube question (Section~\ref{sec:oddsquare-exact}
-below). Our contribution is: (i) for $n=7,8$, a
-self-contained, elementary proof of the upper bounds $g(7)\le304$ and $g(8)\le682$
-(a quadratic field-sum identity together with
-elementary parity constraints, proved here directly rather than cited
-from DPTV's Table~I, and sharpening LNSW26's general bounds -- tight
-only when $n$ is a power of $4$ -- to exact values at $n=6,7,8$
-specifically); and (ii) explicit, machine-verifiable edge-list
-certificates for both bounds at $n=7,8$, released alongside this paper
-(Section~\ref{sec:oddsquareverify}). Here the prior literature's
+same correspondence). Neither the field identity nor its use to bound
+$g(n)$ is new: Derrida, Pomeau, Toulouse, and Vannimenus~\cite{DPTV79}
+derive the same identity in 1979 by the same argument (a sum over sites
+in which the frustration of every plaquette cancels the cross terms),
+note explicitly that it survives restriction to one side of the
+bipartition, pose exactly the integer optimisation problem
+Section~\ref{sec:oddsquare-exact} solves, and tabulate its optimum for
+$n\le10$ (their Table~I) -- including, for $n=6$, the value $72$ via
+what they call the ``first solution''
+$(n(4){=}6;\,n(2){=}24;\,n(0){=}2)$, matching our own independently
+recomputed optimum exactly. The graph-theoretic formulation connecting
+the fully-frustrated signed hypercube to the $C_4$-free extremal
+problem is likewise anticipated by Laplante, Naserasr, Sunny, and
+Wang~\cite{LNSW26}, who study the frustration index of the
+fully-frustrated signature directly in these terms
+(Section~\ref{sec:oddsquare-exact} below). Given this, our
+contribution at $n=6,7,8$ is narrower than a first reading of
+Theorem~\ref{thm:oddsquare} might suggest, and consists of three
+parts, none of which is the numerical values $72,160,340$ themselves:
+(i) a closed-form proof (Lemma~\ref{lem:quant}, a mod-$8$ refinement of
+the classical two-point inequality) that DPTV's tabulated optima are
+exact and complete, replacing what their paper presents as a
+table lookup with a short, independently checkable argument;
+(ii) explicit, machine-verifiable edge-list certificates realising the
+bound at all three of $n=6,7,8$ -- DPTV's own realisations are
+figures and prose for $n\le7$ only, $n=8$ being left open by them and
+later claimed, without any released data, by Marinari, Parisi, and
+Ritort~\cite{MPR95}; this paper's $n=8$ witness is thus the first
+machine-checkable one for that case, and its $n=6$ witness the first
+for any case; and (iii) a targeted computational investigation, in Section~\ref{sec:oddsquareverify},
+of a question DPTV posed and left open in 1979 -- which of the
+several $n=6$ optima described in their Table~I are actually
+realisable by a spin configuration. Here the prior literature's
 constructions are not machine-readable in the same sense: DPTV79 give
 an explicit recursive scaling construction (their bond configurations
 for $H_5,H_6,H_7$, described in prose and figures, not released as a
-computer-readable edge list), while MPR95 report only an energy value
-for $D=8$, without publishing a spin configuration at all. The same
-holds at $n=6$, where DPTV79's own $D=6$ configuration is described in
-prose; we construct an independent 132-edge odd-square edge list
-instead, which happens to realise the local-field distribution they
-report. The exact value $\ex(Q_6,C_4)=132$ of Harborth and
-Nienborg~\cite{HN94} is therefore no longer needed to bound $g(6)$ from
-above, though it remains the source for the unrestricted value. This settles
+computer-readable edge list), while MPR95 report only a single sentence
+asserting a $D=8$ ground state matching their improved energy bound, with
+no spin configuration, no $D=8$ energy value, and no method described --
+an existence claim we can neither verify nor extend, only match
+independently. The same holds at $n=6$, where DPTV79's own $D=6$
+configuration is described in prose; we construct an independent
+132-edge odd-square edge list instead, which happens to realise the
+local-field distribution they report as their table's first solution.
+Beyond matching that one, Section~\ref{sec:oddsquareverify} reports a
+targeted computational search for the other two optimal $n=6$
+distributions DPTV79's Table~I lists but do not know to be realisable;
+extensive simulated annealing (\texttt{q6\_other\_distributions.py})
+never reaches either, plateauing at the same nonzero distance from
+target across every one of 40 and 20 independent random seeds
+respectively, while the same search method reaches the realised
+distribution in every trial. This is computational evidence, not a
+proof, but it corroborates and sharpens MPR95's own remark on this
+point (Section~\ref{sec:oddsquareverify}). The exact value
+$\ex(Q_6,C_4)=132$ of Harborth and Nienborg~\cite{HN94} is therefore no
+longer needed to bound $g(6)$ from above, though it remains the source
+for the unrestricted value. This settles
 the odd-square subclass completely for $n=6,7,8$ without resolving the
 unrestricted problem $\ex(Q_n,C_4)$, since a general $C_4$-free subgraph
 need not be odd-square.
@@ -181,7 +212,7 @@ independent reviewer's rerun found $1\,820$). Tracing further
 back, we located most of the prior history, with one correction
 to an earlier draft of this paper: the
 earliest recovered attempt (a CBC-solver ILP explicitly commented as
-attacking Erd\H{o}s's Problem 100) has a confirmed bug (its
+attacking Erd\H{o}s's \hbox{\$}100 problem) has a confirmed bug (its
 $C_4$-detection finds $0$ of $672$ four-cycles, since adjacent
 vertices in the bipartite $Q_7$ never share a common neighbour, which
 its logic incorrectly relies on), so we withdraw our earlier claim
@@ -296,12 +327,19 @@ and we present it here as an independently reproduced and machine-verified
 result rather than as a novel bound. Part (ii) improves our originally
 announced bound $\ex(Q_8,C_4)\ge680$, but here too the bare existence
 claim is not new in substance: Marinari, Parisi, and Ritort~\cite{MPR95}
-already report having exhibited a $D=8$ ground state attaining Derrida
-et al.'s improved energy lower bound, and combined with the
+report, in a single unelaborated sentence and with no accompanying
+spin configuration or machine-checkable certificate, having exhibited a
+$D=8$ ground state attaining Derrida et al.'s improved energy lower
+bound; they describe the method (simulated annealing with a cooling
+procedure) and state the energy on their common integer scale ($-361$),
+but provide no graph-theoretic translation and no reproducible
+computational artifact. Combined with the
 signed-graph/odd-square correspondence and edge-count--field-sum
-translation we give in Section~\ref{sec:oddsquare}, their published
-existence claim already implies the existence of a 682-edge odd-square
-subgraph of $Q_8$, independently of any witness search of our own. What
+translation we give in Section~\ref{sec:oddsquare}, this would imply
+the existence of a 682-edge odd-square subgraph of $Q_8$ -- but as an
+existence claim with no public certificate, it is not independently
+verifiable, and we do not treat it as settling the question on its
+own. What
 Part~(ii) contributes beyond that prior existence claim is: an explicit
 graph-theoretic translation of MPR's result into edge-count terms
 (Section~\ref{sec:oddsquare-exact}); a publicly released, explicit,
@@ -415,7 +453,8 @@ For $n=6$: $240$; for $n=7$: $672$; for $n=8$: $1\,792$.
 \end{lemma}
 
 \noindent\textbf{Verification algorithm.}\quad
-Given a candidate edge set $E\subseteq E(Q_n)$ stored as a hash set,
+Given a candidate edge set $E\subseteq E(Q_n)$ stored as a hash set
+(of unordered pairs $\{u,v\}$, so $uv$ and $vu$ are the same element),
 the following procedure performs a complete, deterministic $C_4$-freeness check:
 \begin{quote}\small
 \textbf{for each} pair $(i,j)$ with $0\le i<j\le n-1$:\\
@@ -435,7 +474,11 @@ of $Q_7$; every call returned \textsc{c4-free}.
 We constructed a $C_4$-free subgraph of $Q_7$ on 304 edges by
 penalty-based simulated annealing (Section~\ref{sec:method}, where the
 production code has since been recovered and verified),
-then certified it by Lemma~\ref{lem:c4}'s algorithm.
+then certified it by Lemma~\ref{lem:c4}'s algorithm. This construction
+is released as \texttt{selected\_edges\_best.json}, and its edge set is
+identical to global index $0$ of the $19\,866$-solution catalogue
+(first line of \texttt{q7\_edges\_304.jsonl.part1}) --
+so every property below is directly checkable from either file.
 
 \begin{proposition}\label{prop:q7}
 The specific $304$-edge seed construction just described (the first
@@ -581,7 +624,7 @@ Min degree & 4 & 4\\
 Max degree & 5 & 6\\
 Degree sequence & $\{4^{32},5^{96}\}$ & $\{4^7,5^{162},6^{87}\}$\\
 BHN (Eq.~\ref{eq:bounds}), extrapolated & $\approx300.2$ & $\approx674.9$\\
-Improvement & $+3.8$ & $+5.1$\\
+Margin over extrapolated BHN & $+3.8$ & $+5.1$\\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -679,7 +722,25 @@ establish a connection between it and Erd\H{o}s's question on the
 largest $C_4$-free subgraph of the hypercube, giving lower and upper
 bounds on the frustration index of the fully frustrated signature that
 match when $n$ is a power of $4$; our $g(6),g(7),g(8)$ results above
-sharpen this connection to exact values at $n=6,7,8$ specifically. This sign convention matches the one used by the reconstruction
+sharpen this connection to exact values at $n=6,7,8$ specifically. To
+quantify that sharpening: our exact frustration indices are $60,144,342$
+at $n=6,7,8$ (i.e.\ $|E(Q_n)|-g(n)$). A baseline lower bound LNSW26
+state, attributed by them to an implication of Bialostocki's work
+rather than presented as their own new contribution, is
+$F(H_n,\sigma^*)\ge(n-\sqrt n)\cdot2^{n-2}$, which evaluates to
+$\ge57,\ge140,\ge331$ at $n=6,7,8$ respectively -- looser than our exact
+values by $3,4,11$. LNSW26's own contribution beyond this baseline is
+a matching upper bound on the frustration index (equivalently, a lower
+bound on $g(n)$) via a construction that coincides with
+Brass--Harborth--Nienborg's~\cite{BHN95} when $n$ is a power of~$4$;
+for $n=6,7,8$ (not powers of~$4$) this upper bound is
+strictly looser than the lower bound, so LNSW26's bounds
+do not determine $g(n)$ at these values. Our sharpening is therefore
+genuine: the closed-form argument of Lemma~\ref{lem:quant} tightens
+LNSW26's frustration-index lower bound by $3,4,11$ at $n=6,7,8$, and
+the explicit witnesses of Section~\ref{sec:oddsquareverify} close the
+gap from the construction side, giving exact values where LNSW26's
+bounds leave a nonzero interval. This sign convention matches the one used by the reconstruction
 script \texttt{generate\_q8\_682.py} (Section~\ref{sec:oddsquareverify}),
 where $E$ is exactly the set of edges with $J(x,\mathrm{dim})\,s(x)s(y)=+1$;
 for a vertex $v$ of degree $\deg_E(v)$ in $E$, we call
@@ -723,7 +784,7 @@ configuration; our witness is an independent one, which however turns
 out to realise the same local-field distribution they report (see
 Section~\ref{sec:oddsquareverify}).
 
-\begin{lemma}[Self-contained bound for $n=7,8$]\label{lem:fieldbound}
+\begin{lemma}[Field identity, after Derrida--Pomeau--Toulouse--Vannimenus]\label{lem:fieldbound}
 For any odd-square edge set $E$ in $Q_n$, writing $U=\{v\in\{0,1\}^n:
 v \text{ has an even number of } 1\text{-bits}\}$ for the
 even-parity part of
@@ -788,7 +849,15 @@ in $1,3,1,3,3,1$ edges) has $U$-degree multiset $\{1,1,1,3\}$ against
 $\{0,2,2,2\}$ on the complement, while still satisfying
 $\sum_{v\in U}h(v)^2=\sum_{v\in U^c}h(v)^2=12=3\cdot2^2$ on each side
 separately. We do not characterise the identity's full
-necessary-and-sufficient condition here.
+necessary-and-sufficient condition here. To be explicit about its
+logical status: the identity is neither a characterisation of
+odd-squareness (the $Q_3$ example just given is odd-square without the
+$U$/complement symmetry that holds for all $19\,866$ $Q_7$ solutions)
+nor a coincidence specific to the released catalogue (it is a forced
+consequence, via Proposition~\ref{prop:rigid} and $\sum_{v\in
+U}\deg(v)=|E|$, of \emph{any} $304$-edge subgraph of $Q_7$ having all
+degrees in $\{4,5\}$ -- a structural fact about that particular edge
+count, established independently of odd-squareness).
 
 \begin{lemma}[Nonnegativity at the maximum]\label{lem:nonneg}
 If $E$ is odd-square in $Q_n$ with $|E|$ maximum (i.e.\ $|E|=g(n)$), then
@@ -824,16 +893,32 @@ integers $h(v)$ of fixed parity (we use only that every
 realisable $h$-vector satisfies these constraints, not the converse
 that every integer vector satisfying them is realisable as an
 odd-square signature; the bound obtained is therefore an upper bound on
-$|E|$, tight whenever a matching witness is exhibited). No sign
-hypothesis enters: the constraints admit negative $h$, and
-Lemma~\ref{lem:nonneg} is \emph{not} used in the derivation. Its role
+$|E|$, tight whenever a matching witness is exhibited). This is
+essentially the optimisation problem DPTV79 pose immediately after their
+own derivation of Lemma~\ref{lem:fieldbound}: maximise $\bar h$ (their
+notation for the mean field) subject to the same sum-of-squares
+constraint, with one difference: DPTV79 additionally impose $h\ge0$
+before carrying out the distribution optimisation, whereas we drop that
+restriction entirely. Because the optimal distributions for $n=6,7,8$
+turn out to have all entries nonnegative anyway, the two problems have
+the same optima at these values of~$n$ -- but our formulation is
+logically stronger and should not be described as identical. Their
+solution method is to observe that the optimal
+distribution concentrates on the integers nearest $\sqrt n$ -- unique
+when exactly two suffice, multiple solutions (their Table~I) when three
+or four are needed, which they note happens at $n=6$ and $n=8$ -- and
+to tabulate the resulting optima for $n\le10$ by this reasoning rather
+than by a general closed-form argument. No sign
+hypothesis enters our derivation: the constraints admit negative $h$, and
+Lemma~\ref{lem:nonneg} is \emph{not} used. Its role
 is the separate one of describing configurations that actually attain
 the maximum (matching what we verified computationally on all $389$
 odd-square $Q_7$ witnesses above).
 
-The following elementary observation is what makes this integer problem
-solvable in closed form, and is the only ingredient beyond the classical
-two-point convexity inequality.
+The following elementary observation turns DPTV79's ``concentrate near
+$\sqrt n$'' heuristic into a closed form that is transparently exact and
+complete, without appeal to their table. It is the only ingredient
+beyond the classical two-point convexity inequality they already use.
 
 \begin{lemma}[Quantised two-point inequality]\label{lem:quant}
 Let $a$ be an integer of the same parity as $n$ and put $b=a+2$. Then for
@@ -867,7 +952,15 @@ the true integer optimum. We apply \eqref{eq:quantsum} with the pair
 $(a,b)$ of parity-correct integers straddling the root-mean-square field
 $\sqrt{Q/m}=\sqrt n$, namely $(1,3)$ for $n=7$ ($\sqrt7\approx2.65$)
 and $(2,4)$ for $n=6,8$ ($\sqrt6\approx2.45$, $\sqrt8\approx2.83$);
-this is the choice minimising the real bound $(Q+ab\,m)/(a+b)$.
+we verified directly, by evaluating $(Q+ab\,m)/(a+b)$ over every valid
+parity-correct pair with $a+b>0$ (pairs with $a+b=0$ make
+\eqref{eq:quantsum} degenerate, giving no bound on $S$, while
+$a+b<0$ reverses the inequality and gives a \emph{lower} rather than
+upper bound), that this is
+the minimising choice for each of $n=6,7,8$ specifically -- e.g.\ at
+$n=6$, $(2,4)\mapsto74.67$ against $(0,2)\mapsto96$ and
+$(4,6)\mapsto96$ -- rather than proving it as a general claim over all
+$n$.
 
 \textbf{$n=6$.} Here $m=32$, $Q=192$, $(a,b)=(2,4)$, so
 $\Delta=448-6S$. Nonnegativity alone gives only
@@ -948,11 +1041,30 @@ the witness released with this paper realises one of them. This
 computation is reproducible with the bundled
 \texttt{solve\_field\_ip.py} (standard library only, seconds to run);
 it is a check on the closed-form argument above, not a substitute for
-it.
+it, and the two are logically independent in a sense worth making
+explicit: the upper bound $S\le72,160,340$ is established by
+Lemma~\ref{lem:quant} alone, via the mod-$8$ congruence on $\Delta$,
+without reference to how many configurations attain it -- the argument
+in each of the three cases above shows directly that no integer
+solution exceeds the stated value, full stop. The DP's role is only to
+confirm, separately, that the count of optimal $h$-\emph{distributions}
+(as opposed to spin configurations realising them) is exactly $3,1,2$
+-- and this too is a complete count, not a sample. To be precise, the
+code groups equal field values and enumerates count distributions
+$\{h{:}\text{multiplicity}\}$, not the exponentially many ordered
+assignments of $h$-values to vertices; within this count-distribution
+state space, both the optimisation pass (forward DP) and the
+enumeration pass (backtracking reconstruction) traverse the same
+$(i,k,s)$ state tree exhaustively, so completeness of the list follows
+from the same recursion that establishes correctness of the optimum,
+rather than from a separate argument.
 
 All three upper bounds $g(6)\le132$, $g(7)\le304$ and $g(8)\le682$ are thus established
-directly from Lemma~\ref{lem:fieldbound} and Lemma~\ref{lem:quant},
-independently of DPTV's Table~I and of~\cite{HN94}; we retain the citations to
+directly from Lemma~\ref{lem:fieldbound} and Lemma~\ref{lem:quant} --
+reproducing, by a closed-form argument rather than table lookup, the
+same optima DPTV79's Table~I already gives for $n\le10$, and settling
+$n=8$'s realisability where DPTV79 explicitly left it open
+(Section~\ref{sec:oddsquareverify}); we retain the citations to
 Derrida et al.~\cite{DPTV79} and Marinari--Parisi--Ritort~\cite{MPR95}
 for historical priority and for the connection that prompted this
 section, not because the upper-bound
@@ -982,7 +1094,21 @@ factor is MPR95's own $D{=}9$ comparison scale, not an intrinsic
 $D{=}8$ energy-quantisation unit; they use it purely to compare bound
 values across dimensions on one common integer axis. Applying the same
 factor (as MPR95 themselves do for the $D=8$ figure) to our value gives $768\times(-0.4696\ldots)=-360.62\ldots
-\approx-361$, matching their reported integer to within rounding. Their paper reports
+\approx-361$, matching their reported integer to within rounding. This
+single match is strengthened by two further checks under the identical
+rule, both independent of any bound established elsewhere in this
+paper: at $D=9$, $\sqrt9=3$ is itself an integer of the right parity,
+so the field-bound optimum is the unique uniform distribution $h\equiv3$,
+giving $S=768$, $H/N=-1/2$ exactly, and $768\times(-1/2)=-384$ --
+an \emph{exact} match to MPR95's own stated $D=9$ value, not merely a
+rounding one. At $D=10$, $m=512$, $Q=5120$, $(a,b)=(2,4)$ gives
+$\Delta=9216-6S$, so $S\le1536$ (with $\Delta=0$, distribution
+$\{2{:}256,4{:}256\}$), and
+$768\times(-1536/(1024\sqrt{10}))\approx-364.29\approx-364$, matching
+MPR95's reported $D=10$ value of $-364$ to the same rounding rule. All
+three points -- $D=8,9,10$ -- agree under one consistent scale, which
+is considerably stronger corroboration than the $D=8$ figure alone.
+Their paper reports
 the $D=8$ attainment in energy units only, without an explicit spin configuration
 or its translation into edge-count terms; we supply that translation
 and an explicit, machine-verified $682$-edge certificate in
@@ -1260,11 +1386,19 @@ Every solution in the $19\,866$ satisfies:
 
 Pairwise Hamming distances $d_H(G,G')=|E(G)\triangle E(G')|$, computed
 exhaustively over all $\binom{19\,866}{2}=197\,319\,045$ pairs,
-range from $\mathbf{6}$ (attained by a pair of profile-type-1 and
-profile-type-2 solutions, differing by just 3 edges each way) to
+range from $\mathbf{6}$ to
 $\mathbf{274}$, with exact mean $195.396108\ldots$ and exact median
 $196$ (all four values computed directly from the full pairwise
-distance distribution, not sampled).
+distance distribution, not sampled). The minimum, $6$, is not
+attained by a unique pair: it occurs for exactly $\mathbf{636}$ of the
+$197\,319\,045$ pairs, spanning $28$ distinct profile-type
+combinations rather than one -- most commonly types $3$/$7$ ($115$
+pairs) and $3$/$5$ ($87$ pairs), with combinations such as $2$/$4$,
+$2$/$5$, $2$/$6$, $2$/$10$, and $6$/$8$ each occurring dozens of
+times, down to single occurrences for a handful of combinations
+including $3$/$20$. Type-$1$/type-$2$ pairs, our earlier illustrative
+example, do occur ($22$ of the $636$) but are far from
+representative of the minimum's structure.
 
 For historical completeness only, not as a reviewable computational
 result: a failed search targeting $305$ edges was also
@@ -1302,10 +1436,10 @@ Table~\ref{tab:types} (ranks 5, 7, 10, and 18 there).
 \toprule
 Dimension profile (sorted) & Count\\
 \midrule
+$\{46,46,46,42,42,42,40\}$ & 78\\
 $\{44,44,44,44,44,44,40\}$ & 127\\
 $\{44,44,44,44,44,42,42\}$ & 83\\
 $\{48,48,48,40,40,40,40\}$ & 101\\
-$\{46,46,46,42,42,42,40\}$ & 78\\
 \midrule
 Total odd-square & 389\\
 Total non-odd-square & 19\,477\\
@@ -1319,7 +1453,12 @@ Proposition~\ref{prop:rigid} and the 20-type classification of
 Section~\ref{sec:profiles} are not fully explained or subsumed by
 the odd-square construction: the great majority of 304-edge $C_4$-free
 subgraphs of $Q_7$ found here lie outside the fully frustrated switching
-class of~\cite{DPTV79}. The one exception is Type~18
+class of~\cite{DPTV79}. (These counts are of labelled edge sets, not
+of $\mathrm{Aut}(Q_7)$ orbits; since odd-squareness is
+$\mathrm{Aut}$-invariant, the \emph{partition} into $389$ odd-square and
+$19\,477$ non-odd-square is well-defined regardless, but the
+\emph{ratio} may differ when measured by orbits -- that question is
+Open Problem~\ref{op:orbits} below.) The one exception is Type~18
 ($[48,48,48,40,40,40,40]$, 101 solutions), all of which are odd-square;
 the other three types containing odd-square solutions (ranks 5, 7, and
 10) are mixed, containing both odd-square and non-odd-square members.
@@ -1386,8 +1525,9 @@ earlier draft of this section. The
 earliest recovered attempt on this problem, dated
 over a week before \texttt{selected\_edges\_301.json} and every other
 file discussed above, is a CBC-solver (not HiGHS) ILP explicitly commented as attacking
-``Erd\H{o}s's Problem 100, the $n=7$ case'' (\texttt{source\_cbc\_origin.py},
-released alongside this revision). On closer inspection, however, this specific
+``Erd\H{o}s's \hbox{\$}100 problem, the $n=7$ case'' (\texttt{source\_cbc\_origin.py},
+released under that name alongside this revision; the script's own
+internal filename \texttt{hypercube\_n7.py} reflects its pre-release name). On closer inspection, however, this specific
 recovered file has a genuine bug: its $C_4$-detection logic computes,
 for each edge $(u,v)$, the common neighbours of $u$ and $v$ -- but
 $Q_7$ is bipartite, so adjacent vertices never share a common
@@ -1839,9 +1979,17 @@ Section~\ref{sec:q8}).
 
 Degree sequences across dimensions: $Q_6$: $\{4^{56},5^{8}\}$;
 $Q_7$: $\{4^{32},5^{96}\}$; $Q_8$: $\{4^8,5^{160},6^{88}\}$ (Solution~A;
-Section~\ref{sec:q8}). The minimum degree is $4$ in all three cases; the
+Section~\ref{sec:q8}). The minimum degree is $4$ in all three of these
+$C_4$-free witnesses; the
 degree support is $\{4,5\}$ for both $Q_6$ and $Q_7$ (unchanged from
-$n=6$ to $n=7$) and widens to $\{4,5,6\}$ only at $Q_8$. Beyond this, the
+$n=6$ to $n=7$) and widens to $\{4,5,6\}$ only at $Q_8$. Note, however,
+that the odd-square $Q_6$ witness of
+Section~\ref{sec:oddsquareverify} (Proposition~\ref{prop:q6oddsquare})
+has degree sequence $\{3^4,4^{48},5^{12}\}$ with minimum degree~$3$,
+and is nevertheless locally maximal; thus minimum degree $4$ is
+\emph{not} a necessary feature of $132$-edge $C_4$-free subgraphs of
+$Q_6$, only a feature of the particular witness
+\texttt{q6\_edges\_132.jsonl} reported here. Beyond this, the
 exponents do not follow an evident closed-form pattern: $Q_6$'s
 $\{56,8\}$ split is markedly more skewed than $Q_7$'s $\{32,96\}$ or
 $Q_8$'s $\{8,160,88\}$, so we do not claim a general regularity trend
@@ -1994,7 +2142,8 @@ principle, verify on the dual side.
     of $Q_n$ near the extremal edge count widen beyond $\{4,5\}$ again
     for $n\ge9$ (as it did once, from $Q_7$ to $Q_8$; Section~\ref{sec:regularity}),
     and is minimum degree $4$ necessary at these edge counts for
-    $n\ge9$?
+    $n\ge9$? (At $n=6$ it is already not necessary; see
+    Section~\ref{sec:regularity}.)
   \item We now know $g(6)=\ex(Q_6,C_4)=132$ (Theorem~\ref{thm:oddsquare}
     combined with~\cite{HN94}). For $n=7,8$, Theorem~\ref{thm:oddsquare}
     only establishes $g(7)=304$ and $g(8)=682$; whether
