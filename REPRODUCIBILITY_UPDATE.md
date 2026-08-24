@@ -1,4 +1,4 @@
-# Reproducibility update — 2026-08-23
+# Reproducibility update — 2026-08-23 (updated 2026-08-24)
 
 This directory adds a reproducibility layer without changing the released edge
 certificates.
@@ -16,7 +16,9 @@ certificates.
 - `requirements.txt`: pinned optional dependencies. Core verification remains
   standard-library-only.
 - `q6_other_distributions.py`: revised deterministic experiment harness with
-  explicit parameters and CSV/JSON logging.
+  explicit parameters and CSV/JSON logging. The consecutive integer seed lists
+  are reproducibility labels; no claim of statistically independent random
+  sampling is made.
 - `q6_other_distributions_results.csv` and
   `q6_other_distributions_summary.json`: byte-reproducible archival logs for the newly specified 40-seed/20-seed A/B protocol; retained for provenance, not as evidence after the exhaustive decision below.
 - `q6_realized_control_results.csv` and `q6_realized_control_summary.json`:
@@ -33,6 +35,18 @@ decision and proves that distributions A and B are not realisable while C is.
 The simulated-annealing logs below are retained as a record of the earlier
 approach and are superseded as evidence; non-attainment in a heuristic search
 was never a proof, and the exhaustive decision now supplies one.
+
+
+## Round-69 verifier hardening
+
+- `verify.py` now recomputes the non-edge C4-violation distributions used for
+  local-maximality margins for both 680-edge Q8 solutions, the 682-edge Q8
+  odd-square witness, and the Q6 odd-square witness.
+- `verify_q8_B_witnesses.py` now also checks the opposite bipartition's field
+  histogram and both witnesses' non-edge violation distributions.
+- `q7_orbit_census.py --stabilisers` now rejects an incomplete or absent census
+  checkpoint instead of silently treating sentinel orbit id `-1` as a real
+  orbit.
 
 ## Commands
 

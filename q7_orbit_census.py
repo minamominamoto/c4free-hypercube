@@ -120,6 +120,12 @@ def main():
         return 0
 
     if args.stabilisers:
+        assigned = sum(1 for x in orbit if x >= 0)
+        if assigned != n or any(x < 0 for x in orbit):
+            print(f'ERROR: --stabilisers requires a completed census; '
+                  f'only {assigned}/{n} solutions are assigned. '
+                  f'Run the census to completion first.', file=sys.stderr)
+            return 2
         stabilisers(M, dirs, orbit)
         return 0
 
@@ -188,7 +194,11 @@ def stabilisers(M, dirs, orbit):
     Only permutations preserving the representative's direction-count vector
     can fix it (an automorphism permutes directions), so the scan is over that
     subgroup times the 128 translations, not the full 645,120 elements.
+    A negative orbit id denotes an incomplete census and is rejected rather
+    than being treated as a real orbit.
     """
+    if any(x < 0 for x in orbit):
+        raise ValueError("stabiliser computation requires a completed orbit census")
     import time
     from collections import defaultdict
     reps = {}

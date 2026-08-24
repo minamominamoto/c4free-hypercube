@@ -123,6 +123,15 @@ def locally_maximal_in_cube(es, cube_edges, completion):
     return True, None
 
 
+def nonedge_violation_distribution(es, cube_edges, completion):
+    """Histogram: for each missing cube edge, how many C4s its addition completes."""
+    hist = {}
+    for e in cube_edges - es:
+        k = sum(all(x in es for x in triple) for triple in completion[e])
+        hist[k] = hist.get(k, 0) + 1
+    return dict(sorted(hist.items()))
+
+
 def verify_solution(edges, n, expected_edges):
     es = build_edge_set(edges)
     if len(es) != expected_edges:
@@ -206,8 +215,8 @@ def main():
     print("=" * 56)
     for n, ec, nsol, paths in TARGETS:
         ncycles = sum(1 for _ in four_cycle_corners(n))
-        q7_cube_edges = all_hypercube_edges(7) if n == 7 else None
-        q7_completion = completion_triples_by_edge(7) if n == 7 else None
+        cube_edges = all_hypercube_edges(n)
+        completion = completion_triples_by_edge(n)
         q7_union = set() if n == 7 else None
         q7_nonmax = 0
         print("\nQ%d: expecting %d solution(s), %d edges each; "
@@ -240,7 +249,7 @@ def main():
                 es = build_edge_set(edges)
                 q7_union.update(es)
                 local_ok, missing = locally_maximal_in_cube(
-                    es, q7_cube_edges, q7_completion
+                    es, cube_edges, completion
                 )
                 if not local_ok:
                     q7_nonmax += 1
@@ -253,13 +262,13 @@ def main():
                 all_ok = False
             elif len(sols) == nsol:
                 print("  [OK] all %d Q7 solutions are locally maximal" % nsol)
-            if q7_union != q7_cube_edges:
+            if q7_union != cube_edges:
                 print("  [FAIL] Q7 catalogue union covers %d/%d cube edges"
-                      % (len(q7_union), len(q7_cube_edges)))
+                      % (len(q7_union), len(cube_edges)))
                 all_ok = False
             elif len(sols) == nsol:
                 print("  [OK] Q7 catalogue union covers all %d cube edges"
-                      % len(q7_cube_edges))
+                      % len(cube_edges))
         if n == 8 and ec == 680 and len(sols) >= 1:
             odd_ok, odd_msg = verify_odd_square(sols[0], 8, 680)
             if odd_ok:
@@ -267,6 +276,21 @@ def main():
             else:
                 print("  [FAIL] Q8 Solution A odd-square check: %s" % odd_msg)
                 all_ok = False
+            expected_v = [
+                {2: 3, 3: 48, 4: 144, 5: 136, 6: 13},
+                {1: 1, 2: 1, 3: 49, 4: 153, 5: 124, 6: 16},
+            ]
+            for j, exp in enumerate(expected_v[:len(sols)]):
+                got = nonedge_violation_distribution(
+                    build_edge_set(sols[j]), cube_edges, completion
+                )
+                if got != exp:
+                    print("  [FAIL] Q8 680 solution %d non-edge violation "
+                          "distribution %r != %r" % (j, got, exp))
+                    all_ok = False
+                else:
+                    print("  [OK] Q8 680 solution %d non-edge violation %r"
+                          % (j, got))
         if bad == 0 and len(sols) == nsol:
             print("  [OK] all %d solution(s) are C4-free with exactly %d edges"
                   % (len(sols), ec))
@@ -296,11 +320,31 @@ def main():
                   % (len(sols), nsol))
             all_ok = False
         bad = 0
+        cube_edges = all_hypercube_edges(n)
+        completion = completion_triples_by_edge(n)
         for i, edges in enumerate(sols):
             ok, msg = verify_odd_square(edges, n, ec)
             if not ok:
                 bad += 1
                 print("  [FAIL] solution %d: %s" % (i, msg))
+                continue
+            expected_margin = None
+            if n == 6 and ec == 132:
+                expected_margin = {2: 2, 3: 29, 4: 26, 5: 3}
+            elif n == 8 and ec == 682:
+                expected_margin = {3: 41, 4: 159, 5: 120, 6: 22}
+            if expected_margin is not None:
+                got = nonedge_violation_distribution(
+                    build_edge_set(edges), cube_edges, completion
+                )
+                if got != expected_margin:
+                    bad += 1
+                    print("  [FAIL] solution %d non-edge violation "
+                          "distribution %r != %r" %
+                          (i, got, expected_margin))
+                else:
+                    print("  [OK] solution %d non-edge violation %r" %
+                          (i, got))
         if bad == 0 and len(sols) == nsol:
             print("  [OK] all %d solution(s) satisfy the odd-square "
                   "condition with exactly %d edges" % (len(sols), ec))

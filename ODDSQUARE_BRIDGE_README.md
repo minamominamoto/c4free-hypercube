@@ -34,6 +34,24 @@ its CSV through the `csv` module with its default CRLF line terminator, so
 `q7_odd_square_389.csv` has CRLF line endings on every platform; its advertised
 SHA-256 is the hash of the CRLF form.
 
+## Q8 second optimal field distribution
+
+`q8_B_witnesses.json` contains two 682-edge certificates whose even-side field
+histogram is `{2:87,4:40,6:1}`. In both certificates the opposite bipartition
+side has histogram `{0:1,2:84,4:43}`, so one edge set realises the two optimal
+n=8 distributions on its two sides simultaneously. Run:
+
+```bash
+python3 verify_q8_B_witnesses.py
+```
+
+The verifier checks both field histograms, all 1,792 squares, the stored spin
+and edge hashes, and local maximality margins. The non-edge C4-violation
+distributions are `{3:34,4:169,5:121,6:18}` for seed `20261207` and
+`{3:41,4:154,5:130,6:17}` for seed `20261218`; hence every missing edge creates
+at least three new C4s. The `202612xx` integers are RNG seeds, not execution
+dates.
+
 ## Q6 reconstruction
 
 Run from this directory:
@@ -68,8 +86,11 @@ Because the seed is fixed, this run reproduces exactly. It now writes
 a hardcoded absolute path and failed outside the original environment).
 
 Note: `q6_odd_square_132.json` is NOT the same edge set as the separately
-released `q6_edges_132.jsonl`. The two differ in 62 edges; both are 132-edge
-C4-free subgraphs of Q6, but only this one is odd-square.
+released `q6_edges_132.jsonl`. Their symmetric difference has size
+`|E △ E'| = 62`; both are 132-edge C4-free subgraphs of Q6, but only this one
+is odd-square. Adding any missing edge to the odd-square witness creates at
+least two new C4s, with non-edge violation distribution
+`{2:2, 3:29, 4:26, 5:3}`.
 
 ## Q6: are the other two optimal distributions realisable?
 
@@ -113,8 +134,10 @@ coupling, so this verdict does not depend on the particular coupling used.
 ### Superseded heuristic experiment
 
 `q6_other_distributions.py` and its CSV/JSON logs record an earlier simulated
-annealing study of the same question (40 seeds for A, 20 for B, 300,000
-iterations each, all plateauing at L1 distance 16 and 8; a positive control
+annealing study of the same question (40 deterministically specified RNG seeds
+for A, 20 for B, 300,000 iterations each, all plateauing at L1 distance 16 and
+8; these consecutive integer seed lists are reproducibility labels, not a claim
+of statistically independent random draws; a positive control
 reached C in 20/20 runs at 60,000 iterations). These files remain in the release
 as a record of how the question was first approached, but they are **superseded
 by `q6_decide_realizability.py` and are no longer offered as evidence** — a

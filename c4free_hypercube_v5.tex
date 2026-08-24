@@ -42,7 +42,7 @@ see the Acknowledgements for the circumstances of the revision.
 \begin{abstract}
 We study $C_4$-free subgraphs of the hypercubes $Q_6$, $Q_7$, and $Q_8$,
 giving explicit lower bounds $\ex(Q_7,C_4)\ge304$ and $\ex(Q_8,C_4)\ge682$,
-together with a computational reproduction of the 132-edge lower-bound
+together with a computational reproduction of a 132-edge lower-bound
 construction for $\ex(Q_6,C_4)=132$, combined with the known upper bound
 of Harborth and Nienborg~\cite{HN94} (we did not independently verify
 ILP optimality for the upper bound within a practical runtime; see
@@ -62,8 +62,10 @@ solutions, which we confirm independently satisfy the odd-square condition
 (none is claimed to be DPTV's specific $H_7$ construction; we only
 confirm the attained value, not edge-set identity with theirs). For
 $Q_8$, we derived and machine-verified an explicit 682-edge witness
-attaining the bound MPR report attaining, using their canonical fully
-frustrated coupling (derivation documented in
+whose local-field sum $S=340$ converts under MPR95's Hamiltonian
+$H/N=-S/(2^8\sqrt8)$ to their reported improved $D=8$ bound on the
+common comparison scale (Section~\ref{sec:oddsquare-exact}); we use the
+same canonical fully frustrated coupling that MPR95 write explicitly (derivation documented in
 Section~\ref{sec:oddsquareverify}); this witness is not claimed to be a
 reconstruction of any particular configuration MPR may have used
 internally, since they did not publish one. This 682-edge
@@ -111,12 +113,13 @@ self-contained, independently checkable inequality;
 bound at all three of $n=6,7,8$ -- DPTV's own realisations are
 figures and prose for $n\le7$ only, $n=8$ being left open by them and
 later claimed, without any released data, by Marinari, Parisi, and
-Ritort~\cite{MPR95}; to our knowledge this paper's $n=8$ witness is the first publicly
-released explicit edge list with a dedicated verifier for that case, and its
-$n=6$ witness the first such certificate for any case (we do not claim a
-survey of all literature and data releases since 1979; for $n=6$, for
-instance, OEIS A245762 credits the value $132$ to Scheucher and Tabatabai
-in 2015 and links generator scripts, though not an odd-square edge list); and (iii) an exhaustive decision, in Section~\ref{sec:oddsquareverify},
+Ritort~\cite{MPR95}; we are not aware of an earlier publicly released explicit odd-square
+edge list with a dedicated verifier for the $n=8$ case, nor of an earlier
+such certificate for the $n=6$ case. This is deliberately a limited
+priority statement rather than a claim of exhaustive bibliographic priority:
+we have not surveyed every literature and data release since 1979; for $n=6$,
+for instance, OEIS A245762 credits the value $132$ to Scheucher and Tabatabai
+in 2015 and links generator scripts, though not an odd-square edge list; and (iii) an exhaustive decision, in Section~\ref{sec:oddsquareverify},
 of a question DPTV posed and left open in 1979 -- which of the
 several $n=6$ optima described in their Table~I are actually realisable by a
 spin configuration. MPR95 had already addressed this question by simulated
@@ -141,9 +144,10 @@ targeted computational search for the other two optimal $n=6$
 distributions DPTV79's Table~I lists but do not know to be realisable;
 extensive simulated annealing (\texttt{q6\_other\_distributions.py})
 never reaches either, plateauing at the same nonzero distance from
-target across every one of 40 and 20 independent random seeds
-respectively, while the same search method reaches the realised
-distribution in every trial. This is computational evidence, not a
+target across every one of 40 and 20 deterministically specified RNG
+seeds respectively (the consecutive integer seed lists are protocol labels,
+not a claim of statistically independent random draws), while the same search
+method reaches the realised distribution in every trial. This is computational evidence, not a
 proof; Proposition~\ref{prop:q6realizability} now supplies one
 (Section~\ref{sec:oddsquareverify}). The exact value
 $\ex(Q_6,C_4)=132$ of Harborth and Nienborg~\cite{HN94} is therefore no
@@ -235,9 +239,11 @@ $\mathrm{Aut}(Q_7)$), removing a few edges, then greedily re-adding
 only violation-free edges -- mass-collected the released $19\,866$
 solutions; we directly confirmed the collector stage by running it
 ourselves: from the released seed, in one unseeded $30$-second run we
-observed $1\,987$ new valid solutions (the script sets no random seed,
-so this exact count is not expected to reproduce on a rerun; an
-independent reviewer's rerun found $1\,820$). Tracing further
+observed $1\,987$ new valid solutions. The script sets no random seed,
+so this exact count is an observed throughput datum rather than a
+bit-for-bit reproducibility target; separate reruns have shown the same
+qualitative rapid collection without being used as additional numerical
+evidence here. Tracing further
 back, we located most of the prior history, with one correction
 to an earlier draft of this paper: the
 earliest recovered attempt (a CBC-solver ILP explicitly commented as
@@ -285,8 +291,9 @@ $675$-edge target from $22$ to $8$. \texttt{sa\_q8.py} sets no random
 seed, so this specific numeric trajectory is a one-time observation,
 not a fixed-seed reproducible result: a reader rerunning the released
 files should expect qualitatively similar monotonic improvement, not
-these exact numbers -- an independent reviewer's rerun from the same
-checkpoint observed $25\to14$ instead. This is a different script,
+these exact numbers. Separate unseeded reruns from the same checkpoint
+also showed qualitative improvement, but their concrete counts are omitted
+here because no corresponding logs or fixed seeds are released. This is a different script,
 released separately from \texttt{c4free\_sa.py}, whose
 generalisation of the same two-phase idea to a single $n$-agnostic
 script (Section~\ref{sec:method}) does \emph{not} share this
@@ -503,8 +510,10 @@ $b_i=b_j=0$.  Its four vertices are
 \[
   b,\quad b\oplus e_i,\quad b\oplus e_j,\quad b\oplus e_i\oplus e_j,
 \]
-and the total number of four-cycles in $Q_n$ is $\binom{n}{2}\cdot2^{n-2}$.
-For $n=6$: $240$; for $n=7$: $672$; for $n=8$: $1\,792$.
+and the total number of four-cycles in $Q_n$ is $\binom{n}{2}\cdot2^{n-2}$:
+there are $\binom{n}{2}$ choices of the two varying coordinates and, after
+forcing those two base bits to $0$, exactly $2^{n-2}$ choices for the remaining
+base bits. For $n=6$: $240$; for $n=7$: $672$; for $n=8$: $1\,792$.
 \end{lemma}
 
 \noindent\textbf{Verification algorithm.}\quad
@@ -773,7 +782,7 @@ match when $n$ is a power of $4$; our $g(6),g(7),g(8)$ results above
 sharpen this connection to exact values at $n=6,7,8$ specifically. To
 quantify that sharpening: our exact frustration indices are $60,144,342$
 at $n=6,7,8$ (i.e.\ $|E(Q_n)|-g(n)$). A baseline lower bound LNSW26
-state as Theorem~5.2 (attributed by them to an implication of Bialostocki's
+state as Theorem~5.2 (which they attribute to an implication of Bialostocki's
 work~\cite{Bia83}) --- and which is, in our notation, exactly the Cauchy--Schwarz relaxation
 $S\le\sqrt{Q\,m}=\sqrt n\,2^{n-1}$ of Lemma~\ref{lem:fieldbound}, already
 recorded by DPTV79 (p.~620) as giving ``a first lower bound for the ground
@@ -834,10 +843,15 @@ to~\cite{HN94}. We did not reconstruct DPTV's specific $D=6$ bond
 configuration, though their recursion determines the edge counts without
 it.\footnote{DPTV's construction builds $H_d$ from $H_{d-3}$ by replacing each
 vertex with a supersite. Counting negative bonds through the recursion gives
-$12+6+6=24$ at $d=5$ and $24+18+18=60$ at $d=6$ --- the latter being the figure
-DPTV state in the text, which checks the arithmetic against their own
-report --- and $16\times3+8\times6+24\times2=144$ at $d=7$, i.e.\ $448-144=304$
-positive edges. So the value $304$ follows from their construction by a few
+$12+6+6=24$ at $d=5$: four $H_3$ supersites contribute $4\times3=12$
+internal negative bonds, the three white superbonds contribute
+$3\times2=6$, and the one black superbond contributes $1\times6=6$.
+At $d=6$, eight $H_3$ supersites contribute $8\times3=24$; the
+minimal $H_3$ pattern has three black and nine white superbonds, contributing
+$3\times6=18$ and $9\times2=18$, for $60$ total --- exactly the figure
+DPTV state in the text. At $d=7$, the minimal $H_4$ pattern has $16$
+supersites and $32$ superbonds, eight black and twenty-four white, giving
+$16\times3+8\times6+24\times2=144$, i.e.\ $448-144=304$ positive edges. So the value $304$ follows from their construction by a few
 lines of arithmetic, even though we do not exhibit their $H_7$ edge set.} our witness is an independent one, which however turns
 out to realise the same local-field distribution they report (see
 Section~\ref{sec:oddsquareverify}).
@@ -1012,7 +1026,9 @@ gives the single inequality used for all three values of $n$:
 \end{equation}
 The nonnegativity is the classical bound $S\le(Q+ab\,m)/(a+b)$; the
 congruence is what removes the residual gap between that real bound and
-the true integer optimum. We apply \eqref{eq:quantsum} with the pair
+the true integer optimum. No computational filter is invoked in this modular
+step: Lemma~\ref{lem:quant} proves term by term that every summand in
+$\Delta$ is a nonnegative multiple of $8$, so their sum has the same property. We apply \eqref{eq:quantsum} with the pair
 $(a,b)$ of parity-correct integers straddling the root-mean-square field
 $\sqrt{Q/m}=\sqrt n$, namely $(1,3)$ for $n=7$ ($\sqrt7\approx2.65$)
 and $(2,4)$ for $n=6,8$ ($\sqrt6\approx2.45$, $\sqrt8\approx2.83$);
@@ -1103,7 +1119,10 @@ We stress that Lemma~\ref{lem:quant} solves these three instances
 exactly, not merely up to rounding: an independent exhaustive solution
 of the integer programme
 $\max\{\sum h : \sum h^2=n\cdot2^{n-1},\ h\equiv n\ (2),\ |h|\le n\}$
-by dynamic programming over the sum-of-squares budget returns optima
+by dynamic programming over the sum-of-squares budget (the displayed
+$|h|\le n$ is automatic for any realisable local field because
+$h=2\deg_E(v)-n$; it is included only to make the finite computational
+state space explicit and is not used in the closed-form upper-bound proof) returns optima
 $72$, $160$, $340$ for $n=6,7,8$ respectively, matching the bounds
 above, and returns exactly $3$, $1$ and $2$ optimal $h$-distributions
 respectively --- for $n=6$,
@@ -1148,7 +1167,8 @@ rather than from a separate argument.
 All three upper bounds $g(6)\le132$, $g(7)\le304$ and $g(8)\le682$ are thus established
 directly from Lemma~\ref{lem:fieldbound} and Lemma~\ref{lem:quant} --
 reproducing, by a closed-form argument that makes the reasoning self-contained, the
-same optima DPTV79's Table~I already gives for $n\le10$, and supplying
+$n=6,7,8$ entries among the optima DPTV79's Table~I tabulates for
+$n\le10$, and supplying
 a public machine-verifiable certificate at $n=8$ after DPTV79 left that
 dimension open and MPR95 later reported attainment without releasing a
 configuration (Section~\ref{sec:oddsquareverify}); we retain the citations to
@@ -1170,7 +1190,13 @@ just $U$), a bipartite argument identical to the one used for
 Lemma~\ref{lem:fieldbound} shows $S=\sum_{v\in U}h(v)$ exactly (every
 edge has exactly one endpoint in $U$, so summing the local field over
 $U$ counts each edge's sign once), so $H=-S/\sqrt D$ and, per site,
-$H/N=-S/(N\sqrt D)$ with $N=2^D$; at $D=8,S=340$ this is
+$H/N=-S/(N\sqrt D)$ with $N=2^D$. Since each positive edge contributes
+$+1$ to $S$ and each negative edge contributes $-1$,
+$S=|E|-(D2^{D-1}-|E|)=2|E|-D2^{D-1}$, hence explicitly
+\[
+  |E|=\frac{D2^{D-1}-N\sqrt D\,(H/N)}{2}.
+\]
+At $D=8,S=340$ (equivalently $|E|=(1024+340)/2=682$) this is
 $H\approx-120.2$, or $H/N\approx-0.470$ per site. As a cross-check
 against MPR95's own text: they report (in their D=9 discussion) that
 ``on a scale where the minimal energy jump is 1'' their D=9 naive
@@ -1276,7 +1302,10 @@ The $Q_6$ witness edge set satisfies:
     as required by Lemma~\ref{lem:fieldbound}; the complementary side
     of the bipartition has the same histogram.
   \item Local maximality: no edge of $Q_6$ can be added to it while
-    preserving $C_4$-freeness.
+    preserving $C_4$-freeness. More precisely, adding any of the $60$
+    non-edges creates at least two new $C_4$s; the distribution of the number
+    of newly completed $C_4$s per non-edge is
+    $\{2{:}2,3{:}29,4{:}26,5{:}3\}$.
 \end{enumerate}
 \end{proposition}
 
@@ -1294,7 +1323,7 @@ $1$-edge class of our histogram $\{1{:}30,3{:}210\}$ under the complementary
 positive-edge convention; this is a second invariant match, not an edge-set
 identity claim. Second, this witness is \emph{not} the released
 132-edge $Q_6$ construction \texttt{q6\_edges\_132.jsonl} of
-Section~\ref{sec:q6}: the two edge sets differ in $62$ edges, and the
+Section~\ref{sec:q6}: their symmetric difference has size $|E\triangle E'|=62$, and the
 latter is $C_4$-free but not odd-square (square-intersection histogram
 $\{1\!:\!8,\,2\!:\!44,\,3\!:\!188\}$, and
 $\sum_{v\in U}h(v)^2=176\ne192$). Both are $132$-edge $C_4$-free
@@ -1517,7 +1546,18 @@ Each witness in \texttt{q8\_B\_witnesses.json} satisfies:
   \item Square histogram $\{1{:}301,\,3{:}1491\}$ over all
     $1{,}792$ squares (odd-square; $C_4$-free).
   \item $h$-histogram $\{2{:}87,\,4{:}40,\,6{:}1\}$ on $U$,
-    $\sum h=340$, $\sum h^2=1024$ (\checkmark).
+    $\sum h=340$, $\sum h^2=1024$ (\checkmark). On the opposite side
+    $U^c$ the histogram is $\{0{:}1,2{:}84,4{:}43\}$, i.e.\ the other
+    optimal $n=8$ field distribution. Thus each of these single edge sets
+    realises the two optimal histograms on its two bipartition classes.
+  \item Local maximality with margin at least $3$.  For the witnesses with
+    seeds $20261207$ and $20261218$, respectively, the non-edge violation
+    distributions are
+    \[
+      \{3{:}34,4{:}169,5{:}121,6{:}18\}
+      \quad\text{and}\quad
+      \{3{:}41,4{:}154,5{:}130,6{:}17\}.
+    \]
   \item Distinct spin vectors and edge sets, and distinct from
     \texttt{q8\_odd\_square\_682.json}.
 \end{enumerate}
@@ -1538,9 +1578,8 @@ spin, and at $n=6$ a $2^{32}$ space was settled in between $501$ and
 $2.2\times10^{7}$ nodes --- but that the counter-overflow pruning which makes
 the $n=6$ search collapse has no guarantee of biting as hard at $n=8$.
 
-Table~\ref{tab:oddsquare} summarises the odd-square reconstructions
-alongside the corresponding simulated-annealing witnesses of
-Sections \ref{sec:q7} and \ref{sec:q8}.
+Table~\ref{tab:oddsquare} compares the odd-square reconstructions with the SA
+witnesses from Sections~\ref{sec:q7} and~\ref{sec:q8}.
 
 \begin{table}[ht]
 \centering\small
@@ -1552,8 +1591,8 @@ Sections \ref{sec:q7} and \ref{sec:q8}.
 Parameter & $Q_7$ odd-square & $Q_8$ odd-square\\
 \midrule
 Edges (value of $g(n)$) & 304 & 682\\
-Source & one of 389 verified SA sols. & independent witness attaining~\cite{MPR95}'s bound\\
-Non-odd-square comparison witness & n/a (19\,477 exist,~\ref{sec:oddsquareaudit}) & 680 (Solution~B,~\ref{sec:q8})\\
+Source & one of 389 verified SA sols. & explicit certificate at~\cite{MPR95}'s bound\\
+Non-odd-square comparison & 19\,477 catalogue solutions (\ref{sec:oddsquareaudit}) & 680 (Solution~B,~\ref{sec:q8})\\
 Improvement over that witness & --- & $+2$\\
 \bottomrule
 \end{tabular}
@@ -1599,26 +1638,26 @@ Table~\ref{tab:types} lists all 20 types with frequencies and structural invaria
 \toprule
 Rank & Profile $\pi$ & Solutions & $H$ & $\lambda_1$ (mean)\\
 \midrule
- 1 & $[44,44,44,44,43,43,42]$ & 3155 & 2.8072 & 4.787\\
- 2 & $[45,45,45,43,43,42,41]$ & 2913 & 2.8065 & 4.788\\
- 3 & $[45,45,45,43,43,43,40]$ & 2200 & 2.8063 & 4.787\\
- 4 & $[44,44,44,44,44,43,41]$ & 2116 & 2.8069 & 4.787\\
- 5 & $[46,46,46,42,42,42,40]$ & 1756 & 2.8053 & 4.787\\
- 6 & $[46,46,46,42,42,41,41]$ & 1181 & 2.8054 & 4.789\\
- 7 & $[44,44,44,44,44,44,40]$ & 1085 & 2.8066 & 4.787\\
- 8 & $[45,45,45,43,42,42,42]$ & 1064 & 2.8066 & 4.788\\
- 9 & $[45,45,44,43,43,43,41]$ &  974 & 2.8067 & 4.787\\
-10 & $[44,44,44,44,44,42,42]$ &  931 & 2.8070 & 4.787\\
-11 & $[47,47,47,41,41,41,40]$ &  902 & 2.8037 & 4.788\\
-12 & $[45,45,43,43,43,43,42]$ &  439 & 2.8069 & 4.788\\
-13 & $[45,44,44,43,43,43,42]$ &  307 & 2.8070 & 4.788\\
-14 & $[46,45,45,42,42,42,42]$ &  236 & 2.8063 & 4.789\\
-15 & $[44,44,44,43,43,43,43]$ &  163 & 2.8073 & 4.787\\
-16 & $[47,47,44,43,41,41,41]$ &  153 & 2.8050 & 4.788\\
-17 & $[46,46,44,42,42,42,42]$ &  107 & 2.8062 & 4.789\\
-18 & $[48,48,48,40,40,40,40]$ &  101 & 2.8014 & 4.788\\
-19 & $[46,46,43,43,42,42,42]$ &   44 & 2.8063 & 4.788\\
-20 & $[46,46,45,42,42,42,41]$ &   39 & 2.8058 & 4.788\\
+ 1 & $[44,44,44,44,43,43,42]$ & 3155 & 2.8072 & 4.7869\\
+ 2 & $[45,45,45,43,43,42,41]$ & 2913 & 2.8065 & 4.7880\\
+ 3 & $[45,45,45,43,43,43,40]$ & 2200 & 2.8063 & 4.7870\\
+ 4 & $[44,44,44,44,44,43,41]$ & 2116 & 2.8069 & 4.7875\\
+ 5 & $[46,46,46,42,42,42,40]$ & 1756 & 2.8053 & 4.7874\\
+ 6 & $[46,46,46,42,42,41,41]$ & 1181 & 2.8054 & 4.7887\\
+ 7 & $[44,44,44,44,44,44,40]$ & 1085 & 2.8066 & 4.7868\\
+ 8 & $[45,45,45,43,42,42,42]$ & 1064 & 2.8066 & 4.7877\\
+ 9 & $[45,45,44,43,43,43,41]$ &  974 & 2.8067 & 4.7868\\
+10 & $[44,44,44,44,44,42,42]$ &  931 & 2.8070 & 4.7866\\
+11 & $[47,47,47,41,41,41,40]$ &  902 & 2.8037 & 4.7880\\
+12 & $[45,45,43,43,43,43,42]$ &  439 & 2.8069 & 4.7879\\
+13 & $[45,44,44,43,43,43,42]$ &  307 & 2.8070 & 4.7880\\
+14 & $[46,45,45,42,42,42,42]$ &  236 & 2.8063 & 4.7891\\
+15 & $[44,44,44,43,43,43,43]$ &  163 & 2.8073 & 4.7866\\
+16 & $[47,47,44,43,41,41,41]$ &  153 & 2.8050 & 4.7875\\
+17 & $[46,46,44,42,42,42,42]$ &  107 & 2.8062 & 4.7888\\
+18 & $[48,48,48,40,40,40,40]$ &  101 & 2.8014 & 4.7881\\
+19 & $[46,46,43,43,42,42,42]$ &   44 & 2.8063 & 4.7884\\
+20 & $[46,46,45,42,42,42,41]$ &   39 & 2.8058 & 4.7878\\
 \midrule
    & \textbf{Total}           & \textbf{19866}\\
 \bottomrule
@@ -1626,8 +1665,9 @@ Rank & Profile $\pi$ & Solutions & $H$ & $\lambda_1$ (mean)\\
 \end{table}
 
 Observations: (1) the profile-wise \emph{mean} values of $\lambda_1$ shown
-in the table lie in $[4.787,4.789]$ across all 20 types (this is
-distinct from, and narrower than, the exhaustive range
+in the table are rounded independently to four decimal places and lie in
+$[4.7866,4.7891]$ across all 20 types (this is distinct from, and narrower than,
+the exhaustive range
 $[4.78543,4.79129]$ over all $19\,866$ individual solutions reported
 in Proposition~\ref{prop:rigid} below).
 (2) $H$ ranges from $2.801$ to $2.807$, all near $\log_27\approx2.807$.
@@ -1656,8 +1696,8 @@ Every solution in the $19\,866$ satisfies:
     solutions (exhaustively computed; not a single shared three-decimal
     value), with $\lambda_1+\lambda_{\min}=0$ throughout, automatic for any
     subgraph of the bipartite $Q_7$ (sanity check, not an independent
-    finding). The type-wise means of Table~\ref{tab:types} round to
-    $4.787$--$4.789$.
+    finding). The type-wise means of Table~\ref{tab:types} are reported to four decimal
+    places, ranging from $4.7866$ to $4.7891$.
   \item $\mathrm{Tr}(A^4)=5216$. (Like the square-intersection split of
     Proposition~\ref{prop:q6oddsquare}(ii), this is forced rather than
     independent: in a $C_4$-free graph any two vertices have at most one
@@ -1673,7 +1713,10 @@ Every solution in the $19\,866$ satisfies:
 \end{enumerate}
 \end{proposition}
 
-Item (vi) deserves comment, since it was not anticipated. An element of
+Item (vi) was first established by the direct check described next; the
+subsequent full orbit census independently implies it more conceptually and in
+a sharper form. The direct check is retained because it does not depend on
+completion of the orbit census. An element of
 $\mathrm{Aut}(Q_7)$ acts on edges by permuting directions, so it preserves the
 per-direction edge counts; an order-$3$ element must therefore have an order-$3$
 coordinate permutation preserving the solution's own direction-count vector
@@ -1715,10 +1758,15 @@ appear among the images, using a random-projection signature to prefilter and
 an exact comparison of the $448$-byte incidence vector to confirm every hit.
 The exact confirmation is not optional: a single signature collision merges two
 orbits, and in a signature-only trial run on the odd-square subset it did.
+The bundled one-command driver includes this full computation under
+\texttt{reproduce\_core.py --structural}: it runs the census to completion and
+then the stabiliser pass. The latter now refuses an incomplete checkpoint
+rather than treating the sentinel orbit id $-1$ as if it were a real orbit.
 
-Three consequences. First, \emph{every} orbit has stabiliser order divisible by
-$3$, so Proposition~\ref{prop:rigid}(vi) holds at orbit level and in a sharper
-form. Second, summing the orbit lengths gives $34\,227\,200$ labelled
+Three consequences. First, \emph{every} represented orbit has stabiliser order
+divisible by $3$, so Proposition~\ref{prop:rigid}(vi), already obtained by a
+direct all-solution check, also follows from the completed orbit census and
+holds there in a sharper orbit-level form. Second, summing the orbit lengths gives $34\,227\,200$ labelled
 $304$-edge solutions in the orbits represented here, so the catalogue is
 $0.058\%$ of even that lower bound --- a far stronger statement than the
 single-orbit argument used earlier, and a quantitative confirmation that the
@@ -1800,7 +1848,10 @@ type itself.
 \begin{table}[ht]
 \centering
 \caption{Dimension-profile breakdown of the 389 odd-square solutions among
-  the $19\,866$ published 304-edge $Q_7$ solutions.}
+  the $19\,866$ published 304-edge $Q_7$ solutions. Counts in this table are
+  catalogue observations only: absence from a profile class is not a theorem
+  that the corresponding profile can never be odd-square outside the released
+  catalogue.}
 \label{tab:oddsquareaudit}\medskip
 \begin{tabular}{clc}
 \toprule
@@ -1863,8 +1914,9 @@ nontrivial-automorphism-existence claims directly from
 \texttt{q7\_edges\_304.jsonl.part1--3} in about a single pass over the $19\,866$ solutions and all
 $\binom{19\,866}{2}\approx1.97\times10^{8}$ pairs (peak resident memory
 around $600$--$800$MB, dominated by the Python object representation of
-the solution store); running it
-reproduces all of those specific numbers exactly. This script confirms
+the solution store); running it reproduces the degree-sequence, 20-profile, spectral-radius,
+and exhaustive Hamming-distance numbers stated for its documented scope. This
+script confirms
 only that \emph{some} nontrivial automorphism fixes each Type-$18$
 solution; it does not check the stronger claim made in
 Section~\ref{sec:structure} that such an automorphism nontrivially
@@ -2231,10 +2283,12 @@ the provenance fields (\texttt{method}, \texttt{run},
 \texttt{trial}, \texttt{hash}, \texttt{elapsed}) explained above. Of
 the $19\,866$ records, \texttt{method} is \texttt{auto} for $18\,206$,
 \texttt{auto\_seed} for $1\,347$, \texttt{repair} for $2$, and absent
-for $311$ --- so of the collector's three restart strategies the third
-contributed essentially nothing to the released catalogue, a point worth
+for $311$ --- so among the collector's three restart strategies represented in the
+released catalogue the third contributed essentially nothing, a point worth
 keeping in mind when reading the description of the three as parallel
-options; a \texttt{run} field is present on only $8$ records (one
+options. The implementation also uses the label \texttt{seed} for its initial
+seed record; no released catalogue row carries that label, so it is not a
+fourth restart strategy in the metadata summary above; a \texttt{run} field is present on only $8$ records (one
 with \texttt{run=0}, seven with \texttt{run=2}); and $19\,858$ records
 carry a \texttt{trial} field with values up to at least seven figures.
 These fields are now explained by the recovered
@@ -2429,18 +2483,21 @@ $\ex(Q_6,C_4)\le132$ itself rests on~\cite{HN94}, not on our own solve.
 
 Simulated annealing (Section~\ref{sec:method}) is reported to have found a $C_4$-free subgraph of
 $Q_6$ on 132 edges, certified by exhaustive enumeration of all 240 four-cycles.
-The explicit edge list is provided in \texttt{q6\_edges\_132.jsonl}. As
-with the $Q_7$/$Q_8$ constructions (Section~\ref{sec:method}), the
-released, unmodified \texttt{phase1\_sa} exhibits the same structural
+The explicit edge list is provided in \texttt{q6\_edges\_132.jsonl}. Unlike the $Q_7$ and $Q_8$ cases, we have not recovered a production script
+or historical run log that traces the particular file
+\texttt{q6\_edges\_132.jsonl} back to its generating search. The certificate
+itself is independently valid, but its search provenance remains unresolved.
+The released, unmodified \texttt{phase1\_sa} nevertheless exhibits the same structural
 freezing at $n=6$, target $132$: reproducing trial 1 for
 \texttt{-{}-n 6 -{}-target 132 -{}-seed 42} gives initial $V=54$
 against $\texttt{viol\_cap}=14$ (best single-toggle result $49$, still
 above cap), frozen after $100\,000$ steps; \texttt{-{}-seed 0} gives
 initial $V=52$ against $\texttt{viol\_cap}=38$ (best single-toggle
-result $48$). The 132-edge certificate itself remains independently
-verified as a valid $C_4$-free construction; as for $Q_7,Q_8$, we
-cannot confirm the released code, run as documented, is what actually
-produced it.
+result $48$). The 132-edge certificate itself remains independently verified as a valid
+$C_4$-free construction. In contrast to the partially recovered $Q_7/Q_8$
+lineages, however, no recovered production code or historical log currently
+connects this particular $Q_6$ edge set to a generating run, so no such
+provenance claim is made.
 
 \subsection{Upper bound: integer linear program}\label{sec:q6upper}
 
@@ -2577,8 +2634,11 @@ principle, verify on the dual side.
     whether the field bound is tight there ($g(9)=1536$?) is unknown.
   \item The equality $g(n)=\ex(Q_n,C_4)$ already holds for the small
     exact cases $n=4,5,6$: the known unrestricted values are $24,56,132$
-    (Table~\ref{tab:values}), while the fully frustrated constructions of
-    DPTV79 attain the same values in the odd-square subclass. For $n=7,8$,
+    (Table~\ref{tab:values}). For $n=4,5$, the matching odd-square lower
+    bounds are taken from DPTV79's explicit fully frustrated constructions
+    (no $n=4,5$ machine-readable witnesses are bundled here), while for $n=6$
+    the present package contains its own independently verified odd-square
+    certificate. For $n=7,8$,
     Theorem~\ref{thm:oddsquare}
     only establishes $g(7)=304$ and $g(8)=682$; whether
     $\ex(Q_7,C_4)=g(7)$ and $\ex(Q_8,C_4)=g(8)$ remains exactly as open
@@ -2624,10 +2684,13 @@ accuracy and integrity of the work. The specific model version(s) of
 Claude used across the original submission and this revision were not
 recorded at the time and cannot be confirmed retrospectively; the
 disclosure above is accurate as to which tasks AI assistance was used
-for, but not as to the exact model version for each. The DPTV79 and MPR95
-source retrieval and passage-level cross-checking in this revision were
-AI-assisted; this disclosure should not be read as a claim that the author
-independently re-transcribed every quoted passage from the primary sources
+for, but not as to the exact model version for each. The DPTV79 and MPR95 source retrieval and passage-level cross-checking in
+this revision were AI-assisted. During the final revision the cited
+primary-source PDF passages were checked directly at the page level: DPTV79
+pp.~621--622 for Table~I, the $H_6$ construction, field multiplicities, and
+overfrustrated-plaquette count, and MPR95 pp.~3--4 for the $D=8,9,10$ energy
+statements and Hamiltonian normalisation. This disclosure should not be read
+as a claim that the author independently re-transcribed every quoted passage
 without AI assistance.
 
 \section*{Disclosure statement}
