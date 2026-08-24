@@ -111,6 +111,19 @@ def main(argv=None):
     step += 1
     run_step(
         step,
+        "reproducible search for a 682-edge witness (seed 90008)",
+        [PYTHON, ROOT / "q8_A_recover.py", "--seeds", "90008",
+         "--iters", "250000", "--output", "q8_A_witness_check.json"],
+    )
+    step += 1
+    run_step(
+        step,
+        "GF(2) parity obstruction: A and B not realisable at n=6",
+        [PYTHON, ROOT / "q6_parity_obstruction.py"],
+    )
+    step += 1
+    run_step(
+        step,
         "exhaustive Q6 realizability decision (A/B not realisable, C realisable)",
         [PYTHON, ROOT / "q6_decide_realizability.py"],
     )

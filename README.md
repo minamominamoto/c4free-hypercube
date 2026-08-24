@@ -123,6 +123,10 @@ Input conventions differ and are intentional:
 | `q7_order3_automorphisms.py` | takes **no** part-file arguments; reads the fixed part names from CWD |
 | `q7_oddsquare_orbits.py` | takes **no** arguments; reads the fixed part names from CWD, **and also requires `q7_odd_square_389.csv`** in CWD (it takes the 389 indices from that released file rather than recomputing the audit, so run `audit_q7_odd_square.py` first if you want the CSV regenerated) |
 | `q7_orbit_census.py` | takes **no** part-file arguments; reads the fixed part names from CWD and writes/resumes a checkpoint there |
+| `q8_A_recover.py` | takes **no** required arguments (`--seeds`, `--iters`, `--output` optional); needs no input files |
+| `q6_parity_obstruction.py` | takes **no** arguments; needs no input files |
+
+The three conventions above (positional part files, optional part files, fixed names read from CWD) are a historical artefact of when each script was written. Rather than change interfaces that reviewers have already exercised, the simplest advice is: **run everything from the directory containing the released files, and use `reproduce_core.py`**, which supplies the right arguments to each script. If you invoke a script directly and it exits with `FileNotFoundError` or an argparse usage message, consult the row above rather than guessing.
 
 `q7_orbit_census.py` works to a time budget (`--budget`, default 250 s) and
 saves a checkpoint: a full census needs several invocations, each resuming

@@ -142,8 +142,10 @@ edge list with a dedicated verifier for the $n=8$ case, nor of an earlier
 such certificate for the $n=6$ case. This is deliberately a limited
 priority statement rather than a claim of exhaustive bibliographic priority:
 we have not surveyed every literature and data release since 1979; for $n=6$,
-for instance, OEIS A245762 credits the value $132$ to Scheucher and Tabatabai
-in 2015 and links generator scripts, though not an odd-square edge list; and (iii) an exhaustive decision, in Section~\ref{sec:oddsquareverify},
+for instance, OEIS A245762 lists $a(6)=132$ with an
+\textsc{extensions} credit to M.~Scheucher and P.~Tabatabai (2015) for
+supplying the term, while citing Harborth--Nienborg~\cite{HN94} for the result
+itself; it links generator scripts, though not an odd-square edge list; and (iii) an exhaustive decision, in Section~\ref{sec:oddsquareverify},
 of a question DPTV posed and left open in 1979 -- which of the
 several $n=6$ optima described in their Table~I are actually realisable by a
 spin configuration. MPR95 had already addressed this question by simulated
@@ -434,7 +436,16 @@ certificate we release attains the same bound value MPR report; its
 own provenance is recorded as a dated private-correspondence account
 rather than an independently reproducible computational log (see
 Section~\ref{sec:oddsquareverify}); we do not claim it reproduces any
-particular configuration MPR may have used internally.
+particular configuration MPR may have used internally. That asymmetry ---
+the headline certificate being the one artefact whose \emph{derivation} could
+not be re-executed --- is closed in this revision by
+\texttt{q8\_A\_recover.py}, a fixed-seed search that finds, with no input from
+the released witness, a spin configuration realising the same optimal field
+distribution (seed $90008$, hit at iteration $207\,579$; $682$ edges,
+$h|_U=\{0{:}1,2{:}84,4{:}43\}$, square histogram $\{1{:}301,3{:}1491\}$,
+released as \texttt{q8\_A\_witness.json}). It is a different edge set from the
+released witness, as expected; what is now reproducible is the existence, not
+the particular artefact.
 Both bounds are realised by explicit constructions (supplementary files
 \texttt{q7\_edges\_304.jsonl.part1--3} and \texttt{q8\_odd\_square\_682.json};
 the originally announced 680-edge $Q_8$ witness, \texttt{q8\_edges\_680.jsonl},
@@ -706,7 +717,6 @@ Min degree & 4 & 4\\
 Max degree & 5 & 6\\
 Degree sequence & $\{4^{32},5^{96}\}$ & $\{4^7,5^{162},6^{87}\}$\\
 BHN (Eq.~\ref{eq:bounds}), extrapolated & $\approx300.2$ & $\approx674.9$\\
-Margin over extrapolated BHN & $+3.8$ & $+5.1$\\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -868,7 +878,9 @@ and the matching upper bound $g(6)\le132$ follows from
 Lemma~\ref{lem:fieldbound} and Lemma~\ref{lem:quant} without appeal
 to~\cite{HN94}. We did not reconstruct DPTV's specific $D=6$ bond
 configuration, though their recursion determines the edge counts without
-it.\footnote{DPTV's construction builds $H_d$ from $H_{d-3}$ by replacing each
+it.\footnote{What follows is arithmetic within DPTV's construction, recorded for
+the reader's convenience; no claim in this paper depends on it.
+DPTV's construction builds $H_d$ from $H_{d-3}$ by replacing each
 vertex with a supersite. Counting negative bonds through the recursion gives
 $12+6+6=24$ at $d=5$: four $H_3$ supersites contribute $4\times3=12$
 internal negative bonds, the three white superbonds contribute
@@ -1380,7 +1392,7 @@ edge sets agree, only that our independently found witness realises the
 same distribution. DPTV79 also report $30$ overfrustrated plaquettes out of
 $240$ for their $H_6$ configuration, matching the $30$ squares in the
 $1$-edge class of our histogram $\{1{:}30,3{:}210\}$ under the complementary
-positive-edge convention; this is a second invariant match, not an edge-set
+positive-edge convention; this is a further consistency check, though a forced one: with $132$ positive edges the double count of Proposition~\ref{prop:q6oddsquare}(ii) already fixes $N_1=30$, so this agrees with DPTV rather than confirming anything independent, not an edge-set
 identity claim. Second, this witness is \emph{not} the released
 132-edge $Q_6$ construction \texttt{q6\_edges\_132.jsonl} of
 Section~\ref{sec:q6}: their symmetric difference has size $|E\triangle E'|=62$, and the
@@ -1404,7 +1416,7 @@ typeset table itself, which we could not extract). Since DPTV's constraints
 are the ones solved here and the exhaustive enumeration returns exactly three
 optimal distributions, their ``other solutions'' are necessarily A and B; the
 identification is forced by the completeness of the enumeration rather than by
-transcription of the table. MPR95 reported, by simulated
+transcription of the table. To be explicit about the evidence: neither we nor any reviewer has read Table~I itself --- it does not extract as text from the journal PDF --- so every statement here about its contents rests on DPTV's surrounding prose together with our own enumeration. MPR95 reported, by simulated
 annealing, that at $D=6$ only configurations corresponding to the first solution
 of DPTV's Table~I are realisable and that ``the other solution of the Diophantine
 equation \emph{seems not to} correspond to any spin configuration'' -- a
@@ -1418,8 +1430,10 @@ realisable target automatically has $|E|=(192+72)/2=132$. We settle the
 one-side decision exhaustively rather than heuristically.
 
 \begin{proposition}[Exhaustive decision]\label{prop:q6realizability}
-Among $132$-edge odd-square subgraphs of $Q_6$, distribution~C is realised and
-distributions A and B are not realised by any such subgraph.
+Among $132$-edge odd-square subgraphs of $Q_6$, distribution~C is realised as
+the local-field histogram on $U$, and distributions A and B are not realised
+on $U$ by any such subgraph. (By the translation symmetry noted in the proof
+the restriction to $U$ costs nothing.)
 \end{proposition}
 \begin{proof}
 By Lemma~\ref{lem:switching} the odd-square edge sets of $Q_6$ are exactly the
@@ -1448,9 +1462,34 @@ automorphism of $Q_6$ exchanging $U$ and $U^{c}$, and it carries edge sets to
 edge sets preserving both size and odd-squareness, so a distribution realised
 on one side is realised on the other.) The
 $m$-multisets are $\{0{:}2,2{:}30\}$ for A, $\{0{:}1,1{:}3,2{:}27,3{:}1\}$ for
-B, and $\{1{:}6,2{:}24,3{:}2\}$ for C. This is a finite ($2^{32}$) decision
-problem, and depth-first search with counter-overflow pruning settles it in
-seconds: a $v\in U$ has $m(v)$ determined as soon as its six neighbours are
+B, and $\{1{:}6,2{:}24,3{:}2\}$ for C. This is a finite ($2^{32}$) decision problem. For A and B it is settled
+without any search at all, by a parity obstruction. Since $\deg(v)$ is
+$k(v)$ or $6-k(v)$, we have $k(v)=(h(v)+6)/2$ or $(6-h(v))/2$; these differ by
+$h(v)$, which is even, so the \emph{parity} of $k(v)$ is determined by $h(v)$
+alone, independently of the free spin $t_v$:
+\[
+k(v)\equiv\tfrac{h(v)+6}{2}\pmod 2,
+\qquad\text{i.e.}\qquad
+k(v)\text{ odd}\iff h(v)\in\{0,4\}.
+\]
+Reducing the definition of $k(v)$ modulo $2$ gives
+$k(v)\equiv\sum_i t_{v\oplus e_i}+\sum_i b(v,i)$, so the parity vector
+$p\in\mathrm{GF}(2)^{U}$ is the affine image $p=Mt+B$, where $M$ is the
+$U\times U^{c}$ bipartite incidence matrix of $Q_6$ over $\mathrm{GF}(2)$ and
+$B(v)=\sum_i b(v,i)$. The reachable parity vectors are exactly the coset
+$B+\operatorname{Im}(M)$. Here $M$ has rank $16$, and that coset --- $2^{16}$
+vectors --- has weight distribution
+\[
+\{8{:}640,\;12{:}13824,\;16{:}36608,\;20{:}13824,\;24{:}640\},
+\]
+so every reachable parity vector has weight in $\{8,12,16,20,24\}$. A target
+histogram fixes that weight: it is the number of its vertices with
+$h\in\{0,4\}$, namely $0$ for A and $1+3=4$ for B. Neither occurs, so A and B
+are not realisable --- and this needs no enumeration of $m$-multisets.
+Distribution C requires weight $2+6=8$, which does occur, and the witness of
+Section~\ref{sec:oddsquareverify} realises it.
+For completeness we also settled all three by
+depth-first search with counter-overflow pruning, which agrees: a $v\in U$ has $m(v)$ determined as soon as its six neighbours are
 assigned, so any partial assignment exceeding a target count is cut. Global spin
 flip fixes every $h$, so one $U^{c}$ spin may be pinned. The search finds a
 realisation for C ($501$ nodes visited) and exhausts the space for A
@@ -1464,8 +1503,11 @@ expectation for the exhausted cases and recomputes both on request
 (\texttt{-{}-full}).
 \end{proof}
 
-The decision procedure is released as
-\texttt{q6\_decide\_realizability.py} (standard library only, seconds to run).
+The parity obstruction is released as
+\texttt{q6\_parity\_obstruction.py} (rank, coset weight enumeration and the
+three targets; standard library only, under a second), and the exhaustive
+decision as \texttt{q6\_decide\_realizability.py} (also standard library only,
+about twenty seconds).
 Its correctness is anchored at both ends: the reduction is checked against the
 released witness (recomputing $m$ from the spins in
 \texttt{q6\_odd\_square\_132.json} gives $\{1{:}6,2{:}24,3{:}2\}$, i.e.\ C), and
@@ -1582,8 +1624,10 @@ current $h$-histogram on $U$ and the target $\{2{:}87,4{:}40,6{:}1\}$.
 Over $20$ seeds $\times$ $300{,}000$ iterations, $2$ runs reached the
 target ($L_1=0$) at seeds $20261207$ (iteration $260{,}621$) and
 $20261218$ (iteration $276{,}842$); these seed values are arbitrary RNG
-integers and are not dates. The remaining $17$ stopped at $L_1=6$ and $1$ at
-$L_1=8$. Failed intermediate states can contain negative local fields (for
+integers and are not dates, despite their form. To confirm that nothing
+depends on that choice, the same search re-run from the unrelated base $90200$
+also reaches the target (seed $90210$, iteration $279\,646$). The remaining
+$17$ stopped at $L_1=6$ and $1$ at $L_1=8$. Failed intermediate states can contain negative local fields (for
 example $h=-6$ in one recorded run), because the annealing objective explores
 non-maximal configurations; Lemma~\ref{lem:nonneg} applies only to a maximum
 odd-square edge set and is not contradicted by such intermediates. Both
@@ -1636,7 +1680,16 @@ attempted the analogous decision at $n=8$. The obstacle is not
 the raw size of the space --- the reduction gives $2^{127}$ after pinning one
 spin, and at $n=6$ a $2^{32}$ space was settled in between $501$ and
 $2.2\times10^{7}$ nodes --- but that the counter-overflow pruning which makes
-the $n=6$ search collapse has no guarantee of biting as hard at $n=8$.
+the $n=6$ search collapse has no guarantee of biting as hard at $n=8$. The
+parity obstruction, however, transfers and explains part of the contrast: the
+rank of the $U\times U^{c}$ map over $\mathrm{GF}(2)$ is
+$1,4,4,16,16,64,64,256$ for $n=2,\ldots,9$, so it is \emph{full} exactly when
+$n$ is odd. There is thus no parity obstruction at all at $n=7$, and one at
+both $n=6$ and $n=8$; at $n=8$ the criterion reads $k(v)$ odd
+$\iff h(v)\in\{2,6\}$, so the two optimal distributions require weights $88$
+and $84$, and the released witnesses show both are attained. This is a second
+axis, independent of the field identity, along which $n=7$ differs from its
+even neighbours.
 
 Table~\ref{tab:oddsquare} compares the odd-square reconstructions with the SA
 witnesses from Sections~\ref{sec:q7} and~\ref{sec:q8}.
@@ -1699,7 +1752,7 @@ Table~\ref{tab:types} lists all 20 types with frequencies and structural invaria
 \label{tab:types}\medskip
 \begin{tabular}{clrrl}
 \toprule
-Rank & Profile $\pi$ & Solutions & $H$ & $\lambda_1$ (mean)\\
+Rank & Profile $\pi$ & Solutions & $H$ & $\lambda_1$ (type mean)\\
 \midrule
  1 & $[44,44,44,44,43,43,42]$ & 3155 & 2.8072 & 4.7869\\
  2 & $[45,45,45,43,43,42,41]$ & 2913 & 2.8065 & 4.7880\\
@@ -2701,7 +2754,30 @@ principle, verify on the dual side.
     whether the field bound is tight there ($g(9)=1536$?) is unknown.
   \item The equality $g(n)=\ex(Q_n,C_4)$ already holds for the small
     exact cases $n=4,5,6$: the known unrestricted values are $24,56,132$
-    (Table~\ref{tab:values}). For $n=4,5$, the matching odd-square lower
+    (Table~\ref{tab:values}). The pattern is worth tabulating, since it
+    extends further down and breaks in an informative place. Writing
+    $r(n)$ for the positive-edge count of DPTV's recursion --- $H_d$ built
+    from $H_{d-3}$ with $|V(H_{d-3})|$ supersites at three negative bonds
+    each, $r$'s own negative bonds as black superbonds at six, and the rest
+    white at two --- and $g(n)$ for the field bound of
+    Section~\ref{sec:oddsquare-exact}:
+    \begin{center}\small
+    \begin{tabular}{lrrrrrrr}
+    \toprule
+    $n$ & 2 & 3 & 4 & 5 & 6 & 7 & 8\\
+    \midrule
+    DPTV recursion $r(n)$ & 3 & 9 & 24 & 56 & 132 & 304 & 672\\
+    field bound on $g(n)$ & 3 & 9 & 24 & 56 & 132 & 304 & \textbf{682}\\
+    known $\ex(Q_n,C_4)$ & 3 & 9 & 24 & 56 & 132 & --- & ---\\
+    \bottomrule
+    \end{tabular}
+    \end{center}
+    The three agree wherever all three are known, and the recursion meets
+    the field bound exactly up to $n=7$ and then falls short by $10$ at
+    $n=8$. That shortfall is the quantitative content of DPTV's own remark
+    that for $d\ge8$ their construction gives an energy strictly above their
+    bound: it is why $682$ needed a search rather than the recursion, and it
+    marks the first $n$ at which the two notions separate. For $n=4,5$, the matching odd-square lower
     bounds are taken from DPTV79's explicit fully frustrated constructions
     (no $n=4,5$ machine-readable witnesses are bundled here), while for $n=6$
     the present package contains its own independently verified odd-square
@@ -2755,7 +2831,7 @@ for, but not as to the exact model version for each. The DPTV79 and MPR95 source
 this revision were AI-assisted. During the final revision the cited
 primary-source PDF passages were checked directly at the page level: DPTV79
 pp.~621--622 for Table~I, the $H_6$ construction, field multiplicities, and
-overfrustrated-plaquette count, and MPR95 pp.~3--4 for the $D=8,9,10$ energy
+overfrustrated-plaquette count, and MPR95 pp.~3--4 of the arXiv preprint (cond-mat/9410089; the journal pagination is \textit{J.\ Phys.\ A} \textbf{28}, 327--334) for the $D=8,9,10$ energy
 statements and Hamiltonian normalisation. This disclosure should not be read
 as a claim that the author independently re-transcribed every quoted passage
 without AI assistance.

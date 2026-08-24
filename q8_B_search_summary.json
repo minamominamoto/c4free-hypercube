@@ -13,7 +13,7 @@
   "inference_scope": "Constructive existence only; no claim about SA success probability.",
   "iterations_per_seed": 300000,
   "objective": "L1 distance between current and target field histograms on U",
-  "provenance_note": "Seed list (20261200-20261219) is a deterministic reproducibility protocol specified for this released package, not a recovered historical seed list. The seed values are arbitrary integers and are not dates.",
+  "provenance_note": "Seed list (20261200-20261219) is a deterministic reproducibility protocol specified for this released package, not a recovered historical seed list. The seed values are arbitrary integers and are not dates. A re-run from the unrelated seed base 90200 also reaches the target (seed 90210, iteration 279646), confirming the result does not depend on the seed base; the 2026xxxx values are consecutive integers, not dates.",
   "recovery": {
     "20261207": {
       "hit_iteration": 260621
