@@ -15,12 +15,16 @@ For each n in {6, 7, 8} this script:
     and confirming none of them is fully present;
   - prints the SHA-256 of each data file as a fixed-version certificate.
 
-Additionally, for the two odd-square witnesses (q6_odd_square_132.json and
+Additionally, for the two dedicated odd-square witnesses (q6_odd_square_132.json and
 q8_odd_square_682.json) this script independently checks the stronger
 odd-square condition: every square must meet the edge set in exactly 1 or 3
 edges (not merely "not 4"). These checks are independent of the self-checks
 performed by generate_q6_132.py and generate_q8_682.py; this script does not
-import or reuse either script's logic.
+import or reuse either script's logic. For the Q7 catalogue it also checks the
+two inexpensive structural assertions stated in the structural assertions stated in the paper: every one of
+the 19,866 solutions is locally maximal in Q7, and their union covers all 448
+Q7 edges. It also independently confirms that the first released 680-edge Q8
+solution (Solution A) is odd-square.
 
 Note that q6_edges_132.jsonl and q6_odd_square_132.json are two DIFFERENT
 132-edge C4-free subgraphs of Q6. Only the latter is odd-square; the former
@@ -85,6 +89,38 @@ def build_edge_set(edges):
 def is_hypercube_edge(u, v):
     x = u ^ v
     return x != 0 and (x & (x - 1)) == 0  # exactly one bit differs
+
+
+def all_hypercube_edges(n):
+    """Return every undirected edge of Q_n as a normalized (u,v) pair."""
+    out = set()
+    for u in range(1 << n):
+        for d in range(n):
+            v = u ^ (1 << d)
+            if u < v:
+                out.add((u, v))
+    return out
+
+
+def completion_triples_by_edge(n):
+    """For each Q_n edge e, list the triples of other edges that with e
+    complete a square.  An absent edge can be added C4-freely iff none of its
+    completion triples is fully present."""
+    out = {e: [] for e in all_hypercube_edges(n)}
+    for a, b, c, d in four_cycle_corners(n):
+        square = [(a, b), (a, c), (b, d), (c, d)]
+        square = [(u, v) if u < v else (v, u) for u, v in square]
+        for i, e in enumerate(square):
+            out[e].append(tuple(square[:i] + square[i + 1:]))
+    return out
+
+
+def locally_maximal_in_cube(es, cube_edges, completion):
+    """Return (True,None) iff every missing cube edge completes a C4."""
+    for e in cube_edges - es:
+        if not any(all(x in es for x in triple) for triple in completion[e]):
+            return False, e
+    return True, None
 
 
 def verify_solution(edges, n, expected_edges):
@@ -170,6 +206,10 @@ def main():
     print("=" * 56)
     for n, ec, nsol, paths in TARGETS:
         ncycles = sum(1 for _ in four_cycle_corners(n))
+        q7_cube_edges = all_hypercube_edges(7) if n == 7 else None
+        q7_completion = completion_triples_by_edge(7) if n == 7 else None
+        q7_union = set() if n == 7 else None
+        q7_nonmax = 0
         print("\nQ%d: expecting %d solution(s), %d edges each; "
               "%d four-cycles checked per solution"
               % (n, nsol, ec, ncycles))
@@ -195,6 +235,38 @@ def main():
                 bad += 1
                 if bad <= 5:
                     print("  [FAIL] solution %d: %s" % (i, msg))
+                continue
+            if n == 7:
+                es = build_edge_set(edges)
+                q7_union.update(es)
+                local_ok, missing = locally_maximal_in_cube(
+                    es, q7_cube_edges, q7_completion
+                )
+                if not local_ok:
+                    q7_nonmax += 1
+                    if q7_nonmax <= 5:
+                        print("  [FAIL] solution %d is not locally maximal; "
+                              "edge %r can be added C4-freely" % (i, missing))
+        if n == 7:
+            if q7_nonmax:
+                print("  [FAIL] %d Q7 solution(s) are not locally maximal" % q7_nonmax)
+                all_ok = False
+            elif len(sols) == nsol:
+                print("  [OK] all %d Q7 solutions are locally maximal" % nsol)
+            if q7_union != q7_cube_edges:
+                print("  [FAIL] Q7 catalogue union covers %d/%d cube edges"
+                      % (len(q7_union), len(q7_cube_edges)))
+                all_ok = False
+            elif len(sols) == nsol:
+                print("  [OK] Q7 catalogue union covers all %d cube edges"
+                      % len(q7_cube_edges))
+        if n == 8 and ec == 680 and len(sols) >= 1:
+            odd_ok, odd_msg = verify_odd_square(sols[0], 8, 680)
+            if odd_ok:
+                print("  [OK] Q8 Solution A (first 680-edge record) is odd-square")
+            else:
+                print("  [FAIL] Q8 Solution A odd-square check: %s" % odd_msg)
+                all_ok = False
         if bad == 0 and len(sols) == nsol:
             print("  [OK] all %d solution(s) are C4-free with exactly %d edges"
                   % (len(sols), ec))

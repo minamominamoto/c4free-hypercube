@@ -25,7 +25,7 @@ J(x,dim) = (-1)^popcount(x & ((1<<dim)-1)).
 
 The output contains 682 positive edges. Its square intersection histogram is
 `{1: 301, 3: 1491}`, its degree histogram is `{4: 2, 5: 168, 6: 86}`, and its
-local-field histogram is `{0: 2, 2: 168, 4: 86}`.
+local-field histogram is `{0: 2, 2: 168, 4: 86}` over all 256 vertices; on the even-parity side U it is `{0: 1, 2: 84, 4: 43}`.
 
 `generate_q8_682.py` opens its output with `newline="\n"`, so the advertised
 byte-level SHA-256 of `q8_odd_square_682.json` is the same on Unix, macOS, and
@@ -54,7 +54,9 @@ The output contains 132 positive edges. Its square intersection histogram is
 field bound for n=6. Like the Q8 script, it writes with `newline="\n"`.
 
 The spin configuration was found by `search_q6.py`, a fixed-seed (20260823)
-simulated annealing over the 64 spins that reached 132 edges on its first
+simulated annealing (here the seed was chosen as a date-like mnemonic; by
+contrast the Q8 second-distribution seeds such as 20261207 are arbitrary RNG
+integers and are not execution dates) over the 64 spins that reached 132 edges on its first
 trial:
 
 ```bash

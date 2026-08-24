@@ -38,7 +38,7 @@ Marinari–Parisi–Ritort 1995). This led to:
   is withdrawn).
 - Withdrawal of the claim that the Q7 bound (304) is novel — it follows
   from the 1979 construction.
-- A new theorem determining the odd-square subclass exactly for n=6,7,8.
+- A self-contained graph-theoretic theorem/certificate determining the odd-square subclass exactly for n=6,7,8; the numerical values themselves have historical priority in DPTV79 (n=6,7) and MPR95's reported n=8 attainment.
 - An audit of the original 19,866 Q7 solutions: only 389 of them are
   odd-square; the rest are not, so the odd-square construction does not
   explain the bulk of the structural classification.
@@ -66,7 +66,10 @@ with no loops or duplicates and exactly the claimed edge count, certifies
 C4-freeness by **exhaustively enumerating all four-cycles** of Q_n, and
 (for the Q6 and Q8 odd-square witnesses) additionally checks the stronger
 odd-square condition (every square has exactly 1 or 3 edges, not merely
-not-4). It prints the SHA-256 of each data file and exits 0 iff every
+not-4). For the Q7 catalogue, the 389 odd-square members are checked by
+`audit_q7_odd_square.py`; Solution A's incidental odd-squareness and the
+Q7 structural assertions are covered by the dedicated analysis/audit scripts
+and the explicit Q7 checks now included in `verify.py`. It prints the SHA-256 of each data file and exits 0 iff every
 check passes.
 Four-cycles enumerated per solution ( C(n,2) · 2^(n-2) ): Q6 = 240,
 Q7 = 672 (for all 19,866 solutions), Q8 = 1,792.
@@ -80,6 +83,24 @@ sha256sum -c ORIGINAL_DATA_SHA256SUMS.txt         # Linux
 sha256sum -c ODDSQUARE_BRIDGE_SHA256SUMS.txt      # odd-square material
 ```
 
+### Important: run recovered search scripts in a working copy
+
+The recovered production-history scripts write fixed filenames in the current
+working directory. **Do not run them in the authenticated release directory.**
+Copy the files you need to a disposable working directory first. In particular:
+
+- `source.py` and `sa_search.py` overwrite `selected_edges_best.json`;
+- `sa_collect304.py` writes/appends `solutions_304.jsonl` and can overwrite
+  `selected_edges_best.json` if it reaches 305 edges;
+- `sa_q8.py` writes/overwrites `q8_best.json`;
+- `search_q6.py` and `q7_orbit_census.py` create side products such as
+  `q6_spins.txt`, `q7_orbit_census_ckpt.npz`, and `q7_orbit_census.json`.
+
+The SHA-256 manifests authenticate only the files explicitly listed in them.
+Additional generated files do not invalidate a manifest, but overwriting a
+listed seed/data file does. `reproduce_core.py` already uses temporary
+directories for the regeneration steps that would otherwise write outputs.
+
 ### Dependencies for the search/solver scripts
 
 `verify.py`, `generate_q6_132.py`, `search_q6.py`, `generate_q8_682.py`,
@@ -92,7 +113,7 @@ required arguments. `q7_orbit_census.py` works to a time budget
 (`--budget`, default 250 s) and saves a checkpoint: a full census needs two or
 three invocations, each resuming automatically, and exits with code 2 while
 incomplete. Its `--stabilisers` mode needs a completed census and then takes
-seconds. The recovered production-history scripts need further third-party
+seconds. Its JSON output now keeps `catalogue_sizes` aligned with the orbit IDs used by `assignment` and also writes a separately sorted `catalogue_sizes_sorted` list for rank summaries. The recovered production-history scripts need further third-party
 packages. All of these are pinned in the provided `requirements.txt`
 (install as needed):
 
@@ -115,7 +136,7 @@ packages. All of these are pinned in the provided `requirements.txt`
 | `sa_search.py`, `sa_collect304.py`, `selected_edges_best.json` | **Recovered production code for the Q7 results** (recovered after `c4free_sa.py` was found not to explain the Q7 provenance). `sa_search.py` is a conventional penalty SA (add/remove/1-swap/kick moves, temperature-scaled Boltzmann acceptance); as released here it loads `selected_edges_best.json` unconditionally (no random/greedy fallback), and that file already contains the final 304-edge solution, so running it as packaged searches for improvements *beyond* 304 edges, not a from-scratch discovery of the first 304-edge solution. `sa_search.py` also has a known implementation defect: its `cur_list`/`mis_list` candidate lists are only rebuilt every 5,000 iterations while the underlying sets are updated every iteration, so a stale list entry can be sampled and the tracked violation count can in principle drift from the true value, which is never re-verified before saving. This does not affect the released certificates (independently re-verified `C_4`-free regardless of which script produced them), but affects trust in the script's own internal bookkeeping. `sa_collect304.py` mass-collects further solutions by removing a few edges from an existing solution (optionally automorphism-transformed) and greedily repairing; it does not share `sa_search.py`'s two defects above, but has its own: its `canonicalize()` function's docstring-level intent (coordinate relabelling, then the lexicographically smallest of all 2^n bit-flip images) is not what's implemented — the code only tries the n single-bit-flip masks (not all 2^n combined masks), and compares candidates with Python's `<` on `frozenset`, which tests proper-subset (not lexicographic order); since all candidates here have equal cardinality (304), this comparison is always False and the flip-selection loop never updates its choice, so no flip-based canonicalisation actually occurs. Verified: running `sa_collect304.py` from the released seed for 30 seconds finds ~2,000 new valid solutions, and applying its hash function *exactly as implemented* (i.e., with this defect) directly to all 19,866 released `q7_edges_304.jsonl.*` edge sets reproduces the `hash` field already stored in each of those same records, with zero mismatches (reproducible from the released files alone). This 19,866/19,866 match is evidence this is the actual code that produced the stored hashes; it is *not* evidence that the 19,866 solutions are de-duplicated across the full translation symmetry group, since the intended canonicalisation is not what runs. Recomputing hashes with a corrected, fully-canonicalising implementation gives a different result for 92 of the first 100 released solutions. Note also that `sa_collect304.py`'s `RUNTIME` constant (36 hours) has no command-line override: to run it briefly, either edit that constant or wrap the invocation in an external `timeout`, as documented for `sa_q8.py`. |
 | `source.py` | **Recovered code for the origin of the Q7 304-edge solution chain**, tracing back further than the SA-based scripts above. A from-scratch HiGHS ILP solve of the square-≤3-edges formulation, with no warm start when `selected_edges_best.json` does not yet exist. Verified: run for 60 seconds with no pre-existing warm-start file (a genuine cold start), it produces a valid, growing 295-edge C4-free solution via HiGHS branch-and-bound alone. File timestamps and a recovered 72-hour solver log (not bundled, ~4.7MB) are consistent with a documented progression 289→301→303 edges (the first two steps via this same ILP lineage), with the final 303→304 step apparently made by the `sa_search.py` series above. |
 | `source_cbc_origin.py` | **The earliest recovered attempt on this problem**, dated over a week before every other file in this archive: a CBC-solver (not HiGHS) ILP of the same formulation, explicitly commented "Erdős's $\\$100 problem, the n=7 case." This specific file has a confirmed bug: its C4-detection computes common neighbours of adjacent vertices, but Q7 is bipartite, so adjacent vertices never share a common neighbour; it finds 0 of 672 C4s and builds an ILP with no C4 constraints at all. The 289-edge result described in Section 7 was reached by a since-lost corrected version of this script; only a recovered solver log (not bundled) documents that result. This file is released for provenance completeness, not as a functional solver. |
-| `sa_q8.py`, `q8_solution_a.txt`, `q8_solution_b.json` | **Verified, working production code for the Q8 680-edge results.** `sa_q8.py` is a penalty-SA hill-climber that, unlike `c4free_sa.py`, always restarts each trial from the current best *valid* (zero-violation) solution rather than from a fresh random sample, so it never has to escape a large initial violation count. `q8_solution_a.txt`/`q8_solution_b.json` are the recovered outputs, verified to match released Solution A and Solution B exactly by edge set. The separate `1,076`-trial statistic at 681 edges (attempts to exceed 680) remains unsubstantiated by any recovered script or log. |
+| `sa_q8.py`, `q8_solution_a.txt`, `q8_solution_b.json` | **Verified, working production code for the Q8 680-edge results.** `sa_q8.py` is a penalty-SA hill-climber that, unlike `c4free_sa.py`, always restarts each trial from the current best *valid* (zero-violation) solution rather than from a fresh random sample, so it never has to escape a large initial violation count. `q8_solution_a.txt`/`q8_solution_b.json` are the recovered outputs, verified to match released Solution A and Solution B exactly by edge set. An old aggregate trial count for failed 681-edge attempts is not repeated in the revised paper because no corresponding seed list or log was recovered; it is not used as evidence. |
 | `q8_checkpoint_670.json` | A recovered 670-edge intermediate solution. To reproduce our finding that the code makes genuine progress (an external 90-second timeout reduces the violation count at the 675-edge target from 22 to 8 in one run — exact numbers won't repeat, since `sa_q8.py` sets no random seed): `cp q8_checkpoint_670.json q8_best.json`, then `timeout 90 python3 sa_q8.py` in the same directory. Use an external timeout, not the script's internal `RUNTIME` variable — `RUNTIME` is only checked once per outer trial, while each trial's inner Phase-1 loop runs 2–12 million steps with no time check inside it, so editing `RUNTIME` alone won't reliably stop execution near that value. Without `q8_best.json` present, `sa_q8.py` instead starts from a fresh greedy construction. |
 | `verify.py` | Dependency-free verifier (re-checks every certificate from scratch, including the Q8 odd-square condition) |
 | `generate_q6_132.py` | Regenerates and self-checks the 132-edge Q6 odd-square witness from its 64-bit spin configuration, using the same canonical fully frustrated coupling as the Q8 script. |
@@ -134,7 +155,7 @@ packages. All of these are pinned in the provided `requirements.txt`
 | `q6_ilp.mps` | ILP in MPS format (192 variables, 240 constraints) for the Q6 upper bound. Optimality was not independently closed within a practical runtime with a generic solver (see paper, Section 8.2); the upper bound ex(Q6,C4)≤132 rests on Harborth–Nienborg's combinatorial proof. |
 | `q6_ilp_edge_map.csv` | Reconstructed x_i ↔ Q6-edge correspondence for `q6_ilp.mps` (not originally recorded; reconstructed by matching the MPS's variable-constraint incidence against Q6's known edge-square structure, verified to reproduce all 240 constraints exactly). |
 | `q7_edges_304.jsonl.part{1,2,3}` | The 19,866 distinct 304-edge C4-free subgraphs of Q7 (split into 3 parts) |
-| `analyze_q7_structure.py` | Recomputes the paper's Section 6 structural/statistical claims (degree sequence, dimension-profile classification, spectral-radius range, exhaustive pairwise Hamming-distance stats, Type-18 nontrivial-automorphism existence) directly from `q7_edges_304.jsonl.part1-3`. Standard library + numpy only. Verified: reproduces every reported number exactly. Peak memory is around 600–800 MB for the frozenset solution store alone (the Python `frozenset`-of-`frozenset` representation of 19,866 solutions has substantial per-object overhead); wall time is typically 3–10 minutes depending on hardware. The `CHUNK` constant controls the Hamming-distance batch size and does not materially affect peak memory, which is dominated by the solution store. Does not itself determine automorphism *order* (the 46/101 order-3 figure elsewhere in the paper used a separate, more detailed check). |
+| `analyze_q7_structure.py` | Recomputes the paper's Section 6 structural/statistical claims (degree sequence, dimension-profile classification, spectral-radius range, exhaustive pairwise Hamming-distance stats, Type-18 nontrivial-automorphism existence) directly from `q7_edges_304.jsonl.part1-3`. Standard library + numpy only. Verified: reproduces the numerical claims in that script's stated scope exactly; the order-3 automorphism count is checked separately by `q7_order3_automorphisms.py`/`type18_automorphisms.py`. Peak memory is around 600–800 MB for the frozenset solution store alone (the Python `frozenset`-of-`frozenset` representation of 19,866 solutions has substantial per-object overhead); wall time is typically 3–10 minutes depending on hardware. The `CHUNK` constant controls the Hamming-distance batch size and does not materially affect peak memory, which is dominated by the solution store. Does not itself determine automorphism *order* (the 46/101 order-3 figure elsewhere in the paper used a separate, more detailed check). |
 | `q8_edges_680.jsonl` | Two distinct 680-edge C4-free subgraphs of Q8 (Solution A and Solution B; see paper for how they differ) |
 | `q6_odd_square_132.json` | The 132-edge odd-square witness for Q6. **Not the same edge set as `q6_edges_132.jsonl`** — the two differ in 62 edges; both are 132-edge C4-free subgraphs of Q6, but only this one is odd-square (square histogram `{1:30, 3:210}` vs `{1:8, 2:44, 3:188}`). |
 | `q8_odd_square_682.json` | The 682-edge odd-square witness for Q8 (current headline lower bound) |
@@ -151,8 +172,7 @@ cat q7_edges_304.jsonl.part1 q7_edges_304.jsonl.part2 q7_edges_304.jsonl.part3 >
 
 The ILP in `q6_ilp.mps` gives a feasible value matching 132 with any MIP
 solver, but did not close to a proven optimum within a practical runtime
-in our own tests (HiGHS 1.15.1, default settings: 6–7% gap remaining after
-260s); see the paper for details. The upper bound ex(Q6,C4)≤132 itself
+in our own tests (HiGHS 1.15.1, default settings: a several-percent gap remained after several minutes); see the paper for details. This is machine-dependent and is not presented as a benchmark. The upper bound ex(Q6,C4)≤132 itself
 rests on Harborth and Nienborg's independent combinatorial proof (1994).
 
 ```bash

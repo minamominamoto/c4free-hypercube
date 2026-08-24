@@ -18,8 +18,7 @@ certificates.
 - `q6_other_distributions.py`: revised deterministic experiment harness with
   explicit parameters and CSV/JSON logging.
 - `q6_other_distributions_results.csv` and
-  `q6_other_distributions_summary.json`: canonical logs for the newly specified
-  40-seed/20-seed A/B protocol.
+  `q6_other_distributions_summary.json`: byte-reproducible archival logs for the newly specified 40-seed/20-seed A/B protocol; retained for provenance, not as evidence after the exhaustive decision below.
 - `q6_realized_control_results.csv` and `q6_realized_control_summary.json`:
   20-seed positive-control logs for the realised distribution C.
 
@@ -43,7 +42,7 @@ Core checks, standard library only:
 python3 reproduce_core.py
 ```
 
-Also rerun and byte-compare the Q6 targeted-search logs:
+Also rerun and byte-compare the superseded Q6 targeted-search logs (provenance/reproducibility only, not evidence for realisability):
 
 ```bash
 python3 reproduce_core.py --experiments

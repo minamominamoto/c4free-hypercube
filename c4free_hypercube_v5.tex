@@ -96,8 +96,9 @@ recomputed optimum exactly. The graph-theoretic formulation connecting
 the fully-frustrated signed hypercube to the $C_4$-free extremal
 problem is likewise anticipated by Laplante, Naserasr, Sunny, and
 Wang~\cite{LNSW26}, who study the frustration index of the
-fully-frustrated signature directly in these terms
-(Section~\ref{sec:oddsquare-exact} below). Given this, our
+fully-frustrated signature directly in these terms (as a graph-theoretic
+problem they describe, to the best of their knowledge, as previously
+untreated) (Section~\ref{sec:oddsquare-exact} below). Given this, our
 contribution at $n=6,7,8$ is narrower than a first reading of
 Theorem~\ref{thm:oddsquare} might suggest, and consists of three
 parts, none of which is the numerical values $72,160,340$ themselves:
@@ -297,9 +298,9 @@ account of how either the $Q_7$ or the $Q_8$ solutions were produced.
 For $Q_6$ we additionally give an ILP formulation whose
 feasible value matches the known exact value $\ex(Q_6,C_4)=132$; we did
 not independently verify the ILP's optimality within a practical
-runtime, and the upper bound itself rests on the combinatorial proof
-of Harborth and Nienborg~\cite{HN94}, which we reproduce on the lower
-(construction) side.
+runtime. The upper bound itself rests on the combinatorial proof
+of Harborth and Nienborg~\cite{HN94}; independently, we reproduce the
+matching lower-bound construction.
 
 Edge lists, ILP files, the odd-square reconstruction and audit scripts, and
 source code are made available at\\
@@ -309,9 +310,9 @@ check the commit corresponding to this version, since files introduced by a
 revision (here, among others, \texttt{q6\_decide\_realizability.py},
 \texttt{solve\_field\_ip.py} and the $Q_8$ second-distribution witnesses)
 appear only from that commit onward. The authoritative file list for this
-revision, with SHA-256 sums, is \texttt{ORIGINAL\_DATA\_SHA256SUMS.txt},
-\texttt{ODDSQUARE\_BRIDGE\_SHA256SUMS.txt} and
-\texttt{MANUSCRIPT\_SHA256SUMS.txt} in the accompanying archive, the last
+revision, with SHA-256 sums, is \path{ORIGINAL_DATA_SHA256SUMS.txt},
+\path{ODDSQUARE_BRIDGE_SHA256SUMS.txt} and
+\path{MANUSCRIPT_SHA256SUMS.txt} in the accompanying archive, the last
 covering this document's own \texttt{.tex} and \texttt{.pdf} so that a reader
 can confirm which revision a given file set belongs to.
 \end{abstract}
@@ -353,6 +354,10 @@ the intermediate value $0.6068$ is due to Balogh, Hu, Lidick\'y, and
 Liu~\cite{BHLL12}.
 For general $n\ge9$, the weaker bound
 $\tfrac{1}{2}(n+0.9\sqrt{n})\cdot2^{n-1}$ applies~\cite{BHN95}.
+A wording caution is useful for cross-checking the literature: LNSW26's
+discussion of this BHN expression contains a sentence calling it an ``at
+most'' bound, whereas BHN95 and the standard extremal formulation use it as a
+lower bound on $\ex(Q_n,C_4)$; we follow the latter.
 Exact values have been determined for small $n$; Harborth and Nienborg~\cite{HN94}
 proved $\ex(Q_6,C_4)=132$.
 
@@ -406,8 +411,13 @@ Within the \emph{odd-square} subclass --- edge sets meeting every square in
 an odd number of edges --- the extremal value $g(n)$ is determined exactly
 for $n=6,7,8$:
 
-\begin{theorem}\label{thm:oddsquare}
-$g(6)=132$, $g(7)=304$, and $g(8)=682$.
+\begin{theorem}[Exact odd-square values]\label{thm:oddsquare}
+$g(6)=132$, $g(7)=304$, and $g(8)=682$. The numerical values for $n=6,7$
+have historical priority in Derrida--Pomeau--Toulouse--Vannimenus~\cite{DPTV79},
+and MPR95~\cite{MPR95} reported attainment of the corresponding $n=8$
+ground-state bound. The assertion here is a self-contained graph-theoretic
+re-proof/certification of those values, not a claim that the three numbers
+themselves are new.
 \end{theorem}
 
 \noindent All three values are self-contained within the released
@@ -457,7 +467,7 @@ published 304-edge $Q_7$ solutions, only 389 are odd-square
 \toprule
 $n$ & $|E(Q_n)|$ & $\ex(Q_n,C_4)$ & BHN (Eq.~\ref{eq:bounds}) & Source\\
 \midrule
-4 &   32 & 24  & $24$ (tight, $n=4^1$) & Chung~\cite{Chu92}\\
+4 &   32 & 24  & $24$ (tight, $n=4^1$) & known value recorded by Chung~\cite{Chu92}\\
 5 &   80 & 56  & n/a (outside domain) & Emamy-K et al.~\cite{EGR92}\\
 6 &  192 & 132 & n/a (outside domain) & Harborth--Nienborg~\cite{HN94}\\
 7 &  448 & $\ge\mathbf{304}$ & $\approx300.2^{\dagger}$ & value~\cite{DPTV79}; witness ours\\
@@ -630,24 +640,12 @@ all create at least $2$ new $C_4$s.
 
 For historical completeness only, not as a reviewable computational
 result: the manuscript that originally announced the $680$-edge
-construction also reported a failed search for $681$
-edges,\footnote{Over $1\,076$ reported simulated-annealing trials
-targeting $681$ edges, the minimum $C_4$ violation count observed was
-$1$ (never $0$). This was cited at the time as computational evidence
-for the conjecture $\ex(Q_8,C_4)=680$; that conjecture is withdrawn,
-since the odd-square reconstruction of Section~\ref{sec:oddsquare}
-gives $\ex(Q_8,C_4)\ge682>680$, so the figure carries no remaining
-extremal significance. Beyond that withdrawal, given
-Section~\ref{sec:method}'s finding that the released, unmodified
-heuristic cannot reliably progress from a fresh random start under its
-documented parameters, this statistic should not be read as an
-experimental result about the behaviour of the \emph{stated} (i.e.\
-released, as-documented) heuristic at all -- it is an unarchived,
-author-recorded historical claim whose relationship to the released
-code we cannot verify, with no seed list or log supplied. A stochastic
-annealing run does not in any case define a graph-theoretic
-neighbourhood search, so even taken at face value this figure would be
-evidence only about one particular unreproduced search process.} which we mention only as
+construction also reported a failed search for $681$ edges. No seed list or
+run log survives for that negative-search statistic, and the originally
+associated conjecture $\ex(Q_8,C_4)=680$ is false in view of the 682-edge
+witness. We therefore omit the old numerical trial count from the evidentiary
+record and retain only the fact that an unarchived failed search was reported,
+which we mention only as
 development history, not as evidence bearing on any current claim in
 this paper.
 
@@ -765,7 +763,9 @@ the number of negative edges, $|E(Q_n)|-|E|$. In the language of signed
 graphs, $|E(Q_n)|-g(n)$ is the \emph{frustration index} of the fully
 frustrated signature on $Q_n$. Laplante, Naserasr, Sunny, and
 Wang~\cite{LNSW26} study this frustration index directly (in the
-context of Huang's proof of the sensitivity conjecture) and explicitly
+context of Huang's proof of the sensitivity conjecture, and as a target they
+describe as not previously treated in the literature to the best of their
+knowledge) and explicitly
 establish a connection between it and Erd\H{o}s's question on the
 largest $C_4$-free subgraph of the hypercube, giving lower and upper
 bounds on the frustration index of the fully frustrated signature that
@@ -1026,7 +1026,11 @@ optimum over real $u$ is at $u=\sqrt{n-1}$; since the admissible $u$ of the
 correct parity are spaced two apart, it suffices to evaluate the two
 straddling $\sqrt{n-1}$ and take the smaller. This gives
 $(2,4)$ at $n=6$ ($u=3$ against $\sqrt5\approx2.24$; the alternative $(0,2)$
-has $u=1$ and yields $96$), $(1,3)$ at $n=7$, and $(2,4)$ at $n=8$. Pairs with
+has $u=1$ and yields $96$), $(1,3)$ at $n=7$, and $(2,4)$ at $n=8$.
+For completeness, imposing the mod-$8$ condition on the other adjacent
+same-parity pairs does not improve these choices: the next-best quantised
+upper bounds on $S$ are $96$, $176$, and $408$ for $n=6,7,8$ respectively,
+all weaker than $72,160,340$. Pairs with
 $a+b=0$ make \eqref{eq:quantsum} degenerate and give no bound; $a+b<0$
 reverses the inequality and bounds $S$ from below.
 
@@ -1144,9 +1148,10 @@ rather than from a separate argument.
 All three upper bounds $g(6)\le132$, $g(7)\le304$ and $g(8)\le682$ are thus established
 directly from Lemma~\ref{lem:fieldbound} and Lemma~\ref{lem:quant} --
 reproducing, by a closed-form argument that makes the reasoning self-contained, the
-same optima DPTV79's Table~I already gives for $n\le10$, and settling
-$n=8$'s realisability where DPTV79 explicitly left it open
-(Section~\ref{sec:oddsquareverify}); we retain the citations to
+same optima DPTV79's Table~I already gives for $n\le10$, and supplying
+a public machine-verifiable certificate at $n=8$ after DPTV79 left that
+dimension open and MPR95 later reported attainment without releasing a
+configuration (Section~\ref{sec:oddsquareverify}); we retain the citations to
 Derrida et al.~\cite{DPTV79} and Marinari--Parisi--Ritort~\cite{MPR95}
 for historical priority and for the connection that prompted this
 section, not because the upper-bound
@@ -1181,7 +1186,7 @@ identification is not an accident of the rounding width: the neighbouring
 admissible values $S=336$ and $S=344$ give $-356$ and $-365$, so among the
 values $S\equiv0\pmod4$ forced by $\Delta\equiv0\pmod8$, only $S=340$ rounds
 to $-361$ (the intermediate $S=338,342$, excluded by that congruence, would
-give $-358$ and $-363$). This
+give $-359$ and $-363$ under the same nearest-integer rounding rule). This
 single match is strengthened by two further checks under the identical
 rule, both independent of any bound established elsewhere in this
 paper: at $D=9$, $\sqrt9=3$ is itself an integer of the right parity,
@@ -1256,8 +1261,9 @@ The $Q_6$ witness edge set satisfies:
   \item $132$ edges, all valid $Q_6$ edges, no repetitions.
   \item Square-intersection histogram $\{1\!:\!30,\;3\!:\!210\}$ over all
     $240$ squares: the odd-square condition holds everywhere, and in
-    particular the set is $C_4$-free. (Given odd-squareness and $|E|$, the
-    split is forced, not independent information: each edge of $Q_n$ lies in
+    particular the set is $C_4$-free. (Once odd-squareness has independently
+    been verified, and given $|E|$, the split is forced rather than an
+    additional independent check: each edge of $Q_n$ lies in
     exactly $n-1$ squares, so double counting gives
     $N_1+3N_3=(n-1)|E|$ and $N_1+N_3=\binom{n}{2}2^{n-2}$, whence
     $N_3=\bigl((n-1)|E|-\binom{n}{2}2^{n-2}\bigr)/2$. This applies equally to
@@ -1282,7 +1288,11 @@ with the local-field distribution Derrida et al.\ report for their
 $D=6$ configuration, ``$n(4)=6$; $n(2)=24$; $n(0)=2$''~\cite[p.~622]{DPTV79};
 we did not reconstruct their configuration and do not claim the two
 edge sets agree, only that our independently found witness realises the
-same distribution. Second, this witness is \emph{not} the released
+same distribution. DPTV79 also report $30$ overfrustrated plaquettes out of
+$240$ for their $H_6$ configuration, matching the $30$ squares in the
+$1$-edge class of our histogram $\{1{:}30,3{:}210\}$ under the complementary
+positive-edge convention; this is a second invariant match, not an edge-set
+identity claim. Second, this witness is \emph{not} the released
 132-edge $Q_6$ construction \texttt{q6\_edges\_132.jsonl} of
 Section~\ref{sec:q6}: the two edge sets differ in $62$ edges, and the
 latter is $C_4$-free but not odd-square (square-intersection histogram
@@ -1312,7 +1322,11 @@ equation \emph{seems not to} correspond to any spin configuration'' -- a
 tentative negative finding, in the singular, with no released configuration or
 decision procedure. Since Proposition~\ref{prop:q6oddsquare} identifies
 C with DPTV's first solution by multiplicity, the question is whether A and B
-are realisable. We settle it exhaustively rather than heuristically.
+are realisable. Here ``realisable'' prescribes the histogram on the chosen
+bipartition side $U$ only; $U^c$ is not constrained. This is the same one-side
+convention used by DPTV79 for $n(h)$. Each of A, B, and C has $S=72$, so any
+realisable target automatically has $|E|=(192+72)/2=132$. We settle the
+one-side decision exhaustively rather than heuristically.
 
 \begin{proposition}[Exhaustive decision]\label{prop:q6realizability}
 Among $132$-edge odd-square subgraphs of $Q_6$, distribution~C is realised and
@@ -1478,17 +1492,23 @@ simulated annealing whose objective is the $L_1$ distance between the
 current $h$-histogram on $U$ and the target $\{2{:}87,4{:}40,6{:}1\}$.
 Over $20$ seeds $\times$ $300{,}000$ iterations, $2$ runs reached the
 target ($L_1=0$) at seeds $20261207$ (iteration $260{,}621$) and
-$20261218$ (iteration $276{,}842$); the remaining $17$ stopped at
-$L_1=6$ and $1$ at $L_1=8$. Both witnesses are released in
+$20261218$ (iteration $276{,}842$); these seed values are arbitrary RNG
+integers and are not dates. The remaining $17$ stopped at $L_1=6$ and $1$ at
+$L_1=8$. Failed intermediate states can contain negative local fields (for
+example $h=-6$ in one recorded run), because the annealing objective explores
+non-maximal configurations; Lemma~\ref{lem:nonneg} applies only to a maximum
+odd-square edge set and is not contradicted by such intermediates. Both
+witnesses are released in
 \texttt{q8\_B\_witnesses.json} (spins and edges), regenerable via
 \texttt{q8\_B\_recover.py}, and verified by the dependency-free
 \texttt{verify\_q8\_B\_witnesses.py}. The two successful runs can be checked directly from the stored certificates
 without any search; the other eighteen are recorded only by their plateau
 distances, so confirming those requires rerunning the protocol, which
 \texttt{q8\_B\_recover.py} supports (it is seeded per trial and takes
-\texttt{-{}-seeds} and \texttt{-{}-iters}). Nothing in
-the claim depends on it --- the assertion is existence, and two certificates
-carry it:
+\texttt{-{}-seeds} and \texttt{-{}-iters}). The 20-run success/plateau tally is provenance information rather than part
+of the theorem's evidence and is not rerun by the default one-command
+reproduction. Nothing in the claim depends on it --- the assertion is
+existence, and two certificates carry it:
 
 \begin{proposition}\label{prop:q8Boddsquare}
 Each witness in \texttt{q8\_B\_witnesses.json} satisfies:
@@ -1508,7 +1528,11 @@ realisable by an explicit odd-square $682$-edge subgraph of $Q_8$, while for
 $n=6$ only distribution~C is (Proposition~\ref{prop:q6realizability}). The two
 halves of that contrast rest on different kinds of evidence, and the asymmetry
 should be stated: at $n=8$ both realisations are exhibited constructively,
-whereas at $n=6$ non-realisability is \emph{proved} exhaustively. We have not attempted the analogous decision at $n=8$. The obstacle is not
+whereas at $n=6$ non-realisability is \emph{proved} exhaustively. Thus
+``every optimal distribution is realisable'' at $n=8$ means constructive
+existence for each of the two DP distributions, not an exhaustive decision
+over all $n=8$ spin assignments of the kind performed at $n=6$. We have not
+attempted the analogous decision at $n=8$. The obstacle is not
 the raw size of the space --- the reduction gives $2^{127}$ after pinning one
 spin, and at $n=6$ a $2^{32}$ space was settled in between $501$ and
 $2.2\times10^{7}$ nodes --- but that the counter-overflow pruning which makes
@@ -1537,6 +1561,13 @@ Improvement over that witness & --- & $+2$\\
 
 %% ============================================================
 \section{Structural Classification of $Q_7$ Solutions}\label{sec:structure}
+\noindent\textbf{Scope.} Every universal statement in this section is over
+the released catalogue of $19\,866$ labelled $304$-edge solutions unless
+explicitly stated otherwise. The catalogue is not exhaustive of all labelled
+solutions or all $\mathrm{Aut}(Q_7)$-orbits (Proposition~\ref{prop:orbits});
+none of the shared structural properties below is claimed for every possible
+$304$-edge $C_4$-free subgraph of $Q_7$.
+
 %% ============================================================
 
 \subsection{Dimension profiles and the twenty types}\label{sec:profiles}
@@ -1728,21 +1759,17 @@ example, do occur ($22$ of the $636$) but are far from
 representative of the minimum's structure.
 
 For historical completeness only, not as a reviewable computational
-result: a failed search targeting $305$ edges was also
-reported.\footnote{Over $1\,076$ reported trials targeting $305$
-edges, the minimum $C_4$ violation count was $2$ (never $0$). The
-trial count $1\,076$ matches the $681$-edge $Q_8$ figure in
-Section~\ref{sec:q8} (the minimum violations differ: $2$ here vs.\ $1$ there); we do not have a log or seed list for either
-figure, so we cannot confirm whether this is a genuine coincidence
-across two separate search efforts or a duplication error somewhere in
-this manuscript's history. We did not attempt to resolve this by
-guessing; both figures are unarchived, author-recorded claims of
-uncertain independence from each other, mentioned only as development
-history and bearing on no claim in this paper.}
+result: a failed search targeting $305$ edges was also reported. No seed list
+or run log survives for that negative-search statistic, so we do not retain
+its old numerical trial count as evidence and no claim in this paper depends
+on it.
 
-\begin{conjecture}\label{conj:q7}
-$\ex(Q_7,C_4)=304$.
-\end{conjecture}
+\paragraph{Open exactness question.}
+The data in this paper do not provide a defensible evidentiary basis for a
+conjecture that $\ex(Q_7,C_4)=304$: the released catalogue is highly
+non-exhaustive and the direct SAT/MIP attacks below end in UNKNOWN. We
+therefore treat exactness at $n=7$ as an open problem rather than a formal
+conjecture; see Open Problem~\ref{op:q7exact}.
 
 \subsection{Odd-square audit}\label{sec:oddsquareaudit}
 
@@ -2076,13 +2103,25 @@ code for the $Q_7$ results, with the two caveats above (the seed's
 provenance below $304$ edges, and this list-staleness defect); see Section~\ref{sec:c4freesa} below for
 the separate, distinct \texttt{c4free\_sa.py} whose relationship to
 the $Q_8$ results (and to the $Q_7$ results, before this recovery)
-remains as previously described. The $1\,076$-trial statistic at
-$305$ edges and the analogous $681$-edge search-attempt statistic for
-$Q_8$ are unaffected by
-this recovery and remain unarchived, unresolved provenance claims in
-the sense described below; only the $680$-edge \emph{solutions}
-themselves (not the $681$-edge negative-search statistics) have since
-also been traced to verified code, described next.
+remains as previously described. The old numerical trial counts for the $305$-edge and $681$-edge failed
+searches are unaffected by this recovery and remain unsupported by surviving
+seed lists or logs; we therefore omit them from the evidentiary record. Only
+the $680$-edge \emph{solutions} themselves (not the negative-search
+statistics) have since also been traced to verified code, described next.
+
+\paragraph{Reproduction safety for recovered search scripts.}
+The recovered production-history scripts write fixed filenames in their
+current working directory and should be executed only in a disposable working
+copy, not in the release directory. In particular, \texttt{source.py} and
+\texttt{sa\_search.py} overwrite \texttt{selected\_edges\_best.json};
+\texttt{sa\_collect304.py} appends \texttt{solutions\_304.jsonl} and can
+also overwrite \texttt{selected\_edges\_best.json} if it reaches 305 edges;
+and \texttt{sa\_q8.py} writes/overwrites \texttt{q8\_best.json}. Some
+verification/analysis scripts also create new side files (for example
+\texttt{q6\_spins.txt} and the orbit-census checkpoint/JSON). The SHA-256
+manifests authenticate only the files they explicitly list; the appearance of
+additional generated files is normal, whereas overwriting a listed seed file
+changes the authenticated release.
 
 \subsection{Update: aspects of the \texorpdfstring{$Q_8$}{Q8} 680-edge production pipeline have also been recovered}
 
@@ -2136,12 +2175,10 @@ without this file, \texttt{sa\_q8.py} instead
 starts from a fresh greedy construction, which is a different (and
 also legitimate, since the algorithm always restarts from a valid
 state either way) starting point than the one we tested from. We
-also release \texttt{sa\_q8.py} itself. The $1\,076$-trial
-statistic at $681$ edges (Section~\ref{sec:q8}) is a record of
-attempts to exceed $680$, not of producing the $680$-edge solutions
-themselves; we did not recover a script or log specifically
-substantiating that count, so it remains an unarchived, author-recorded
-claim in the same sense as before.
+also release \texttt{sa\_q8.py} itself. A historical aggregate count for
+failed $681$-edge attempts was recorded in earlier manuscript versions, but
+we did not recover the corresponding seeds or log; the count is therefore
+omitted here rather than repeated as an unverifiable statistic.
 
 \subsection{The released \texttt{c4free\_sa.py} and its known defect}\label{sec:c4freesa}
 
@@ -2162,16 +2199,16 @@ discrepancy: \texttt{c4free\_sa.py} was never the operative research
 code for either dimension; it was a retrospective, small-scale-validated
 addition made to satisfy a reviewer's reproducibility request, and the
 defect went undetected because it was not exercised at the scale that
-triggers it. The quantitative
-claim about the \emph{$Q_8$ search process} — ``$1\,076$ independent
-trials'' at $681$ edges — remains an unarchived record, as noted just
-above; before the two recoveries above, this described the $Q_7$ and
-the $Q_8$ $680$-edge solution claims as well. The
+triggers it. The earlier quantitative claim about the \emph{$Q_8$ negative-search
+process} remains unarchived, as noted just above, and its numerical trial
+count is omitted from this revision. Before the two recoveries above, the
+provenance gap described the $Q_7$ and the $Q_8$ $680$-edge solution claims
+as well. The
 search program \texttt{c4free\_sa.py}, distinct from both recovered
 production-code pairs above,
 is released alongside
 this manuscript as originally reported, but the specific run seeds, logs, and driver
-invocations that would substantiate the $681$-edge, $1\,076$-trial statistic are not supplied,
+invocations that would substantiate the old $681$-edge negative-search statistic are not supplied,
 and we no longer believe \texttt{c4free\_sa.py} as released is what
 produced either the $Q_7$ or the $Q_8$ solutions (see the recoveries
 above for what we now believe did).
@@ -2205,8 +2242,7 @@ These fields are now explained by the recovered
 subject to the two caveats noted there (the seed's own provenance
 below $304$ edges, and the list-staleness defect); this record is
 substantially more resolved than the analogous $Q_8$ $681$-edge
-trial statistic, which remains an unarchived claim with no
-recovered script or log at all (the $Q_8$ $680$-edge \emph{solutions}
+negative-search provenance claim, for which no run log or seed list survives (the $Q_8$ $680$-edge \emph{solutions}
 themselves, by contrast, have also now been traced to recovered code
 -- see below).
 
@@ -2262,7 +2298,10 @@ the cited domain and not a proven bound at $n=8$
 (Section~\ref{sec:regularity}). These three files ---
 \texttt{c4free\_sa.py}, \texttt{sa\_search.py}, \texttt{sa\_q8.py} --- are the
 complete list of released scripts carrying annotations we added after
-recovery; in each case only comments or docstrings were touched, and the
+recovery. The literal marker \texttt{NOTE (added retrospectively)} occurs in
+the latter two; \texttt{c4free\_sa.py} records its retrospective findings
+under \texttt{KNOWN BUG} comments instead. In each case only comments or
+docstrings were touched, and the
 SHA-256 sums in \texttt{ORIGINAL\_DATA\_SHA256SUMS.txt} are those of the
 annotated files, not of the historical originals.
 
@@ -2321,7 +2360,7 @@ some undocumented earlier version of \emph{this script} matches a
 different historical parameter setting. The genuine remaining gaps are
 narrower and specific: the very first sub-$304$-edge bootstrap step of
 \texttt{sa\_search.py}'s own lineage (Section~\ref{sec:method} above),
-and the unarchived $681$-edge/$1\,076$-trial statistic
+and the unarchived $681$-edge negative-search statistic
 (Section~\ref{sec:q8}), neither of which this section's finding about
 \texttt{phase1\_sa} bears on directly.
 
@@ -2478,7 +2517,7 @@ principle, verify on the dual side.
 %% ============================================================
 
 \begin{enumerate}
-  \item Prove or disprove $\ex(Q_7,C_4)=304$ (Conjecture~\ref{conj:q7}).
+  \item\label{op:q7exact} Prove or disprove $\ex(Q_7,C_4)=304$.
     A direct SAT-encoding attack on this question (a $305$-edge
     $C_4$-free existence query encoded as CNF, $64\,512$ variables and
     $129\,104$ clauses, with a symmetry-broken variant at $113\,664$
@@ -2536,17 +2575,21 @@ principle, verify on the dual side.
     find a $D=9$ ground state by simulated annealing. We have not applied
     the fully frustrated search of Section~\ref{sec:oddsquareverify} to $n=9$;
     whether the field bound is tight there ($g(9)=1536$?) is unknown.
-  \item We now know $g(6)=\ex(Q_6,C_4)=132$ (Theorem~\ref{thm:oddsquare}
-    combined with~\cite{HN94}). For $n=7,8$, Theorem~\ref{thm:oddsquare}
+  \item The equality $g(n)=\ex(Q_n,C_4)$ already holds for the small
+    exact cases $n=4,5,6$: the known unrestricted values are $24,56,132$
+    (Table~\ref{tab:values}), while the fully frustrated constructions of
+    DPTV79 attain the same values in the odd-square subclass. For $n=7,8$,
+    Theorem~\ref{thm:oddsquare}
     only establishes $g(7)=304$ and $g(8)=682$; whether
     $\ex(Q_7,C_4)=g(7)$ and $\ex(Q_8,C_4)=g(8)$ remains exactly as open
-    as Conjecture~\ref{conj:q7} and Open Problem~\ref{op:q8exact} above, since
+    as Open Problems~\ref{op:q7exact} and~\ref{op:q8exact} above, since
     $\ex(Q_n,C_4)$ itself is not known exactly for $n=7,8$. (The
-    coincidence at $n=6$ is in any case not explained by the
+    equality through $n=6$ does not mean the
     odd-square construction alone for $n=7$: only 389 of the
-    $19\,866$ known $304$-edge $Q_7$ solutions are odd-square.) Does
-    $g(n)=\ex(Q_n,C_4)$ continue to hold for $n=9,10,\ldots$ (once
-    $\ex(Q_n,C_4)$ is itself determined), or does the gap
+    $19\,866$ released $304$-edge $Q_7$ solutions are odd-square.) Does
+    $g(n)=\ex(Q_n,C_4)$ also hold at $n=7,8$, and continue for
+    $n=9,10,\ldots$ once
+    $\ex(Q_n,C_4)$ is itself determined, or does the gap
     $\ex(Q_n,C_4)-g(n)$ become positive at some $n$? Laplante et
     al.~\cite{LNSW26} give general lower and upper bounds on the
     frustration index $|E(Q_n)|-g(n)$ that match only when $n$ is a
@@ -2581,7 +2624,11 @@ accuracy and integrity of the work. The specific model version(s) of
 Claude used across the original submission and this revision were not
 recorded at the time and cannot be confirmed retrospectively; the
 disclosure above is accurate as to which tasks AI assistance was used
-for, but not as to the exact model version for each.
+for, but not as to the exact model version for each. The DPTV79 and MPR95
+source retrieval and passage-level cross-checking in this revision were
+AI-assisted; this disclosure should not be read as a claim that the author
+independently re-transcribed every quoted passage from the primary sources
+without AI assistance.
 
 \section*{Disclosure statement}
 No potential conflict of interest was reported by the author.

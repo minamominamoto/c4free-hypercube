@@ -169,7 +169,12 @@ def report(orbit, sizes, dirs, n):
     print(f'top ten orbits cover {sum(top)} ({100 * sum(top) / n:.1f}%)')
     with open(OUT, 'w', encoding='utf-8', newline='\n') as f:
         json.dump({'orbits': len(sizes),
-                   'catalogue_sizes': sorted(sizes, reverse=True),
+                   # Aligned by orbit id: catalogue_sizes[k] is the number of
+                   # released catalogue members assigned to orbit k.
+                   'catalogue_sizes': list(sizes),
+                   # Convenience ranking only; intentionally not indexed by
+                   # orbit id.
+                   'catalogue_sizes_sorted': sorted(sizes, reverse=True),
                    'assignment': orbit}, f)
     print(f'wrote {OUT}')
 
