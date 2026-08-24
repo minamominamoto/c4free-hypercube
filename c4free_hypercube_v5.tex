@@ -174,11 +174,13 @@ then permute) these are $(5,1,2,3,4,6,0)$ with mask $m=33=0100001_2$ and its
 square $(6,1,2,3,4,0,5)$ with $m=96=1100000_2$; under the opposite convention
 $v\mapsto \pi(v)\oplus m$ used in \texttt{type18\_automorphisms.py} the two
 masks are interchanged. They together
-form a cyclic group of order $3$ -- so its orbit alone has size $645\,120/3=215\,040>19\,866$. What
-remains open is whether the $19\,866$ released solutions represent
-every $\mathrm{Aut}(Q_7)$-orbit of 304-edge $C_4$-free subgraphs (i.e.\
-every such subgraph is equivalent under $\mathrm{Aut}(Q_7)$ to one of
-the $19\,866$), not whether they exhaust the labelled solutions
+form a cyclic group of order $3$ -- so its orbit alone has size
+$645\,120/3=215\,040>19\,866$. Decomposing the whole catalogue
+(Proposition~\ref{prop:orbits}) makes this quantitative: the $19\,866$ fall
+into $180$ orbits whose lengths sum to $34\,227\,200$, so the released files
+are $0.058\%$ of the labelled solutions in those orbits alone. What remains
+open is whether they represent every $\mathrm{Aut}(Q_7)$-orbit of 304-edge
+$C_4$-free subgraphs, not whether they exhaust the labelled solutions
 themselves; see Open Problem~\ref{op:orbits}.
 
 For $Q_8$, the reconstructed 682-edge odd-square witness is locally maximal
@@ -1001,17 +1003,18 @@ the true integer optimum. We apply \eqref{eq:quantsum} with the pair
 $(a,b)$ of parity-correct integers straddling the root-mean-square field
 $\sqrt{Q/m}=\sqrt n$, namely $(1,3)$ for $n=7$ ($\sqrt7\approx2.65$)
 and $(2,4)$ for $n=6,8$ ($\sqrt6\approx2.45$, $\sqrt8\approx2.83$);
-we verified directly, by evaluating $(Q+ab\,m)/(a+b)$ over every
-parity-correct pair with $a+b>0$ and $|a|,|b|\le n+2$ --- beyond that range
-$ab\,m$ grows faster than $a+b$ and the bound is worse than the minimum
-already found, so the search is finite --- (pairs with $a+b=0$ make
-\eqref{eq:quantsum} degenerate, giving no bound on $S$, while
-$a+b<0$ reverses the inequality and gives a \emph{lower} rather than
-upper bound), that this is
-the minimising choice for each of $n=6,7,8$ specifically -- e.g.\ at
-$n=6$, $(2,4)\mapsto74.67$ against $(0,2)\mapsto96$ and
-$(4,6)\mapsto96$ -- rather than proving it as a general claim over all
-$n$.
+this is the minimising choice, and no search is needed to see it: putting
+$u=a+1$ and $Q=nm$, the bound becomes
+\[
+\frac{Q+ab\,m}{a+b}=\frac{m}{2}\Bigl(u+\frac{n-1}{u}\Bigr),
+\]
+which is decreasing for $0<u<\sqrt{n-1}$ and increasing thereafter, so the
+optimum over real $u$ is at $u=\sqrt{n-1}$ and the best admissible pair is the
+one with $u=a+1$ nearest that value and of the correct parity. This gives
+$(2,4)$ at $n=6$ ($u=3$ against $\sqrt5\approx2.24$; the alternative $(0,2)$
+has $u=1$ and yields $96$), $(1,3)$ at $n=7$, and $(2,4)$ at $n=8$. Pairs with
+$a+b=0$ make \eqref{eq:quantsum} degenerate and give no bound; $a+b<0$
+reverses the inequality and bounds $S$ from below.
 
 \textbf{$n=6$.} Here $m=32$, $Q=192$, $(a,b)=(2,4)$, so
 $\Delta=448-6S$. Nonnegativity alone gives only
@@ -1170,7 +1173,9 @@ rule, both independent of any bound established elsewhere in this
 paper: at $D=9$, $\sqrt9=3$ is itself an integer of the right parity,
 so the field-bound optimum is the unique uniform distribution $h\equiv3$,
 giving $S=768$, $H/N=-1/2$ exactly, and $768\times(-1/2)=-384$ --
-an \emph{exact} match to MPR95's own stated $D=9$ value. This point,
+an \emph{exact} match to the value MPR95 state at $D=9$, which they describe
+as the ground-state energy on their integer scale (not merely a bound; at
+$D=9$ the two coincide). This point,
 however, is where the scale factor $768$ is itself pinned down, so it
 corroborates the conversion without being independent of it; the two
 independent checks are $D=8$ and $D=10$. At $D=10$, $m=512$, $Q=5120$, $(a,b)=(2,4)$ gives
@@ -1356,7 +1361,7 @@ a plateau is not a proof, and the asymmetry in iteration budget between the
 targets and the control makes the phrase ``the same search'' inexact. The two
 computations also range over different spaces: the annealing objective allows
 intermediate configurations with negative local fields (the archived logs
-record best-histogram entries at $h=-4$ and $h=-6$), whereas the reduction of
+record best-histogram entries at $h=-4$), whereas the reduction of
 Proposition~\ref{prop:q6realizability} works with the nonnegative field
 $6-2m(v)$ throughout. They agree on A and B, but they are not the same
 computation restricted.
@@ -1451,10 +1456,11 @@ $20261218$ (iteration $276{,}842$); the remaining $17$ stopped at
 $L_1=6$ and $1$ at $L_1=8$. Both witnesses are released in
 \texttt{q8\_B\_witnesses.json} (spins and edges), regenerable via
 \texttt{q8\_B\_recover.py}, and verified by the dependency-free
-\texttt{verify\_q8\_B\_witnesses.py}. Only the two successful runs are
-re-verifiable from the release: the summary and per-run CSV record the
-plateau distances of the other eighteen, but not their spin vectors, so the
-$20$-seed statistic is reproducible only by rerunning the protocol. Nothing in
+\texttt{verify\_q8\_B\_witnesses.py}. The two successful runs can be checked directly from the stored certificates
+without any search; the other eighteen are recorded only by their plateau
+distances, so confirming those requires rerunning the protocol, which
+\texttt{q8\_B\_recover.py} supports (it is seeded per trial and takes
+\texttt{-{}-seeds} and \texttt{-{}-iters}). Nothing in
 the claim depends on it --- the assertion is existence, and two certificates
 carry it:
 
@@ -1629,12 +1635,47 @@ released solution, computed by exhaustive search over
 all $645\,120$ group elements, is thus not the special case it appeared to be but
 an instance of a property shared by the whole released catalogue.
 
-We do not know whether this reflects a property of $304$-edge $C_4$-free
-subgraphs of $Q_7$ in general or an artefact of the search lineage that produced
-this catalogue: local edge swaps do not preserve symmetry, so a search that
-repeatedly returns symmetric solutions is itself in need of explanation.
-Both readings bear directly on Open Problem~\ref{op:orbits}, and on how far the
-catalogue can be taken as representative.
+Decomposing the catalogue under the full group sharpens this considerably.
+
+\begin{proposition}[Orbit census]\label{prop:orbits}
+Under $\mathrm{Aut}(Q_7)$, of order $645\,120$, the $19\,866$ released
+solutions fall into exactly $180$ orbits. The stabiliser orders, one per orbit,
+are $3$ ($142$ orbits), $6$ ($32$), $12$ ($4$), $24$ ($1$) and $72$ ($1$);
+correspondingly the orbit lengths are $215\,040$, $107\,520$, $53\,760$,
+$26\,880$ and $8\,960$. The orbits meet the catalogue very unevenly: the
+largest accounts for $2\,048$ solutions ($10.3\%$) and the ten largest for
+$5\,199$ ($26.2\%$).
+\end{proposition}
+
+The census is computed by \texttt{q7\_orbit\_census.py}, which applies every
+group element to an unassigned solution and records which catalogue members
+appear among the images, using a random-projection signature to prefilter and
+an exact comparison of the $448$-byte incidence vector to confirm every hit.
+The exact confirmation is not optional: a single signature collision merges two
+orbits, and in a signature-only trial run on the odd-square subset it did.
+
+Three consequences. First, \emph{every} orbit has stabiliser order divisible by
+$3$, so Proposition~\ref{prop:rigid}(vi) holds at orbit level and in a sharper
+form. Second, summing the orbit lengths gives $34\,227\,200$ labelled
+$304$-edge solutions in the orbits represented here, so the catalogue is
+$0.058\%$ of even that lower bound --- a far stronger statement than the
+single-orbit argument used earlier, and a quantitative confirmation that the
+released files are nowhere near exhaustive. Third, the $\texttt{canonicalize()}$
+defect of Section~\ref{sec:method} is not merely a reason for caution: with
+$180$ orbits behind $19\,866$ labelled solutions and one orbit supplying a
+tenth of them, duplication under $\mathrm{Aut}(Q_7)$ is demonstrably
+large-scale, not hypothetical.
+
+This also bears on how item~(vi) should be read. The collector's dominant
+strategies (\texttt{auto} on $18\,206$ records, \texttt{auto\_seed} on
+$1\,347$) act by applying a group element $g$ to an existing solution, and
+$\mathrm{Stab}(gE)=g\,\mathrm{Stab}(E)\,g^{-1}$, so that operation preserves
+stabiliser order exactly. A symmetric seed therefore propagates its symmetry
+through the strategy that produced almost the entire catalogue. We do not
+claim this settles the question --- it does not explain why the initial seeds
+were symmetric, and the repair step can in principle break symmetry --- but the
+observation is better read as a plausible artefact of the search lineage than
+as evidence about $304$-edge $C_4$-free subgraphs of $Q_7$ in general.
 
 \subsection{Solution landscape}\label{sec:landscape}
 
@@ -1694,7 +1735,9 @@ all direction counts even, so the other fifteen are excluded a priori --- and
 indeed contain no odd-square solution. The genuinely empirical content is
 therefore the single remaining fact that rank~17
 ($[46,46,44,42,42,42,42]$, 107 solutions) has all counts even yet contains no
-odd-square solution.
+odd-square solution \emph{among the released catalogue}; since the catalogue
+does not exhaust the labelled solutions, this is not a statement about the
+type itself.
 
 \begin{table}[ht]
 \centering
@@ -1722,12 +1765,22 @@ Proposition~\ref{prop:rigid} and the 20-type classification of
 Section~\ref{sec:profiles} are not fully explained or subsumed by
 the odd-square construction: the great majority of 304-edge $C_4$-free
 subgraphs of $Q_7$ found here lie outside the fully frustrated switching
-class of~\cite{DPTV79}. (These counts are of labelled edge sets, not
-of $\mathrm{Aut}(Q_7)$ orbits; since odd-squareness is
-$\mathrm{Aut}$-invariant, the \emph{partition} into $389$ odd-square and
-$19\,477$ non-odd-square is well-defined regardless, but the
-\emph{ratio} may differ when measured by orbits -- that question is
-Open Problem~\ref{op:orbits} below.) The one exception is Type~18
+class of~\cite{DPTV79}. (These counts are of labelled edge sets, not of $\mathrm{Aut}(Q_7)$ orbits.
+Odd-squareness is $\mathrm{Aut}$-invariant, so the partition into $389$
+odd-square and $19\,477$ non-odd-square is well defined regardless; the ratio,
+however, does change when measured by orbits. Decomposing the $389$ under the
+full group $\mathrm{Aut}(Q_7)$ of order $645\,120$ --- by applying every group
+element to each unassigned solution and testing membership on the exact
+incidence vector --- gives exactly \textbf{six} orbits, meeting the catalogue in
+$127$, $83$, $55$, $49$, $46$ and $29$ solutions
+(\texttt{q7\_oddsquare\_orbits.py}). So the $389$ labelled odd-square solutions
+represent only six orbits, and the catalogue is far from a set of orbit
+representatives. The corresponding decomposition of the whole catalogue is
+Proposition~\ref{prop:orbits} below: the $19\,866$ fall into $180$ orbits, so
+the odd-square proportion is $6/180\approx3.3\%$ by orbit against
+$389/19\,866\approx2.0\%$ by labelled solution. Membership must be tested exactly: a
+random-projection signature is faster but a single collision merges two orbits,
+and in our first run it did, giving $128$ and $48$ in place of $127$ and $49$.) The one exception is Type~18
 ($[48,48,48,40,40,40,40]$, 101 solutions), all of which are odd-square;
 the other three types containing odd-square solutions (ranks 5, 7, and
 10) are mixed, containing both odd-square and non-odd-square members.
@@ -2428,9 +2481,13 @@ principle, verify on the dual side.
     overwhelmingly by non-odd-square solutions), so no assumption is made
     here about which way $n=8$ resolves.
   \item\label{op:orbits} What is the number of $\mathrm{Aut}(Q_7)$-orbits among all 304-edge
-    $C_4$-free subgraphs of $Q_7$? Do the $19\,866$ released solutions
-    represent every such orbit? Among the 389 odd-square solutions
-    specifically?
+    $C_4$-free subgraphs of $Q_7$? The released catalogue meets exactly
+    $180$ of them, six of which contain the odd-square solutions
+    (Proposition~\ref{prop:orbits}); what is unknown is how many orbits exist
+    altogether, and hence whether the $19\,866$ meet every one. Since those
+    $180$ orbits already contain $34\,227\,200$ labelled solutions, a
+    complete enumeration by labelled solution is out of reach, but an
+    orbit-level enumeration may not be.
   \item Is the degree sequence $\{4^{32},5^{96}\}$ necessary for any locally
     maximal $C_4$-free subgraph of $Q_7$ on 304 edges?
   \item Can the flag algebra method of~\cite{Bab12,BHLL12} yield tight bounds

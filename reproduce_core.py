@@ -14,8 +14,8 @@ Default mode uses only the Python standard library and checks:
   8. the exact Type-18 automorphism claims, including 46/101 order-3 cases.
 
 Optional modes:
-  --structural   also run analyze_q7_structure.py, q7_hamming_tally.py and
-                 q7_order3_automorphisms.py (all require numpy;
+  --structural   also run analyze_q7_structure.py, q7_hamming_tally.py,
+                 q7_order3_automorphisms.py and q7_oddsquare_orbits.py (all require numpy;
                  analyze_q7_structure.py is the expensive one)
   --experiments  rerun the deterministic Q6 A/B targeted SA protocol and compare
                  its logs with the bundled canonical logs
@@ -216,6 +216,18 @@ def main(argv=None):
             step,
             "order-3 automorphism check on all 19,866 solutions",
             [PYTHON, ROOT / "q7_order3_automorphisms.py"],
+        )
+        step += 1
+        run_step(
+            step,
+            "Aut(Q7)-orbit decomposition of the 389 odd-square solutions",
+            [PYTHON, ROOT / "q7_oddsquare_orbits.py"],
+        )
+        step += 1
+        run_step(
+            step,
+            "full Aut(Q7)-orbit census of the 19,866 solutions (180 orbits)",
+            [PYTHON, ROOT / "q7_orbit_census.py", "--budget", "100000"],
         )
         step += 1
 
