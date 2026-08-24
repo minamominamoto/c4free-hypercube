@@ -1,15 +1,35 @@
 {
-  "experiment": "Q8 second optimal field-distribution search",
-  "target_histogram": {"2": 87, "4": 40, "6": 1},
-  "objective": "L1 distance between current and target field histograms on U",
-  "seeds": {"first": 20261200, "last": 20261219, "count": 20},
-  "iterations_per_seed": 300000,
-  "hits": 2,
-  "hit_seeds": [20261207, 20261218],
-  "distance_histogram": {"0": 2, "6": 17, "8": 1},
-  "recovery": {
-    "20261207": {"hit_iteration": 260621},
-    "20261218": {"hit_iteration": 276842}
+  "distance_histogram": {
+    "0": 2,
+    "6": 17,
+    "8": 1
   },
-  "inference_scope": "Constructive existence only; no claim about SA success probability."
+  "experiment": "Q8 second optimal field-distribution search",
+  "hit_seeds": [
+    20261207,
+    20261218
+  ],
+  "hits": 2,
+  "inference_scope": "Constructive existence only; no claim about SA success probability.",
+  "iterations_per_seed": 300000,
+  "objective": "L1 distance between current and target field histograms on U",
+  "provenance_note": "Seed list (20261200-20261219) is a deterministic reproducibility protocol specified for this released package, not a recovered historical seed list. The seed values are arbitrary integers and are not dates.",
+  "recovery": {
+    "20261207": {
+      "hit_iteration": 260621
+    },
+    "20261218": {
+      "hit_iteration": 276842
+    }
+  },
+  "seeds": {
+    "count": 20,
+    "first": 20261200,
+    "last": 20261219
+  },
+  "target_histogram": {
+    "2": 87,
+    "4": 40,
+    "6": 1
+  }
 }

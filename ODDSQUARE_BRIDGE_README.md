@@ -124,8 +124,10 @@ depth-first search with counter pruning:
 
 Wall time is about 19 seconds total on one modern core; the C branch also
 rebuilds a full spin vector and re-derives the histogram and edge count as an
-end-to-end check. `--full` additionally repeats each search without the
-global-spin-flip symmetry reduction, exactly doubling every node count.
+end-to-end check. `--full` additionally repeats each search without the global-spin-flip
+symmetry reduction. That exactly doubles the node counts for the two exhausted,
+non-realisable searches (A and B); no doubling is expected for C, which
+returns at the first witness found and visits 501 nodes either way.
 
 By the switching lemma the odd-square edge sets of Q6 are precisely the
 positive-edge sets of spin configurations under any fixed fully frustrated

@@ -22,6 +22,7 @@ Requires numpy. Usage:
     python3 q7_orbit_census.py --report      # summarise a finished run
 """
 import argparse
+import hashlib
 import json
 import os
 import sys
@@ -105,8 +106,15 @@ def main():
     order = np.argsort(sig)
     sig_sorted = sig[order]
 
+    cat_sig = hashlib.sha256(M.tobytes()).hexdigest()
     if os.path.exists(CKPT):
         z = np.load(CKPT)
+        stored = str(z['catalogue_sha256']) if 'catalogue_sha256' in z else ''
+        if stored != cat_sig:
+            print('checkpoint does not match this catalogue '
+                  f'(stored {stored[:12]}..., computed {cat_sig[:12]}...); '
+                  'delete q7_orbit_census_ckpt.npz and rerun')
+            return 3
         orbit = z['orbit'].tolist()
         sizes = z['sizes'].tolist()
         print(f'resumed: {sum(1 for x in orbit if x >= 0)}/{n} assigned, '
@@ -143,7 +151,8 @@ def main():
         # make progress. Each invocation therefore always finishes the orbit
         # it has started.
         if done_here and time.time() - t0 > args.budget:
-            np.savez(CKPT, orbit=np.array(orbit), sizes=np.array(sizes))
+            np.savez(CKPT, orbit=np.array(orbit), sizes=np.array(sizes),
+                 catalogue_sha256=np.array(cat_sig))
             print(f'budget reached: {sum(1 for x in orbit if x >= 0)}/{n} '
                   f'assigned, {len(sizes)} orbits; checkpoint saved')
             return 2
@@ -167,7 +176,8 @@ def main():
         sizes.append(len(found))
         done_here += 1
 
-    np.savez(CKPT, orbit=np.array(orbit), sizes=np.array(sizes))
+    np.savez(CKPT, orbit=np.array(orbit), sizes=np.array(sizes),
+                 catalogue_sha256=np.array(cat_sig))
     report(orbit, sizes, dirs, n)
     return 0
 
@@ -181,6 +191,11 @@ def report(orbit, sizes, dirs, n):
           f'({100 * max(sizes) / n:.1f}%)')
     top = sorted(sizes, reverse=True)[:10]
     print(f'top ten orbits cover {sum(top)} ({100 * sum(top) / n:.1f}%)')
+    ok = (len(sizes) == 180 and max(sizes) == 2048 and sum(top) == 5199)
+    print('RESULT:', 'matches the paper' if ok
+          else 'MISMATCH against the values stated in the paper')
+    if not ok:
+        raise SystemExit(1)
     with open(OUT, 'w', encoding='utf-8', newline='\n') as f:
         json.dump({'orbits': len(sizes),
                    # Aligned by orbit id: catalogue_sizes[k] is the number of
@@ -255,6 +270,13 @@ def stabilisers(M, dirs, orbit):
     print(f'catalogue is {100 * len(orbit) / total:.4f}% of that')
     print(f'all stabiliser orders divisible by 3: '
           f'{all(c % 3 == 0 for c in out.values())}')
+    ok = (dict(hist) == {3: 142, 6: 32, 12: 4, 24: 1, 72: 1}
+          and total == 34227200
+          and all(c % 3 == 0 for c in out.values()))
+    print('RESULT:', 'matches the paper' if ok
+          else 'MISMATCH against the values stated in the paper')
+    if not ok:
+        raise SystemExit(1)
     print(f'[{time.time() - t0:.0f}s]')
     return out
 

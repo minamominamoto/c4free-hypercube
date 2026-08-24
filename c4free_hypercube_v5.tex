@@ -937,9 +937,11 @@ for all $19\,866$, with no exceptions. The identity's failure for the
 non-odd-square $Q_8$ Solution~B of Section~\ref{sec:q8} ($1016\ne1024$ on
 $U$, while the complementary side gives exactly $1024$ --- so only one side
 breaks)
-is therefore not explained by odd-squareness as such: Solution~B is also, unlike Solution~A, not locally maximal: its non-edge
-violation multiset contains a $1$, so some missing edge can be added creating
-only a single $C_4$. It has an
+is therefore not explained by odd-squareness as such: Solution~B is locally maximal, like Solution~A, but with the smallest possible
+margin: its non-edge violation multiset is
+$\{1{:}1,2{:}1,3{:}49,4{:}153,5{:}124,6{:}16\}$, so every missing edge still
+creates at least one $C_4$, though one of them creates exactly one (against a
+minimum of $2$ for Solution~A). It has an
 asymmetric degree distribution between $U$ and its complement
 ($\{4^3,5^{82},6^{43}\}$ vs.\ $\{4^4,5^{80},6^{44}\}$), whereas
 Solution~A, all $19\,866$ $Q_7$ solutions, and the $682$-edge witness all
@@ -1053,6 +1055,17 @@ gives the single inequality used for all three values of $n$:
 \ \ge\ 0,
 \qquad \Delta\equiv0\!\!\pmod 8 .
 \end{equation}
+Before specialising, one relaxation is worth recording. Cauchy--Schwarz gives
+$S\le\sqrt{Q\,m}=\sqrt n\,2^{n-1}$ and hence
+$|E|\le2^{n-2}(n+\sqrt n)$ --- the same expression as the
+Brass--Harborth--Nienborg lower bound in~\eqref{eq:bounds}. So at $n=4^r$,
+where BHN's construction attains that value and every odd-square set obeys the
+relaxation, the two meet and
+$g(n)=2^{n-2}(n+\sqrt n)$ exactly; the BHN construction is optimal within the
+odd-square subclass at those $n$. This is the shortest explanation of why
+LNSW26's bounds close precisely at powers of $4$, and it locates what
+Lemma~\ref{lem:quant} adds: at $n=6,7,8$ the relaxation is not tight, and the
+mod-$8$ refinement is what recovers the exact value.
 The nonnegativity is the classical bound $S\le(Q+ab\,m)/(a+b)$; the
 congruence is what removes the residual gap between that real bound and
 the true integer optimum. No computational filter is invoked in this modular
@@ -1177,7 +1190,13 @@ and $\{2{:}87,4{:}40,6{:}1\}$ is realised by two further witnesses in
 independently verified by \texttt{verify\_q8\_B\_witnesses.py}:
 each has $682$ edges, square-intersection histogram $\{1{:}301,3{:}1491\}$
 (odd-square), and $\sum_{v\in U}h(v)^2=1024=8\cdot2^7$ (\checkmark). All
-three $n=8$ witnesses are distinct edge sets.
+three $n=8$ witnesses are distinct edge sets. In fact a single B witness
+already settles both: its $U$-side histogram is $\{2{:}87,4{:}40,6{:}1\}$ while
+its $U^{c}$-side histogram is $\{0{:}1,2{:}84,4{:}43\}$, so one edge set
+realises each optimal distribution on one side of the bipartition (the
+$682$-edge witness, by contrast, has $\{0{:}1,2{:}84,4{:}43\}$ on both sides).
+Whether some odd-square $682$-edge set realises $\{2{:}87,4{:}40,6{:}1\}$ on
+\emph{both} sides we have not determined.
 For $n=6$, only distribution~C $=\{0{:}2,2{:}24,4{:}6\}$ is realised;
 distributions A and B are provably not realisable
 (Proposition~\ref{prop:q6realizability}, an exhaustive finite decision).
@@ -1824,8 +1843,12 @@ This also bears on how item~(vi) should be read. The collector's dominant
 strategies (\texttt{auto} on $18\,206$ records, \texttt{auto\_seed} on
 $1\,347$) act by applying a group element $g$ to an existing solution, and
 $\mathrm{Stab}(gE)=g\,\mathrm{Stab}(E)\,g^{-1}$, so that operation preserves
-stabiliser order exactly. A symmetric seed therefore propagates its symmetry
-through the strategy that produced almost the entire catalogue. We do not
+stabiliser order exactly. But the automorphism is applied to a restart \emph{state}: the collector then
+deletes $k$ random edges and repairs greedily before storing, so the
+conjugation argument governs the restart, not the stored solution. What it
+supports is therefore weaker --- the restart preserves stabiliser order
+exactly, and may thereby bias the subsequent repair toward symmetric regions
+--- rather than a claim that symmetry is propagated to the output. We do not
 claim this settles the question --- it does not explain why the initial seeds
 were symmetric, and the repair step can in principle break symmetry --- but the
 observation is better read as a plausible artefact of the search lineage than
@@ -2648,8 +2671,8 @@ principle, verify on the dual side.
   \item\label{op:q8exact} Determine $\ex(Q_8,C_4)$ exactly. Is it $682$, or can a
     non-odd-square construction exceed $g(8)=682$? The $Q_7$ audit of
     Section~\ref{sec:oddsquareaudit} shows the two questions are genuinely
-    different for $n=7$ (the general extremal value $304$ is attained
-    overwhelmingly by non-odd-square solutions), so no assumption is made
+    different for $n=7$ (the released $304$-edge solutions are
+    overwhelmingly non-odd-square), so no assumption is made
     here about which way $n=8$ resolves.
   \item\label{op:orbits} What is the number of $\mathrm{Aut}(Q_7)$-orbits among all 304-edge
     $C_4$-free subgraphs of $Q_7$? The released catalogue meets exactly
@@ -2746,7 +2769,8 @@ R.~Baber,
 Tur\'an densities of hypercubes,
 arXiv:1201.3587, 2012.
 
-\bibitem{BHLL12} J.~Balogh, P.~Hu, B.~Lidick\'y, and H.~Liu, Upper bounds on
+\bibitem{BHLL12} (cited as BHLL12 after the 2012 preprint)
+  J.~Balogh, P.~Hu, B.~Lidick\'y, and H.~Liu, Upper bounds on
   the size of 4- and 6-cycle-free subgraphs of the hypercube,
   \textit{Eur.\ J.\ Combin.}\ \textbf{35} (2014), 75--85; arXiv:1201.0209 (2012).
 \bibitem{BHN95} P.~Brass, H.~Harborth, and H.~Nienborg, On the maximum number
@@ -2766,7 +2790,7 @@ arXiv:1201.3587, 2012.
   analysis and combinatorial number theory, in: \textit{Graph Theory and
   Combinatorics} (B.~Bollob\'as, ed.), Academic Press, 1984, pp.~1--17.
 \bibitem{Bia83} A.~Bialostocki, Some Ramsey type results regarding the graph
-  $H$, \textit{Ars Combin.}\ \textbf{16-A} (1983), 39--48. (Cited
+  of the $n$-cube, \textit{Ars Combin.}\ \textbf{16-A} (1983), 39--48. (Cited
   via~\cite{LNSW26}; not consulted in the original by the present author.)
 \bibitem{HN94} H.~Harborth and H.~Nienborg, Maximum number of edges in a
   six-cube without four-cycles, \textit{Bull.\ ICA}\ \textbf{12} (1994), 55--60.

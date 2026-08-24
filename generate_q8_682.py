@@ -50,6 +50,9 @@ def main():
     degree_hist = Counter(degrees)
     local_fields = [2 * d - N for d in degrees]
     field_hist = Counter(local_fields)
+    # U = even-popcount half of the bipartition (the paper's convention)
+    U = [v for v in range(1 << N) if bin(v).count("1") % 2 == 0]
+    fieldU_hist = Counter(2 * degrees[v] - N for v in U)
     assert len(edges) == 682
     assert square_hist == Counter({3: 1491, 1: 301})
     assert degree_hist == Counter({5: 168, 6: 86, 4: 2})
@@ -67,6 +70,7 @@ def main():
         "direction_counts": direction_counts,
         "degree_histogram": dict(sorted(degree_hist.items())),
         "local_field_histogram": dict(sorted(field_hist.items())),
+        "local_field_histogram_U": dict(sorted(fieldU_hist.items())),
         "square_positive_edge_histogram": dict(sorted(square_hist.items())),
         "edges": edges,
     }

@@ -131,6 +131,18 @@ def main():
     for combo, c in sorted(combos.items(), key=lambda x: (-x[1], x[0])):
         print(f'   types {combo[0]}/{combo[1]}: {c}')
 
+    expected = {'min': 6, 'max': 274, 'median': 196,
+                'num': 38555373486, 'den': 197319045,
+                'min_pairs': 636, 'combos': 28}
+    ok = (minimum == expected['min'] and max(tally) == expected['max']
+          and median == expected['median'] and weighted == expected['num']
+          and total == expected['den'] and len(min_pairs) == expected['min_pairs']
+          and len(combos) == expected['combos'])
+    print('RESULT:', 'matches the paper' if ok
+          else 'MISMATCH against the values stated in the paper')
+    if not ok:
+        raise SystemExit(1)
+
     if args.csv:
         with open(args.csv, 'w', encoding='utf-8', newline='\n') as f:
             f.write('index_a,index_b,rank_a,rank_b,distance\n')
