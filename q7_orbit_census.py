@@ -83,6 +83,10 @@ def load():
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('--report', action='store_true')
+    ap.add_argument('--stabilisers', action='store_true',
+                    help='compute stabiliser orders per orbit (needs a '
+                         'completed census); prunes to permutations that '
+                         'preserve the direction-count vector')
     ap.add_argument('--budget', type=float, default=250.0,
                     help='seconds to work before saving and exiting')
     ap.add_argument('--chunk', type=int, default=64,
@@ -113,6 +117,10 @@ def main():
 
     if args.report:
         report(orbit, sizes, dirs, n)
+        return 0
+
+    if args.stabilisers:
+        stabilisers(M, dirs, orbit)
         return 0
 
     trans = np.array([slot_perm(tuple(range(N)), a) for a in range(V)])
@@ -166,42 +174,66 @@ def report(orbit, sizes, dirs, n):
     print(f'wrote {OUT}')
 
 
-if __name__ == '__main__':
-    sys.exit(main())
 
 
-def stabilisers():
-    """Stabiliser order of one representative per orbit, and the implied
-    total number of labelled solutions in the orbits represented."""
+def stabilisers(M, dirs, orbit):
+    """Stabiliser order of one representative per orbit, and the implied total
+    number of labelled solutions in the orbits represented.
+
+    Only permutations preserving the representative's direction-count vector
+    can fix it (an automorphism permutes directions), so the scan is over that
+    subgroup times the 128 translations, not the full 645,120 elements.
+    """
     import time
-    M, dirs = load()
-    z = np.load(CKPT)
-    orbit = z['orbit'].tolist()
+    from collections import defaultdict
     reps = {}
     for i, o in enumerate(orbit):
         if o not in reps:
             reps[o] = i
     trans = np.array([slot_perm(tuple(range(N)), a) for a in range(V)])
-    perms = [slot_perm(pi, 0) for pi in permutations(range(N))]
-    out = {}
+
+    def preserving(dc):
+        groups = defaultdict(list)
+        for d, c in enumerate(dc):
+            groups[c].append(d)
+        blocks = list(groups.values())
+        out = []
+
+        def rec(i, partial):
+            if i == len(blocks):
+                pi = [0] * N
+                for src, dst in partial:
+                    pi[src] = dst
+                out.append(tuple(pi))
+                return
+            blk = blocks[i]
+            for perm in permutations(blk):
+                rec(i + 1, partial + list(zip(blk, perm)))
+
+        rec(0, [])
+        return out
+
     t0 = time.time()
+    out = {}
     for o in sorted(reps):
-        v = M[reps[o]]
+        i = reps[o]
+        v = M[i]
         cnt = 0
-        for base in range(0, len(perms), 64):
-            blk = perms[base:base + 64]
-            idx = np.concatenate([pp[trans] for pp in blk])
-            imgs = v[idx]
-            cnt += int((imgs == v).all(axis=1).sum())
+        for pi in preserving(dirs[i]):
+            idx = slot_perm(pi, 0)[trans]
+            cnt += int((v[idx] == v).all(axis=1).sum())
         out[o] = cnt
     hist = Counter(out.values())
+    lengths = Counter(GROUP // c for c in out.values())
     total = sum(GROUP // c for c in out.values())
     print(f'stabiliser orders (per orbit): {dict(sorted(hist.items()))}')
-    print(f'orbit lengths: '
-          f'{dict(sorted(Counter(GROUP // c for c in out.values()).items(), reverse=True))}')
+    print(f'orbit lengths: {dict(sorted(lengths.items(), reverse=True))}')
     print(f'total labelled solutions in these orbits: {total}')
     print(f'catalogue is {100 * len(orbit) / total:.4f}% of that')
     print(f'all stabiliser orders divisible by 3: '
           f'{all(c % 3 == 0 for c in out.values())}')
     print(f'[{time.time() - t0:.0f}s]')
     return out
+
+if __name__ == '__main__':
+    sys.exit(main())

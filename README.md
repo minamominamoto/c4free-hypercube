@@ -85,8 +85,14 @@ sha256sum -c ODDSQUARE_BRIDGE_SHA256SUMS.txt      # odd-square material
 `verify.py`, `generate_q6_132.py`, `search_q6.py`, `generate_q8_682.py`,
 `audit_q7_odd_square.py`, `solve_field_ip.py`, `q6_decide_realizability.py`,
 and `reproduce_core.py` use only the Python standard library, as noted above.
-`q7_hamming_tally.py` and `q7_order3_automorphisms.py` additionally need
-`numpy`. The recovered production-history scripts need further third-party
+`q7_hamming_tally.py`, `q7_order3_automorphisms.py`, `q7_oddsquare_orbits.py`
+and `q7_orbit_census.py` additionally need `numpy`. `analyze_q7_structure.py`
+and `audit_q7_odd_square.py` take the three `q7_edges_304.jsonl.part*` files as
+required arguments. `q7_orbit_census.py` works to a time budget
+(`--budget`, default 250 s) and saves a checkpoint: a full census needs two or
+three invocations, each resuming automatically, and exits with code 2 while
+incomplete. Its `--stabilisers` mode needs a completed census and then takes
+seconds. The recovered production-history scripts need further third-party
 packages. All of these are pinned in the provided `requirements.txt`
 (install as needed):
 

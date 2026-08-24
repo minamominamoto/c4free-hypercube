@@ -230,6 +230,12 @@ def main(argv=None):
             [PYTHON, ROOT / "q7_orbit_census.py", "--budget", "100000"],
         )
         step += 1
+        run_step(
+            step,
+            "stabiliser orders per orbit and the 34,227,200 total",
+            [PYTHON, ROOT / "q7_orbit_census.py", "--stabilisers"],
+        )
+        step += 1
 
     print("\n" + "=" * 72)
     print("RESULT: ALL REQUESTED REPRODUCIBILITY CHECKS PASSED")

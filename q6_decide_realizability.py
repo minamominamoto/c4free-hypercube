@@ -193,8 +193,14 @@ def main():
         if nodes_full is not None:
             print(f'   nodes visited (no symmetry reduction): {nodes_full}')
         else:
-            print(f'   (unpinned cross-check skipped; use --full. Expected '
-                  f'node count: {2*nodes})')
+            if ok:
+                print('   (unpinned cross-check skipped; use --full. No '
+                      'doubling is expected here: the search returns at the '
+                      'first witness found.)')
+            else:
+                print(f'   (unpinned cross-check skipped; use --full. The '
+                      f'space is exhausted, so the expected node count is '
+                      f'exactly {2*nodes}.)')
         print(f'   VERDICT: {verdict}')
         if ok:
             hh, ne, _ = spins_to_hist(witness, target_m)

@@ -309,8 +309,11 @@ check the commit corresponding to this version, since files introduced by a
 revision (here, among others, \texttt{q6\_decide\_realizability.py},
 \texttt{solve\_field\_ip.py} and the $Q_8$ second-distribution witnesses)
 appear only from that commit onward. The authoritative file list for this
-revision, with SHA-256 sums, is \texttt{ORIGINAL\_DATA\_SHA256SUMS.txt} and
-\texttt{ODDSQUARE\_BRIDGE\_SHA256SUMS.txt} in the accompanying archive.
+revision, with SHA-256 sums, is \texttt{ORIGINAL\_DATA\_SHA256SUMS.txt},
+\texttt{ODDSQUARE\_BRIDGE\_SHA256SUMS.txt} and
+\texttt{MANUSCRIPT\_SHA256SUMS.txt} in the accompanying archive, the last
+covering this document's own \texttt{.tex} and \texttt{.pdf} so that a reader
+can confirm which revision a given file set belongs to.
 \end{abstract}
 
 \medskip
@@ -455,7 +458,7 @@ published 304-edge $Q_7$ solutions, only 389 are odd-square
 $n$ & $|E(Q_n)|$ & $\ex(Q_n,C_4)$ & BHN (Eq.~\ref{eq:bounds}) & Source\\
 \midrule
 4 &   32 & 24  & $24$ (tight, $n=4^1$) & Chung~\cite{Chu92}\\
-5 &   80 & 56  & n/a (outside domain) & Emamy-K et al.~\cite{EMR92}\\
+5 &   80 & 56  & n/a (outside domain) & Emamy-K et al.~\cite{EGR92}\\
 6 &  192 & 132 & n/a (outside domain) & Harborth--Nienborg~\cite{HN94}\\
 7 &  448 & $\ge\mathbf{304}$ & $\approx300.2^{\dagger}$ & value~\cite{DPTV79}; witness ours\\
 8 & 1024 & $\ge\mathbf{682}$ & $\approx674.9^{\dagger}$ & value~\cite{MPR95}; witness ours\\
@@ -536,7 +539,10 @@ ensemble of Section~\ref{sec:structure}) has the following properties:
     sanity check on the eigenvalue computation, not as an independent
     structural finding.
   \item $\mathrm{Tr}(A^4)=5216$, attaining the $C_4$-free trace equality
-    $\sum_i\deg(i)^2+\sum_{uv\in E}(\deg u+\deg v)-2|E|$.
+    $\sum_i\deg(i)^2+\sum_{uv\in E}(\deg u+\deg v)-2|E|$. Like the item above
+    this is forced by the degree sequence rather than independent of it (the
+    two summands are equal, so the expression is $2\sum_v\deg(v)^2-2|E|$); see
+    Proposition~\ref{prop:rigid}(iii).
   \item Local maximality: every non-edge of $Q_7$ creates a $C_4$ when added.
 \end{enumerate}
 \end{proposition}
@@ -825,7 +831,14 @@ below by an explicit odd-square edge list of our own
 and the matching upper bound $g(6)\le132$ follows from
 Lemma~\ref{lem:fieldbound} and Lemma~\ref{lem:quant} without appeal
 to~\cite{HN94}. We did not reconstruct DPTV's specific $D=6$ bond
-configuration; our witness is an independent one, which however turns
+configuration, though their recursion determines the edge counts without
+it.\footnote{DPTV's construction builds $H_d$ from $H_{d-3}$ by replacing each
+vertex with a supersite. Counting negative bonds through the recursion gives
+$12+6+6=24$ at $d=5$ and $24+18+18=60$ at $d=6$ --- the latter being the figure
+DPTV state in the text, which checks the arithmetic against their own
+report --- and $16\times3+8\times6+24\times2=144$ at $d=7$, i.e.\ $448-144=304$
+positive edges. So the value $304$ follows from their construction by a few
+lines of arithmetic, even though we do not exhibit their $H_7$ edge set.} our witness is an independent one, which however turns
 out to realise the same local-field distribution they report (see
 Section~\ref{sec:oddsquareverify}).
 
@@ -1009,8 +1022,9 @@ $u=a+1$ and $Q=nm$, the bound becomes
 \frac{Q+ab\,m}{a+b}=\frac{m}{2}\Bigl(u+\frac{n-1}{u}\Bigr),
 \]
 which is decreasing for $0<u<\sqrt{n-1}$ and increasing thereafter, so the
-optimum over real $u$ is at $u=\sqrt{n-1}$ and the best admissible pair is the
-one with $u=a+1$ nearest that value and of the correct parity. This gives
+optimum over real $u$ is at $u=\sqrt{n-1}$; since the admissible $u$ of the
+correct parity are spaced two apart, it suffices to evaluate the two
+straddling $\sqrt{n-1}$ and take the smaller. This gives
 $(2,4)$ at $n=6$ ($u=3$ against $\sqrt5\approx2.24$; the alternative $(0,2)$
 has $u=1$ and yields $96$), $(1,3)$ at $n=7$, and $(2,4)$ at $n=8$. Pairs with
 $a+b=0$ make \eqref{eq:quantsum} degenerate and give no bound; $a+b<0$
@@ -1173,18 +1187,27 @@ rule, both independent of any bound established elsewhere in this
 paper: at $D=9$, $\sqrt9=3$ is itself an integer of the right parity,
 so the field-bound optimum is the unique uniform distribution $h\equiv3$,
 giving $S=768$, $H/N=-1/2$ exactly, and $768\times(-1/2)=-384$ --
-an \emph{exact} match to the value MPR95 state at $D=9$, which they describe
-as the ground-state energy on their integer scale (not merely a bound; at
-$D=9$ the two coincide). This point,
+an exact match to the value MPR95 state at $D=9$. That value is the
+field-bound target, \emph{not} an attained ground state: MPR95 report failing
+to reach it, obtaining $-0.494792$, i.e.\ $-380$ on the same scale, four units
+short. Whether the bound is attained at $n=9$ is open here too
+(Open Problem~\ref{op:n9}). The agreement to be read off this point is
+therefore between two computations of the same bound, not evidence about
+$g(9)$. This point,
 however, is where the scale factor $768$ is itself pinned down, so it
 corroborates the conversion without being independent of it; the two
 independent checks are $D=8$ and $D=10$. At $D=10$, $m=512$, $Q=5120$, $(a,b)=(2,4)$ gives
 $\Delta=9216-6S$, so $S\le1536$ (with $\Delta=0$, distribution
 $\{2{:}256,4{:}256\}$), and
 $768\times(-1536/(1024\sqrt{10}))\approx-364.29\approx-364$, matching
-MPR95's reported $D=10$ value of $-364$ to the same rounding rule. All
-three points -- $D=8,9,10$ -- agree under one consistent scale, which
-is considerably stronger corroboration than the $D=8$ figure alone.
+MPR95's reported $D=10$ value of $-364$ to the same rounding rule. A fourth point fixes the scale factor independently of any of these: MPR95
+also report their \emph{attained} $D=9$ value both as $-0.494792$ and as
+$-380$ on the integer scale, and $768\times(-0.494792)=-379.99\ldots$, so $768$
+is forced by a datum that involves no bound at all. The obvious rival reading
+--- one unit per minimal energy jump in each dimension --- is excluded: it
+reproduces $-384$ at $D=9$ but gives $-S/2=-170$ at $D=8$, nowhere near
+MPR95's $-361$. All four points agree under one scale, which is considerably
+stronger than the $D=8$ figure alone.
 Their paper reports
 the $D=8$ attainment in energy units only, without an explicit spin configuration
 or its translation into edge-count terms; we supply that translation
@@ -1353,9 +1376,12 @@ Earlier revisions of this manuscript reported instead a heuristic search
 (simulated annealing on the $L_1$ distance between the current and target
 $h$-histograms; 40 seeds for A and 20 for B at $300{,}000$ iterations each,
 all plateauing at distance $16$ and $8$ respectively, against a positive control
-reaching C in $20/20$ runs at $60{,}000$ iterations). Those runs and their logs
-remain in the release (\texttt{q6\_other\_distributions.py} and the
-accompanying CSV/JSON) as a record, but they are superseded by
+reaching C in $20/20$ runs at $60{,}000$ iterations). What the release contains is not the original runs: the bundled
+\texttt{q6\_other\_distributions.py} and its CSV/JSON are a re-execution of the
+same kind of search under a seed protocol newly specified for this package, as
+the \texttt{provenance\_note} in both summary files states. They reproduce the
+numbers earlier revisions reported but are not the historical logs, which were
+not archived. They are in any case superseded by
 Proposition~\ref{prop:q6realizability} and are no longer offered as evidence:
 a plateau is not a proof, and the asymmetry in iteration budget between the
 targets and the control makes the phrase ``the same search'' inexact. The two
@@ -1482,9 +1508,11 @@ realisable by an explicit odd-square $682$-edge subgraph of $Q_8$, while for
 $n=6$ only distribution~C is (Proposition~\ref{prop:q6realizability}). The two
 halves of that contrast rest on different kinds of evidence, and the asymmetry
 should be stated: at $n=8$ both realisations are exhibited constructively,
-whereas at $n=6$ non-realisability is \emph{proved} exhaustively. We have not
-attempted the analogous decision at $n=8$, where the same reduction would face
-a $2^{128}$ space.
+whereas at $n=6$ non-realisability is \emph{proved} exhaustively. We have not attempted the analogous decision at $n=8$. The obstacle is not
+the raw size of the space --- the reduction gives $2^{127}$ after pinning one
+spin, and at $n=6$ a $2^{32}$ space was settled in between $501$ and
+$2.2\times10^{7}$ nodes --- but that the counter-overflow pruning which makes
+the $n=6$ search collapse has no guarantee of biting as hard at $n=8$.
 
 Table~\ref{tab:oddsquare} summarises the odd-square reconstructions
 alongside the corresponding simulated-annealing witnesses of
@@ -1644,7 +1672,10 @@ are $3$ ($142$ orbits), $6$ ($32$), $12$ ($4$), $24$ ($1$) and $72$ ($1$);
 correspondingly the orbit lengths are $215\,040$, $107\,520$, $53\,760$,
 $26\,880$ and $8\,960$. The orbits meet the catalogue very unevenly: the
 largest accounts for $2\,048$ solutions ($10.3\%$) and the ten largest for
-$5\,199$ ($26.2\%$).
+$5\,199$ ($26.2\%$). The two orbits of stabiliser order $24$ and $72$ meet the
+catalogue in $55$ and $46$ solutions respectively, and are exactly the
+Type-$18$ solutions of Section~\ref{sec:profiles}: that type is precisely the
+pair of orbits with the largest stabilisers.
 \end{proposition}
 
 The census is computed by \texttt{q7\_orbit\_census.py}, which applies every
@@ -2498,7 +2529,7 @@ principle, verify on the dual side.
     and is minimum degree $4$ necessary at these edge counts for
     $n\ge9$? (At $n=6$ it is already not necessary; see
     Section~\ref{sec:regularity}.)
-  \item The field bound makes $n=9$ the simplest case beyond $n=8$:
+  \item\label{op:n9} The field bound makes $n=9$ the simplest case beyond $n=8$:
     $\sqrt9=3$ is a parity-correct integer, so the optimal $h$-distribution
     is the uniform $h\equiv3$ and the upper bound $g(9)\le\tfrac{2304+768}{2}=1536$
     follows without Lemma~\ref{lem:quant}. MPR95 explicitly report failing to
@@ -2572,7 +2603,7 @@ arXiv:1201.3587, 2012.
 \bibitem{DPTV79} B.~Derrida, Y.~Pomeau, G.~Toulouse, and J.~Vannimenus,
   Fully frustrated simple cubic lattices and the overblocking effect,
   \textit{J.\ Physique}\ \textbf{40} (1979), 617--626.
-\bibitem{EMR92} M.\,R.~Emamy-K., P.~Guan, and P.\,I.~Rivera-Vega, On the
+\bibitem{EGR92} M.\,R.~Emamy-K., P.~Guan, and P.\,I.~Rivera-Vega, On the
   characterization of the maximum squareless subgraphs of the 5-cube,
   \textit{Congr.\ Numer.}\ \textbf{88} (1992), 97--109.
 \bibitem{Har53} F.~Harary, On the notion of balance of a signed graph,
