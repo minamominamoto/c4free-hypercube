@@ -121,7 +121,7 @@ Input conventions differ and are intentional:
 | `type18_automorphisms.py` | accepts the three part-file paths after its options |
 | `q7_hamming_tally.py` | takes **no** part-file arguments; reads the fixed `q7_edges_304.jsonl.part1`--`part3` names from CWD |
 | `q7_order3_automorphisms.py` | takes **no** part-file arguments; reads the fixed part names from CWD |
-| `q7_oddsquare_orbits.py` | takes **no** part-file arguments; reads the fixed part names from CWD |
+| `q7_oddsquare_orbits.py` | takes **no** arguments; reads the fixed part names from CWD, **and also requires `q7_odd_square_389.csv`** in CWD (it takes the 389 indices from that released file rather than recomputing the audit, so run `audit_q7_odd_square.py` first if you want the CSV regenerated) |
 | `q7_orbit_census.py` | takes **no** part-file arguments; reads the fixed part names from CWD and writes/resumes a checkpoint there |
 
 `q7_orbit_census.py` works to a time budget (`--budget`, default 250 s) and

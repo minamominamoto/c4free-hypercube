@@ -132,10 +132,17 @@ def main():
     trans = np.array([slot_perm(tuple(range(N)), a) for a in range(V)])
     perms = [slot_perm(pi, 0) for pi in permutations(range(N))]
 
+    done_here = 0
     for start in range(n):
         if orbit[start] != -1:
             continue
-        if time.time() - t0 > args.budget:
+        # The budget is only honoured between orbits, and only once this
+        # invocation has completed at least one: a partially processed orbit
+        # cannot be checkpointed, so stopping mid-orbit would lose the work
+        # and, if a single orbit exceeded the budget, no invocation would ever
+        # make progress. Each invocation therefore always finishes the orbit
+        # it has started.
+        if done_here and time.time() - t0 > args.budget:
             np.savez(CKPT, orbit=np.array(orbit), sizes=np.array(sizes))
             print(f'budget reached: {sum(1 for x in orbit if x >= 0)}/{n} '
                   f'assigned, {len(sizes)} orbits; checkpoint saved')
@@ -158,6 +165,7 @@ def main():
         for j in found:
             orbit[j] = cur
         sizes.append(len(found))
+        done_here += 1
 
     np.savez(CKPT, orbit=np.array(orbit), sizes=np.array(sizes))
     report(orbit, sizes, dirs, n)

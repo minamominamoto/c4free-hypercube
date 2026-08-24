@@ -21,7 +21,7 @@ odd-square condition: every square must meet the edge set in exactly 1 or 3
 edges (not merely "not 4"). These checks are independent of the self-checks
 performed by generate_q6_132.py and generate_q8_682.py; this script does not
 import or reuse either script's logic. For the Q7 catalogue it also checks the
-two inexpensive structural assertions stated in the structural assertions stated in the paper: every one of
+two inexpensive structural assertions stated in the paper: every one of
 the 19,866 solutions is locally maximal in Q7, and their union covers all 448
 Q7 edges. It also independently confirms that the first released 680-edge Q8
 solution (Solution A) is odd-square.
@@ -248,14 +248,14 @@ def main():
             if n == 7:
                 es = build_edge_set(edges)
                 q7_union.update(es)
-                local_ok, missing = locally_maximal_in_cube(
+                local_ok, addable_edge = locally_maximal_in_cube(
                     es, cube_edges, completion
                 )
                 if not local_ok:
                     q7_nonmax += 1
                     if q7_nonmax <= 5:
                         print("  [FAIL] solution %d is not locally maximal; "
-                              "edge %r can be added C4-freely" % (i, missing))
+                              "edge %r can be added C4-freely" % (i, addable_edge))
         if n == 7:
             if q7_nonmax:
                 print("  [FAIL] %d Q7 solution(s) are not locally maximal" % q7_nonmax)

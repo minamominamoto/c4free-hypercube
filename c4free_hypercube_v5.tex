@@ -36,6 +36,26 @@ $Q_7$, and $Q_8$: Constructions, Structure, and Computational
 Method.'' That earlier version announced $\ex(Q_8,C_4)\ge680$ and did
 not include the odd-square material of Section~\ref{sec:oddsquare};
 see the Acknowledgements for the circumstances of the revision.
+Three further claims of v1--v4 are withdrawn or corrected here, and are
+recorded as such rather than quietly dropped.
+(i)~Its Section~7 was titled ``Computational \emph{Proof} that
+$\ex(Q_6,C_4)=132$'' and asserted that standard MIP solvers verify the
+instance \emph{quickly}; we were unable to close the optimality gap
+(Section~\ref{sec:q6}), so that section is retitled and the upper bound
+$\ex(Q_6,C_4)\le132$ again rests solely on Harborth--Nienborg~\cite{HN94}.
+(ii)~Its abstract gave the pairwise Hamming range of the $Q_7$ catalogue as
+$36$--$260$; that came from a $5\,000$-pair sample, disclosed only in the body.
+Exhaustive computation over all $197\,319\,045$ pairs gives $6$--$274$
+(Section~\ref{sec:landscape}), so both endpoints were substantially wrong and
+the inference that the solutions lie far apart does not survive.
+(iii)~Its degree sequence for the $132$-edge $Q_6$ construction,
+$\{4^{32},5^{32}\}$, is arithmetically impossible --- the degree sum is $288$,
+i.e.\ $144$ edges --- and the correct sequence is $\{4^{56},5^{8}\}$
+(Section~\ref{sec:regularity}); the ``degree support $\{n-3,n-2,n-1\}$''
+regularity suggested there rested on that error and is withdrawn. The
+extrapolated Brass--Harborth--Nienborg entries for $n=4,5,6$ in v1--v4's
+value table are likewise replaced by explicit out-of-domain markers
+(Table~\ref{tab:values}).
 \end{center}
 \medskip
 
@@ -104,11 +124,15 @@ untreated) (Section~\ref{sec:oddsquare-exact} below). Given this, our
 contribution at $n=6,7,8$ is narrower than a first reading of
 Theorem~\ref{thm:oddsquare} might suggest, and consists of three
 parts, none of which is the numerical values $72,160,340$ themselves:
-(i) a closed-form proof (Lemma~\ref{lem:quant}, a mod-$8$ refinement of
-the classical two-point inequality) establishing that DPTV's tabulated optima
-are exact and complete, turning DPTV's argument (observe that the optimal
-distribution concentrates near $\sqrt n$, then tabulate) into a short,
-self-contained, independently checkable inequality;
+(i) a short self-contained proof (Lemma~\ref{lem:quant}, a mod-$8$ refinement
+of the classical two-point inequality) of the optima DPTV tabulate. DPTV
+formulate the same constrained optimisation over integer distributions,
+imposing the same parity and sign conditions, and give its best values and the
+attaining distributions in their Table~I; what Lemma~\ref{lem:quant} adds is a
+derivation short enough to check by hand, from which those values --- and the
+number of distributions attaining them --- follow without the table. It is an
+alternative route to their results, not a correction or a strengthening of
+them;
 (ii) explicit, machine-verifiable edge-list certificates realising the
 bound at all three of $n=6,7,8$ -- DPTV's own realisations are
 figures and prose for $n\le7$ only, $n=8$ being left open by them and
@@ -174,11 +198,14 @@ alone has a stabiliser of size $3$ in
 $\mathrm{Aut}(Q_7)\cong(\mathbb{Z}_2)^7\rtimes S_7$ (order $645\,120$;
 exhaustive check over all $645\,120$ elements), consisting of the
 identity and two nontrivial elements, both coordinate permutation
-$+$ XOR pairs. Under the convention $v\mapsto \pi(v\oplus m)$ (XOR first,
-then permute) these are $(5,1,2,3,4,6,0)$ with mask $m=33=0100001_2$ and its
-square $(6,1,2,3,4,0,5)$ with $m=96=1100000_2$; under the opposite convention
-$v\mapsto \pi(v)\oplus m$ used in \texttt{type18\_automorphisms.py} the two
-masks are interchanged. They together
+$+$ XOR pairs. We write a permutation as the tuple $p$ with the meaning
+``bit $i$ of $v$ becomes bit $p[i]$ of the image'', the convention of
+\texttt{type18\_automorphisms.py}. Under $v\mapsto \pi(v\oplus m)$ (XOR first,
+then permute) the two elements are then $(5,1,2,3,4,6,0)$ with mask
+$m=33=0100001_2$ and its square $(6,1,2,3,4,0,5)$ with $m=96=1100000_2$; under
+$v\mapsto \pi(v)\oplus m$ the two masks are interchanged. The group itself,
+and the fact that its order is $3$, are of course independent of both
+conventions; only the labelling of the masks is not. They together
 form a cyclic group of order $3$ -- so its orbit alone has size
 $645\,120/3=215\,040>19\,866$. Decomposing the whole catalogue
 (Proposition~\ref{prop:orbits}) makes this quantitative: the $19\,866$ fall
@@ -910,7 +937,9 @@ for all $19\,866$, with no exceptions. The identity's failure for the
 non-odd-square $Q_8$ Solution~B of Section~\ref{sec:q8} ($1016\ne1024$ on
 $U$, while the complementary side gives exactly $1024$ --- so only one side
 breaks)
-is therefore not explained by odd-squareness as such: Solution~B has an
+is therefore not explained by odd-squareness as such: Solution~B is also, unlike Solution~A, not locally maximal: its non-edge
+violation multiset contains a $1$, so some missing edge can be added creating
+only a single $C_4$. It has an
 asymmetric degree distribution between $U$ and its complement
 ($\{4^3,5^{82},6^{43}\}$ vs.\ $\{4^4,5^{80},6^{44}\}$), whereas
 Solution~A, all $19\,866$ $Q_7$ solutions, and the $682$-edge witness all
@@ -1128,7 +1157,19 @@ above, and returns exactly $3$, $1$ and $2$ optimal $h$-distributions
 respectively --- for $n=6$,
 $\{2{:}30,6{:}2\}$, $\{0{:}1,2{:}27,4{:}3,6{:}1\}$ and
 $\{0{:}2,2{:}24,4{:}6\}$; for $n=7$, $\{1{:}16,3{:}48\}$; for $n=8$,
-$\{2{:}87,4{:}40,6{:}1\}$ and $\{0{:}1,2{:}84,4{:}43\}$. Both $n=8$
+$\{2{:}87,4{:}40,6{:}1\}$ and $\{0{:}1,2{:}84,4{:}43\}$.
+These counts also follow from Lemma~\ref{lem:quant} in a line, so the
+enumeration is a check and not a source. At $n=7$, $\Delta=0$ forces
+$h\in\{1,3\}$ pointwise and $\sum h=160$ over $|U|=64$ then fixes the
+multiplicities, giving one distribution. At $n=6$, $\Delta=16$ admits only the
+decomposition $8+8$, so exactly two vertices have $h\in\{0,6\}$ and the other
+$30$ have $h\in\{2,4\}$; writing $j$ for the number of those two at $h=6$ and
+$k$ for the number of the remaining $30$ at $h=4$, $\sum h=72$ reads
+$6j+0\cdot(2-j)+4k+2(30-k)=72$, i.e.\ $3j+k=6$, whose solutions
+$(j,k)=(2,0),(1,3),(0,6)$ give exactly A, B and C. At
+$n=8$, $\Delta=8$ leaves one vertex at $h\in\{0,6\}$ and $127$ at
+$h\in\{2,4\}$; the same count gives $3j+k=43$ with $j\in\{0,1\}$, hence
+$(j,k)=(1,40)$ and $(0,43)$ --- the two distributions above. Both $n=8$
 distributions are realised: the released $682$-edge witness
 (\texttt{q8\_odd\_square\_682.json}) attains $\{0{:}1,2{:}84,4{:}43\}$,
 and $\{2{:}87,4{:}40,6{:}1\}$ is realised by two further witnesses in
@@ -1602,8 +1643,11 @@ Improvement over that witness & --- & $+2$\\
 \section{Structural Classification of $Q_7$ Solutions}\label{sec:structure}
 \noindent\textbf{Scope.} Every universal statement in this section is over
 the released catalogue of $19\,866$ labelled $304$-edge solutions unless
-explicitly stated otherwise. The catalogue is not exhaustive of all labelled
-solutions or all $\mathrm{Aut}(Q_7)$-orbits (Proposition~\ref{prop:orbits});
+explicitly stated otherwise. The catalogue is demonstrably not exhaustive of
+all labelled solutions --- the $180$ orbits it meets already contain
+$34\,227\,200$ of them (Proposition~\ref{prop:orbits}) --- while whether it
+meets \emph{every} $\mathrm{Aut}(Q_7)$-orbit is unknown, since the total
+number of orbits is not known (Open Problem~\ref{op:orbits}). Either way,
 none of the shared structural properties below is claimed for every possible
 $304$-edge $C_4$-free subgraph of $Q_7$.
 
