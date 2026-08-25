@@ -103,7 +103,12 @@ def main():
     parser.add_argument("--seeds", nargs="+", type=int,
                         default=[20261207, 20261218])
     parser.add_argument("--iters", type=int, default=300000)
-    parser.add_argument("--output", default="q8_B_witnesses.json")
+    parser.add_argument("--output", default="q8_B_witnesses_run.json",
+                        help=("output path. NOTE: this deliberately does NOT "
+                              "default to the released q8_B_witnesses.json, "
+                              "which is listed in "
+                              "ODDSQUARE_BRIDGE_SHA256SUMS.txt; overwriting it "
+                              "would break that manifest."))
     args = parser.parse_args()
     records = []
     for seed in args.seeds:

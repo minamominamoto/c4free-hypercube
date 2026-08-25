@@ -24,7 +24,15 @@ and the target.
 
 Standard library only. Usage:
     python3 q8_A_recover.py
-    python3 q8_A_recover.py --seeds 20260101 20260102 --iters 400000
+
+The defaults (seeds 90000.., --iters 250000) reproduce the released
+q8_A_witness.json exactly: seed 90008 hits at iteration 207579. The iteration
+budget is NOT merely a stopping rule -- it enters the annealing temperature
+schedule T = max(0.05, 3.0*(1 - it/iters)), so a different --iters traverses a
+different trajectory and finds a different (equally valid) witness.
+
+Output goes to q8_A_witness_run.json by default, NOT to the released
+q8_A_witness.json, which is covered by ODDSQUARE_BRIDGE_SHA256SUMS.txt.
 """
 import argparse
 import hashlib
@@ -39,7 +47,7 @@ V = 1 << N
 U = [v for v in range(V) if bin(v).count('1') % 2 == 0]
 TARGET = {0: 1, 2: 84, 4: 43}
 DEFAULT_SEEDS = [90000 + i for i in range(12)]
-DEFAULT_ITERS = 400000
+DEFAULT_ITERS = 250000   # the value used for the released witness
 
 
 def coupling(x, dim):
@@ -112,7 +120,11 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('--seeds', type=int, nargs='+', default=DEFAULT_SEEDS)
     ap.add_argument('--iters', type=int, default=DEFAULT_ITERS)
-    ap.add_argument('--output', default='q8_A_witness.json')
+    ap.add_argument('--output', default='q8_A_witness_run.json',
+                    help='output path. NOTE: this deliberately does NOT default '
+                         'to the released q8_A_witness.json, which is listed in '
+                         'ODDSQUARE_BRIDGE_SHA256SUMS.txt; overwriting it would '
+                         'break that manifest.')
     args = ap.parse_args()
 
     print(f'target h-histogram on U: {TARGET}')

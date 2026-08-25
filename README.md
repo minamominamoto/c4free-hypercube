@@ -51,8 +51,9 @@ Marinari–Parisi–Ritort 1995). This led to:
 
 **Resource note.** `verify.py` (and hence `reproduce_core.py`) loads all 19,866
 Q7 solutions into memory at once; peak RSS is around 700 MB, comparable to
-`analyze_q7_structure.py`. Budget roughly 1 GB of free memory and a few
-minutes for the default run; `--structural` adds the expensive numpy passes.
+`analyze_q7_structure.py`. Budget roughly 1 GB of free memory; on a single modern core `verify.py` takes
+about 20 seconds and `analyze_q7_structure.py` two to three minutes (both
+machine-dependent); `--structural` adds the expensive numpy passes.
 
 Every C4-free claim is independently re-checkable with a dependency-free
 script (standard library only; no third-party packages, no network):
@@ -88,6 +89,8 @@ sha256sum -c ODDSQUARE_BRIDGE_SHA256SUMS.txt      # odd-square material
 
 ### Important: run recovered search scripts in a working copy
 
+**Also on this list:** `q8_A_recover.py` and `q8_B_recover.py` both *used to* default their `--output` to a file listed in `ODDSQUARE_BRIDGE_SHA256SUMS.txt`. They now default to `q8_A_witness_run.json` and `q8_B_witnesses_run.json` respectively, so a bare run no longer overwrites a certified artefact. If you pass `--output` explicitly, avoid the manifest names.
+
 The recovered production-history scripts write fixed filenames in the current
 working directory. **Do not run them in the authenticated release directory.**
 Copy the files you need to a disposable working directory first. In particular:
@@ -96,6 +99,8 @@ Copy the files you need to a disposable working directory first. In particular:
 - `sa_collect304.py` writes/appends `solutions_304.jsonl` and can overwrite
   `selected_edges_best.json` if it reaches 305 edges;
 - `sa_q8.py` writes/overwrites `q8_best.json`;
+- `source.py` also writes `selected_edges_<k>.txt` for the edge count it reaches
+  (e.g. `selected_edges_295.txt` on a cold start);
 - `search_q6.py` and `q7_orbit_census.py` create side products such as
   `q6_spins.txt`, `q7_orbit_census_ckpt.npz`, and `q7_orbit_census.json`.
 
@@ -123,7 +128,7 @@ Input conventions differ and are intentional:
 | `q7_order3_automorphisms.py` | takes **no** part-file arguments; reads the fixed part names from CWD |
 | `q7_oddsquare_orbits.py` | takes **no** arguments; reads the fixed part names from CWD, **and also requires `q7_odd_square_389.csv`** in CWD (it takes the 389 indices from that released file rather than recomputing the audit, so run `audit_q7_odd_square.py` first if you want the CSV regenerated) |
 | `q7_orbit_census.py` | takes **no** part-file arguments; reads the fixed part names from CWD and writes/resumes a checkpoint there |
-| `q8_A_recover.py` | takes **no** required arguments (`--seeds`, `--iters`, `--output` optional); needs no input files |
+| `q8_A_recover.py` | takes **no** required arguments; needs no input files. The defaults (`--seeds 90000..90011 --iters 250000`) reproduce the released `q8_A_witness.json` exactly (seed 90008, iteration 207579). **`--iters` is not just a stopping rule** — it enters the annealing temperature schedule, so a different budget finds a different (equally valid) witness. Writes to `q8_A_witness_run.json`, **not** to the manifest-listed `q8_A_witness.json`. |
 | `q6_parity_obstruction.py` | takes **no** arguments; needs no input files |
 
 The three conventions above (positional part files, optional part files, fixed names read from CWD) are a historical artefact of when each script was written. Rather than change interfaces that reviewers have already exercised, the simplest advice is: **run everything from the directory containing the released files, and use `reproduce_core.py`**, which supplies the right arguments to each script. If you invoke a script directly and it exits with `FileNotFoundError` or an argparse usage message, consult the row above rather than guessing.

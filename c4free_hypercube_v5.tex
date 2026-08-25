@@ -30,7 +30,9 @@ Odd Squares, Fully Frustrated Models, and Computational Structure}}
 
 \begin{center}
 \small This is a revision of a manuscript first circulated as
-arXiv:2603.29127 (v1--v4, March--May 2026), under the title
+arXiv:2603.29127 (v1--v4, March--May 2026); v1 appeared as
+``New Lower Bounds for $C_4$-Free Subgraphs of the Hypercubes $Q_7$ and
+$Q_8$'', and by v4 the title had become
 ``New Lower Bounds for $C_4$-Free Subgraphs of the Hypercubes $Q_6$,
 $Q_7$, and $Q_8$: Constructions, Structure, and Computational
 Method.'' That earlier version announced $\ex(Q_8,C_4)\ge680$ and did
@@ -145,7 +147,10 @@ we have not surveyed every literature and data release since 1979; for $n=6$,
 for instance, OEIS A245762 lists $a(6)=132$ with an
 \textsc{extensions} credit to M.~Scheucher and P.~Tabatabai (2015) for
 supplying the term, while citing Harborth--Nienborg~\cite{HN94} for the result
-itself; it links generator scripts, though not an odd-square edge list; and (iii) an exhaustive decision, in Section~\ref{sec:oddsquareverify},
+itself; it links generator scripts, though not an odd-square edge list.
+Note also that the \emph{values} $g(n)$ for $n\le6$, including $g(6)=132$, are
+recorded by LNSW26 (as reported in~\cite{Emlek26}), so at $n=6$ what is offered
+here is a certificate for a known value, not the value; and (iii) an exhaustive decision, in Section~\ref{sec:oddsquareverify},
 of a question DPTV posed and left open in 1979 -- which of the
 several $n=6$ optima described in their Table~I are actually realisable by a
 spin configuration. MPR95 had already addressed this question by simulated
@@ -832,12 +837,15 @@ bound on $g(n)$) via a construction that coincides with
 Brass--Harborth--Nienborg's~\cite{BHN95} when $n$ is a power of~$4$;
 for $n=6,7,8$ (not powers of~$4$) this upper bound is
 strictly looser than the lower bound, so LNSW26's bounds
-do not determine $g(n)$ at these values. Our sharpening is therefore
-genuine: the closed-form argument of Lemma~\ref{lem:quant} tightens
-LNSW26's frustration-index lower bound by $3,4,11$ at $n=6,7,8$, and
-the explicit witnesses of Section~\ref{sec:oddsquareverify} close the
-gap from the construction side, giving exact values where LNSW26's
-bounds leave a nonzero interval. This sign convention matches the one used by the reconstruction
+do not determine $g(n)$ at these values. The sharpening therefore applies at $n=7,8$ but \emph{not} at $n=6$:
+LNSW26 record the exact values $g(n)=1,3,9,24,56,132$ for $n\le6$, as
+reported in the 20th Emléktábla Workshop problem
+collection~\cite{Emlek26}, so $g(6)=132$ is theirs and is not new here. What
+Lemma~\ref{lem:quant} adds at $n=6$ is a short self-contained derivation of a
+known value; at $n=7,8$ it tightens the frustration-index lower bound by $4$
+and $11$, and the explicit witnesses of
+Section~\ref{sec:oddsquareverify} close the gap from the construction side,
+giving exact values where the general bounds leave a nonzero interval. This sign convention matches the one used by the reconstruction
 script \texttt{generate\_q8\_682.py} (Section~\ref{sec:oddsquareverify}),
 where $E$ is exactly the set of edges with $J(x,\mathrm{dim})\,s(x)s(y)=+1$;
 for a vertex $v$ of degree $\deg_E(v)$ in $E$, we call
@@ -999,15 +1007,20 @@ the resulting change in $|E|$ directly. All $389$ released
 odd-square $Q_7$ solutions have $304$ edges, which is the maximum by the
 upper bound $g(7)\le304$ proved below in Section~\ref{sec:oddsquare-exact}
 (the audit locating these 389 solutions is Section~\ref{sec:oddsquareaudit}), so
-the Lemma's hypothesis applies to every one of them; we independently
-verified $h(v)\ge0$ for all $v\in U$ holds on all $389$, with no
-counterexample, consistent with (and not merely assumed by) the Lemma.
+the Lemma's hypothesis applies to every one of them; we checked $h(v)\ge0$ on all $389$ with no counterexample --- though, like
+the square split of Proposition~\ref{prop:q6oddsquare}(ii) and the
+$\mathrm{Tr}(A^4)$ identity of Proposition~\ref{prop:rigid}(iii), this is
+forced rather than independent: Proposition~\ref{prop:rigid}(i) already pins
+every degree to $\{4,5\}$, hence $h=2\deg-7\in\{1,3\}$.
 
 Given Lemma~\ref{lem:fieldbound} alone, $|E|=(n\cdot2^{n-1}+\sum_{v\in U}h(v))/2$
 is bounded above by the integer optimisation problem of
 maximising $\sum_{v\in U}h(v)$ subject to the \emph{fixed}
 sum of squares $\sum_{v\in U}h(v)^2=n\cdot2^{n-1}$ over the $2^{n-1}$
-integers $h(v)$ of fixed parity (we use only that every
+integers $h(v)$ of fixed parity (necessarily $|h(v)|\le n$, since
+$h(v)=2\deg(v)-n$ with $0\le\deg(v)\le n$; the bundled
+\texttt{solve\_field\_ip.py} imposes that range explicitly, and dropping it
+changes neither the optima nor the number of optimal distributions) (we use only that every
 realisable $h$-vector satisfies these constraints, not the converse
 that every integer vector satisfying them is realisable as an
 odd-square signature; the bound obtained is therefore an upper bound on
@@ -1303,7 +1316,12 @@ independent checks are $D=8$ and $D=10$. At $D=10$, $m=512$, $Q=5120$, $(a,b)=(2
 $\Delta=9216-6S$, so $S\le1536$ (with $\Delta=0$, distribution
 $\{2{:}256,4{:}256\}$), and
 $768\times(-1536/(1024\sqrt{10}))\approx-364.29\approx-364$, matching
-MPR95's reported $D=10$ value of $-364$ to the same rounding rule. A fourth point fixes the scale factor independently of any of these: MPR95
+MPR95's reported $D=10$ value of $-364$ to the same rounding rule. The scale factor is in fact forced rather than fitted: at $D=9$ a single spin
+flip changes $H/N$ by exactly $2/(N\sqrt D)=2/(512\cdot3)=1/768$, so $768$ is
+what MPR95's ``minimum energy jump equal to $1$'' scale must mean there. (The
+same quantity at $D=8$ is $2/(256\cdot2\sqrt2)=1/(256\sqrt2)\approx1/362.04$,
+confirming that $768$ is not a $D=8$ quantisation unit.) A further point
+corroborates it empirically: MPR95
 also report their \emph{attained} $D=9$ value both as $-0.494792$ and as
 $-380$ on the integer scale, and $768\times(-0.494792)=-379.99\ldots$, so $768$
 is forced by a datum that involves no bound at all. The obvious rival reading
@@ -1416,7 +1434,7 @@ typeset table itself, which we could not extract). Since DPTV's constraints
 are the ones solved here and the exhaustive enumeration returns exactly three
 optimal distributions, their ``other solutions'' are necessarily A and B; the
 identification is forced by the completeness of the enumeration rather than by
-transcription of the table. To be explicit about the evidence: neither we nor any reviewer has read Table~I itself --- it does not extract as text from the journal PDF --- so every statement here about its contents rests on DPTV's surrounding prose together with our own enumeration. MPR95 reported, by simulated
+transcription of the table. To be explicit about the evidence: we have read DPTV79 pp.~620--622 directly, but Table~I itself does not extract as text from the journal PDF and we have not transcribed it, so every statement here about its contents rests on DPTV's surrounding prose together with our own enumeration. MPR95 reported, by simulated
 annealing, that at $D=6$ only configurations corresponding to the first solution
 of DPTV's Table~I are realisable and that ``the other solution of the Diophantine
 equation \emph{seems not to} correspond to any spin configuration'' -- a
@@ -1894,7 +1912,9 @@ large-scale, not hypothetical.
 
 This also bears on how item~(vi) should be read. The collector's dominant
 strategies (\texttt{auto} on $18\,206$ records, \texttt{auto\_seed} on
-$1\,347$) act by applying a group element $g$ to an existing solution, and
+$1\,347$; the remaining $2$ used \texttt{repair} and $311$ carry no
+\texttt{method} field, see Section~\ref{sec:method}) act by applying a group
+element $g$ to an existing solution, and
 $\mathrm{Stab}(gE)=g\,\mathrm{Stab}(E)\,g^{-1}$, so that operation preserves
 stabiliser order exactly. But the automorphism is applied to a restart \emph{state}: the collector then
 deletes $k$ random edges and repairs greedily before storing, so the
@@ -1957,7 +1977,12 @@ summand odd, and there are $2^{n-2}$ summands, so for $n\ge3$ the total is
 even: $e_i+e_j$ is even for every pair, i.e.\ \emph{all $e_i$ have the same
 parity}. For $n=7$ with $\sum_ie_i=304$ even, that parity must be even. Of the
 20 profiles in Table~\ref{tab:types}, only five (ranks 5, 7, 10, 17, 18) have
-all direction counts even, so the other fifteen are excluded a priori --- and
+all direction counts even, so the other fifteen are excluded a priori.
+(The step from ``all $e_i$ share a parity'' to ``that parity is even'' uses
+$n=7$: an odd number of odd summands cannot total the even $304$. At $n=6$ both
+parities remain admissible, so the all-even direction counts
+$[22,22,22,22,22,22]$ of the released $Q_6$ odd-square witness are an
+observation, not a consequence.) --- and
 indeed contain no odd-square solution. The genuinely empirical content is
 therefore the single remaining fact that rank~17
 ($[46,46,44,42,42,42,42]$, 107 solutions) has all counts even yet contains no
@@ -2288,7 +2313,14 @@ copy, not in the release directory. In particular, \texttt{source.py} and
 \texttt{sa\_search.py} overwrite \texttt{selected\_edges\_best.json};
 \texttt{sa\_collect304.py} appends \texttt{solutions\_304.jsonl} and can
 also overwrite \texttt{selected\_edges\_best.json} if it reaches 305 edges;
-and \texttt{sa\_q8.py} writes/overwrites \texttt{q8\_best.json}. Some
+and \texttt{sa\_q8.py} writes/overwrites \texttt{q8\_best.json}.
+\texttt{source.py} additionally writes \texttt{selected\_edges\_<k>.txt} for
+the edge count $k$ it reaches. The two search-recovery scripts
+\texttt{q8\_A\_recover.py} and \texttt{q8\_B\_recover.py} default their output
+to \texttt{q8\_A\_witness\_run.json} and \texttt{q8\_B\_witnesses\_run.json}
+respectively --- deliberately \emph{not} to the manifest-listed
+\texttt{q8\_A\_witness.json} and \texttt{q8\_B\_witnesses.json}, which an
+earlier revision did overwrite on a bare run. Some
 verification/analysis scripts also create new side files (for example
 \texttt{q6\_spins.txt} and the orbit-census checkpoint/JSON). The SHA-256
 manifests authenticate only the files they explicitly list; the appearance of
@@ -2744,7 +2776,9 @@ principle, verify on the dual side.
     for $n\ge9$ (as it did once, from $Q_7$ to $Q_8$; Section~\ref{sec:regularity}),
     and is minimum degree $4$ necessary at these edge counts for
     $n\ge9$? (At $n=6$ it is already not necessary; see
-    Section~\ref{sec:regularity}.)
+    Section~\ref{sec:regularity}.) The $Q_9$--$Q_{15}$ certificates
+    of~\cite{EP86} are explicit data bearing on this, though we have not
+    tabulated their degree sequences here.
   \item\label{op:n9} The field bound makes $n=9$ the simplest case beyond $n=8$:
     $\sqrt9=3$ is a parity-correct integer, so the optimal $h$-distribution
     is the uniform $h\equiv3$ and the upper bound $g(9)\le\tfrac{2304+768}{2}=1536$
@@ -2752,7 +2786,27 @@ principle, verify on the dual side.
     find a $D=9$ ground state by simulated annealing. We have not applied
     the fully frustrated search of Section~\ref{sec:oddsquareverify} to $n=9$;
     whether the field bound is tight there ($g(9)=1536$?) is unknown.
-  \item The equality $g(n)=\ex(Q_n,C_4)$ already holds for the small
+    The \emph{unrestricted} problem at $n\ge9$ is no longer without explicit
+    data: R.~Wrona has released $C_4$-free edge-list certificates for
+    $Q_9$--$Q_{15}$ in the Erd\H{o}s Problems discussion thread for
+    problem~86~\cite{EP86}, obtained by product lifts along hypercube
+    automorphisms followed by local ILP repair, with $Q_9$ at $1\,505$ edges
+    and $Q_{11}$ at $7\,164$; the author of the present paper carried out an
+    independent certificate-level check of that set by sparse cherry counting
+    (see the disclosure below). Those are lower bounds on $\ex(Q_n,C_4)$, not
+    odd-square witnesses, and no exactness is claimed for them; but
+    $1\,505\le\ex(Q_9,C_4)$ sits only $31$ below the field bound
+    $g(9)\le1536$, so the two questions are close at $n=9$. Whether any
+    $n\ge9$ certificate is odd-square we have not determined.
+  \item\label{op:equality} \textbf{(Dam\'asdi; also, in the equivalent
+    frustration-index form, Z.~Wang.)} This question is not ours: it is
+    Problem~1 of ``Odd squares in the hypercube'' in the 20th Emléktábla
+    Workshop problem collection~\cite{Emlek26}, posed there in the same
+    notation ($f(n)=\ex(Q_n,C_4)$, $g(n)$ the odd-square maximum) and with the
+    same one-line argument for $g(n)\le f(n)$; the collection also records
+    that Z.~Wang posed it in frustration-index form. We restate it because
+    Theorem~\ref{thm:oddsquare} bears on it directly, not as a new problem.
+    The equality $g(n)=\ex(Q_n,C_4)$ already holds for the small
     exact cases $n=4,5,6$: the known unrestricted values are $24,56,132$
     (Table~\ref{tab:values}). The pattern is worth tabulating, since it
     extends further down and breaks in an informative place. Writing
@@ -2766,12 +2820,14 @@ principle, verify on the dual side.
     \toprule
     $n$ & 2 & 3 & 4 & 5 & 6 & 7 & 8\\
     \midrule
-    DPTV recursion $r(n)$ & 3 & 9 & 24 & 56 & 132 & 304 & 672\\
+    DPTV construction $r(n)$ & 3$^{*}$ & 9$^{*}$ & 24$^{*}$ & 56 & 132 & 304 & 672\\
     field bound on $g(n)$ & 3 & 9 & 24 & 56 & 132 & 304 & \textbf{682}\\
     known $\ex(Q_n,C_4)$ & 3 & 9 & 24 & 56 & 132 & --- & ---\\
     \bottomrule
     \end{tabular}
     \end{center}
+    Starred entries are DPTV's base constructions (their Figs.~1--3), not
+    outputs of the recursion, which they state from $d\ge5$.
     The three agree wherever all three are known, and the recursion meets
     the field bound exactly up to $n=7$ and then falls short by $10$ at
     $n=8$. That shortfall is the quantitative content of DPTV's own remark
@@ -2837,7 +2893,16 @@ as a claim that the author independently re-transcribed every quoted passage
 without AI assistance.
 
 \section*{Disclosure statement}
-No potential conflict of interest was reported by the author.
+No potential conflict of interest was reported by the author. One related
+involvement is disclosed for completeness: the author performed an independent
+certificate-level check, by sparse cherry counting, of the $Q_9$--$Q_{15}$
+$C_4$-free edge lists contributed by R.~Wrona to the Erd\H{o}s Problems
+discussion thread for problem~86~\cite{EP86}, confirming SHA-256 agreement,
+edge counts, validity of the hypercube edges, absence of loops and duplicates,
+and absence of $C_4$s. That check makes no claim of novelty or optimality for
+those certificates, and none of them is used in any argument here; the
+involvement is recorded because Open Problems~\ref{op:n9} and the minimum-degree
+question above refer to the $n\ge9$ range those certificates occupy.
 
 \begin{thebibliography}{99}
 \bibitem{Bab12}
@@ -2845,8 +2910,7 @@ R.~Baber,
 Tur\'an densities of hypercubes,
 arXiv:1201.3587, 2012.
 
-\bibitem{BHLL12} (cited as BHLL12 after the 2012 preprint)
-  J.~Balogh, P.~Hu, B.~Lidick\'y, and H.~Liu, Upper bounds on
+\bibitem{BHLL12} J.~Balogh, P.~Hu, B.~Lidick\'y, and H.~Liu, Upper bounds on
   the size of 4- and 6-cycle-free subgraphs of the hypercube,
   \textit{Eur.\ J.\ Combin.}\ \textbf{35} (2014), 75--85; arXiv:1201.0209 (2012).
 \bibitem{BHN95} P.~Brass, H.~Harborth, and H.~Nienborg, On the maximum number
@@ -2870,6 +2934,13 @@ arXiv:1201.3587, 2012.
   via~\cite{LNSW26}; not consulted in the original by the present author.)
 \bibitem{HN94} H.~Harborth and H.~Nienborg, Maximum number of edges in a
   six-cube without four-cycles, \textit{Bull.\ ICA}\ \textbf{12} (1994), 55--60.
+\bibitem{EP86} Erd\H{o}s Problems, discussion thread for problem~86,
+  \url{https://www.erdosproblems.com/forum/thread/86}
+  (certificates for $Q_9$--$Q_{15}$ contributed by R.~Wrona; repository
+  \texttt{rafalwronapl/erdos86-hypercube-c4}). Accessed 2026-08-25.
+\bibitem{Emlek26} 20th Emléktábla Workshop problem collection, 2026;
+  problem ``Odd squares in the hypercube'' proposed by G.~Dam\'asdi,
+  \url{https://www.renyi.hu/~emlektab/Emlektab_book_2026.pdf}.
 \bibitem{LNSW26} S.~Laplante, R.~Naserasr, A.~Sunny, and Z.~Wang,
   Sensitivity conjecture and signed hypercubes,
   \textit{ACM Trans.\ Comput.\ Theory} \textbf{18} (2026), no.~1, Article~6, 1--25,
