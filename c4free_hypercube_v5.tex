@@ -62,14 +62,300 @@ value table are likewise replaced by explicit out-of-domain markers
 \medskip
 
 \begin{abstract}
-We study $C_4$-free subgraphs of the hypercubes $Q_6$, $Q_7$, and $Q_8$,
-giving explicit machine-verifiable certificates for the known lower bounds
-$\ex(Q_7,C_4)\ge304$ and $\ex(Q_8,C_4)\ge682$,
-together with a computational reproduction of a 132-edge lower-bound
-construction for $\ex(Q_6,C_4)=132$, combined with the known upper bound
-of Harborth and Nienborg~\cite{HN94} (we did not independently verify
-ILP optimality for the upper bound within a practical runtime; see
-Section~\ref{sec:q6}).
+We study $C_4$-free subgraphs of the hypercubes $Q_6$, $Q_7$ and $Q_8$.
+Writing $g(n)$ for the maximum size of an \emph{odd-square} edge set ---
+one meeting every $4$-cycle (\emph{square}) of $Q_n$ in exactly one or
+three edges --- we prove $g(6)=132$, $g(7)=304$ and $g(8)=682$, give
+matching explicit machine-verifiable edge-list certificates, and hence
+obtain $\ex(Q_7,C_4)\ge304$ and $\ex(Q_8,C_4)\ge682$. Under the standard
+correspondence with fully frustrated signed hypercubes these values are
+already implicit in the statistical-physics literature: the field
+identity, the integer optimisation it feeds, and its optimal values go
+back to Derrida, Pomeau, Toulouse and Vannimenus (1979), who also
+construct ground states for $D\le7$; the $D=8$ attainment was reported,
+without any released configuration, by Marinari, Parisi and Ritort
+(1995); and Laplante, Naserasr, Sunny and Wang treat the graph-theoretic
+formulation directly. Our contribution is accordingly narrow and
+explicit: a short self-contained proof of the optima via a mod-$8$
+refinement of the classical two-point inequality; the certificates
+themselves, with dependency-free verifiers; and an exhaustive decision
+--- closing a question DPTV posed and left open in 1979 --- of which of
+the three optimal $n=6$ field distributions are realisable (exactly one
+is; the other two are not, upgrading MPR's tentative single-case report
+to a proof covering both). Full attribution, with primary-source
+quotations and our translation conventions, is spelled out in
+Sections~\ref{sec:guide} and~\ref{sec:oddsquare}.
+
+Independently of the odd-square results, we classify the $19\,866$
+previously released $304$-edge $C_4$-free subgraphs of $Q_7$ (exactly
+$389$ of them odd-square) into $20$ dimension-profile types, establish
+their common structural core (degree sequence $\{4^{32},5^{96}\}$,
+spectral radius in $[4.78543,4.79129]$, local maximality), and decompose
+them into $180$ $\mathrm{Aut}(Q_7)$-orbits containing $34\,227\,200$
+labelled solutions, of which the released files are $0.058\%$; whether
+these are \emph{all} orbits of $304$-edge solutions is open. This
+revision adds an orbit-witness certificate that makes the orbit
+decomposition checkable in seconds by a standard-library script. For
+$Q_6$, the unrestricted value $\ex(Q_6,C_4)=132$ rests on
+Harborth--Nienborg's combinatorial upper bound, which we did not
+independently verify; the odd-square $g(6)=132$ is self-contained here.
+Every numerical claim is re-checkable from the released code and data;
+the repository, its SHA-256 manifests, and the provenance record are
+collected in Section~\ref{sec:guide}. Edge lists and code:\\
+\url{https://github.com/minamominamoto/c4free-hypercube}.
+\end{abstract}
+
+\medskip
+\noindent\textbf{MSC 2020:} 05C35, 05C62, 05C50.\\
+\textbf{Keywords:} hypercube, $C_4$-free, extremal graph theory,
+simulated annealing, integer linear programming, dimension profile.
+
+\tableofcontents
+
+%% ============================================================
+\section{Introduction}
+%% ============================================================
+
+The $n$-dimensional hypercube $Q_n$ has vertex set $\{0,1\}^n$, two vertices
+adjacent iff they differ in exactly one coordinate; it has $2^n$ vertices and
+$n\cdot2^{n-1}$ edges.  The problem of determining
+$\ex(Q_n,C_4)=\max\{|E(G)|:G\subseteq Q_n,\,G\text{ is }C_4\text{-free}\}$
+was raised by Erd\H{o}s~\cite{Erd84} and remains open in general.
+
+The best known asymptotic bounds are
+\begin{equation}\label{eq:bounds}
+\tfrac{1}{2}(n+\sqrt{n})\cdot2^{n-1}\;\le\;\ex(Q_n,C_4)
+\quad (n=4^r),
+\qquad
+\ex(Q_n,C_4)\;\le\;(0.60318+o(1))\cdot n\cdot2^{n-1},
+\end{equation}
+where the lower bound is due to Brass, Harborth, and
+Nienborg~\cite{BHN95} and holds, in this form, only when $n$ is a power
+of~$4$; the side condition is attached to the displayed inequality rather
+than left to the surrounding text, since the two halves of~\eqref{eq:bounds}
+have different scopes. The upper bound is a statement about the edge
+Tur\'an \emph{density} $\pi_e=\limsup_n\ex(Q_n,C_4)/(n2^{n-1})$, not a
+pointwise inequality valid at every finite $n$; the constant $0.60318$
+is due to Baber~\cite{Bab12}, who used the semidefinite flag algebra
+method to improve the earlier bound of Thomason and Wagner~\cite{TW09};
+the intermediate value $0.6068$ is due to Balogh, Hu, Lidick\'y, and
+Liu~\cite{BHLL12}.
+For general $n\ge9$, the weaker bound
+$\tfrac{1}{2}(n+0.9\sqrt{n})\cdot2^{n-1}$ applies~\cite{BHN95}.
+A wording caution is useful for cross-checking the literature: LNSW26's
+discussion of this BHN expression contains a sentence calling it an ``at
+most'' bound, whereas BHN95's own statement gives both expressions as lower
+bounds on the maximum edge count, which settles the direction at the source;
+an ``at most'' reading is also internally untenable at $n=16$, where the
+tight $n=4^r$ form gives $(16+4)\cdot2^{14}=327\,680$, exceeding
+$(16+0.9\cdot4)\cdot2^{14}=321\,126.4$. We follow BHN95.
+Exact values have been determined for small $n$; Harborth and Nienborg~\cite{HN94}
+proved $\ex(Q_6,C_4)=132$.
+
+Our main results, stated in certificate form -- as the attribution
+immediately below and Section~\ref{sec:oddsquare} spell out, the new
+content is the explicit machine-verifiable certificates and the
+graph-theoretic translation, not the bound values themselves:
+
+\begin{theorem}[Certified lower bounds]\label{thm:main}
+\begin{enumerate}[label=(\roman*)]
+  \item $\ex(Q_7,C_4)\ge304$.
+  \item $\ex(Q_8,C_4)\ge682$.
+\end{enumerate}
+\end{theorem}
+
+Part (i) is not new: it follows from the 1979 construction of Derrida,
+Pomeau, Toulouse, and Vannimenus~\cite{DPTV79} (Section~\ref{sec:oddsquare}),
+and we present it here as an independently reproduced and machine-verified
+result rather than as a novel bound. Part (ii) improves our originally
+announced bound $\ex(Q_8,C_4)\ge680$, but here too the bare existence
+claim is not new in substance: Marinari, Parisi, and Ritort~\cite{MPR95}
+report, in a single unelaborated sentence and with no accompanying
+spin configuration or machine-checkable certificate, having exhibited a
+$D=8$ ground state attaining Derrida et al.'s improved energy lower
+bound; they describe the method (simulated annealing with a cooling
+procedure) and state the corresponding bound value on their common integer
+scale ($-361$; in their text the attainment statement and this integer occur
+in two separate sentences, combined here),
+but provide no graph-theoretic translation and no reproducible
+computational artifact. Combined with the
+signed-graph/odd-square correspondence and edge-count--field-sum
+translation we give in Section~\ref{sec:oddsquare}, this would imply
+the existence of a 682-edge odd-square subgraph of $Q_8$ -- but as an
+existence claim with no public certificate, it is not independently
+verifiable, and we do not treat it as settling the question on its
+own. What
+Part~(ii) contributes beyond that prior existence claim is: an explicit
+graph-theoretic translation of MPR's result into edge-count terms
+(Section~\ref{sec:oddsquare-exact}); a publicly released, explicit,
+machine-verifiable 682-edge certificate, which MPR's paper does not
+supply (they report the result in energy units only, without an
+explicit spin configuration); and the structural analysis of that
+certificate (Proposition~\ref{prop:q8oddsquare}). The specific
+certificate we release attains the same bound value MPR report; its
+own provenance is recorded as a dated private-correspondence account
+rather than an independently reproducible computational log (see
+Section~\ref{sec:oddsquareverify}); we do not claim it reproduces any
+particular configuration MPR may have used internally. That asymmetry ---
+the headline certificate being the one artefact whose \emph{derivation} could
+not be re-executed --- is closed in this revision by
+\texttt{q8\_A\_recover.py}, a fixed-seed search that finds, with no input from
+the released witness, a spin configuration realising the same optimal field
+distribution (seed $90008$, hit at iteration $207\,579$ \emph{at the
+script's default iteration budget}: the budget parameter enters the annealing
+temperature schedule, so this exact hit -- and the byte-identical output,
+which \texttt{reproduce\_core.py} now asserts by SHA-256 -- is conditional
+on the default $250\,000$-iteration setting, a different budget yielding a
+different, equally valid witness, and is scoped to the reference platform
+class: the acceptance step evaluates a floating-point exponential, so the
+byte-identity is an observed stability of CPython on IEEE-754 hardware with
+a standard \texttt{libm} (reproduced in our CPython~3.12 environment and,
+via an RNG-faithful independent re-implementation, by a reviewer), not a
+universal cross-platform guarantee; $682$ edges,
+$h|_U=\{0{:}1,2{:}84,4{:}43\}$, square histogram $\{1{:}301,3{:}1491\}$,
+released as \texttt{q8\_A\_witness.json}). It is a different edge set from the
+released witness, as expected; what is now reproducible is the existence, not
+the particular artefact.
+Both bounds are realised by explicit constructions (supplementary files
+\texttt{q7\_edges\_304.jsonl.part1--3} and \texttt{q8\_odd\_square\_682.json};
+the originally announced 680-edge $Q_8$ witness, \texttt{q8\_edges\_680.jsonl},
+is retained as a simulated-annealing data point, see
+Section~\ref{sec:q8}).
+
+Within the \emph{odd-square} subclass --- edge sets meeting every square in
+an odd number of edges --- the extremal value $g(n)$ is determined exactly
+for $n=6,7,8$:
+
+\begin{theorem}[Exact odd-square values]\label{thm:oddsquare}
+$g(6)=132$, $g(7)=304$, and $g(8)=682$. The numerical values for $n=6,7$
+have historical priority in Derrida--Pomeau--Toulouse--Vannimenus~\cite{DPTV79},
+and MPR95~\cite{MPR95} reported attainment of the corresponding $n=8$
+ground-state bound. The assertion here is a self-contained graph-theoretic
+re-proof/certification of those values, not a claim that the three numbers
+themselves are new.
+\end{theorem}
+
+\noindent To keep the priority record in one place rather than scattered
+across the Abstract, this introduction, Section~\ref{sec:oddsquare}, and Open
+Problem~\ref{op:equality}, the attribution of the three values is:
+
+\begin{center}\small
+\begin{tabular}{@{}c p{6.6cm} p{3.9cm}@{}}
+\toprule
+$n$ & value $g(n)$: priority & contribution here\\
+\midrule
+$6$ & attained by DPTV79 ($D{=}6$ ground state); recorded by LNSW26 (per~\cite{Emlek26}) & certificate; short proof\\
+$7$ & DPTV79 (explicit $D{=}7$ construction) & certificates; short proof\\
+$8$ & MPR95 (attainment reported in energy units, no data) & $682$-edge translation; certificate; short proof\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent Here ``short proof'' means Lemma~\ref{lem:quant}'s self-contained
+derivation of the optima DPTV tabulate; in no row are the numerical values
+themselves claimed as new.
+
+\noindent All three values are self-contained within the released
+materials: each upper bound follows from Lemma~\ref{lem:fieldbound} and
+Lemma~\ref{lem:quant} (Section~\ref{sec:oddsquare-exact}), and each
+lower bound is witnessed by an explicit, machine-verified odd-square
+edge list released with this paper
+(Section~\ref{sec:oddsquareverify}). The citations
+to~\cite{DPTV79,MPR95} record historical priority for the values, not a
+dependency of the proofs. One point of possible confusion: the released
+132-edge $Q_6$ construction \texttt{q6\_edges\_132.jsonl} is a genuine,
+independently machine-verified $C_4$-free witness for
+$\ex(Q_6,C_4)\ge132$, but it is \emph{not} odd-square; the odd-square
+witness for $g(6)\ge132$ is the separate file
+\texttt{q6\_odd\_square\_132.json}.
+
+\noindent Theorem~\ref{thm:oddsquare} is proved in
+Section~\ref{sec:oddsquare}. Combined with $g(n)\le\ex(Q_n,C_4)$, it in
+fact implies Theorem~\ref{thm:main}'s lower bounds
+$\ex(Q_7,C_4)\ge304$ and $\ex(Q_8,C_4)\ge682$ directly (redundantly with
+the explicit constructions of Sections~\ref{sec:q7}--\ref{sec:q8}). What
+it does \emph{not} resolve is whether these bounds are exact, i.e.\
+whether $\ex(Q_7,C_4)=304$ and $\ex(Q_8,C_4)=682$: a general
+$C_4$-free subgraph need not be odd-square, so $g(n)=\ex(Q_n,C_4)$ does
+not follow automatically, and of the $19\,866$
+published 304-edge $Q_7$ solutions, only 389 are odd-square
+(Section~\ref{sec:structure}).
+
+\begin{table}[ht]
+\centering\small
+\caption{Known values and lower bounds of $\ex(Q_n,C_4)$. The BHN column
+  gives Brass--Harborth--Nienborg estimates from Eq.~\eqref{eq:bounds}; the
+  domain caveats attached to that column, the status of the $n=4$ entry,
+  and the meaning of the Source column are spelled out in the text
+  immediately below the table.}
+\label{tab:values}\medskip
+\begin{tabular}{@{}ccccp{5.1cm}@{}}
+\toprule
+$n$ & $|E(Q_n)|$ & $\ex(Q_n,C_4)$ & BHN (Eq.~\ref{eq:bounds}) & Source\\
+\midrule
+4 &   32 & 24  & $24$ (tight, $n=4^1$) & elementary (proof below); construction via~\cite{BHN95}\\
+5 &   80 & 56  & n/a (outside domain) & Emamy-K et al.~\cite{EGR92}\\
+6 &  192 & 132 & n/a (outside domain) & Harborth--Nienborg~\cite{HN94}\\
+7 &  448 & $\ge\mathbf{304}$ & outside domain$^{\dagger}$ & value attained by~\cite{DPTV79}; witness ours\\
+8 & 1024 & $\ge\mathbf{682}$ & outside domain$^{\dagger}$ & bound-attainment reported by~\cite{MPR95} (energy units); $682$-edge translation and witness ours\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Three caveats attach to Table~\ref{tab:values}. First,
+Eq.~\eqref{eq:bounds}'s tight form applies only for $n=4^r$ and its weaker
+form only for $n\ge9$~\cite{BHN95}, so the $n=5,6$ entries are not covered
+by either stated form (marked n/a) and the $n=7,8$ entries lie \emph{beyond}
+the stated domain of both forms (marked $\dagger$): the out-of-domain
+extrapolations of the $n\ge9$ form evaluate there to $\approx300.2$ and
+$\approx674.9$ respectively, figures recorded here only, for illustrative
+comparison, never as proven bounds; no claim in this paper depends on them.
+Second, the $n=4$ value admits a two-line proof, recorded here because we
+could not locate an explicit page-level statement of it in the literature
+(not in~\cite{Chu92}, and neither OEIS~A245762 nor the Emléktábla
+collection attributes the $n=4$ entry individually): $Q_4$ has
+$\binom42\cdot2^2=24$ squares and each edge lies in exactly $n-1=3$ of
+them, so a $C_4$-free subgraph must omit at least one edge of every square
+and hence omit at least $\lceil24/3\rceil=8$ of the $32$ edges, giving
+$\ex(Q_4,C_4)\le24$; the matching construction is the $n=4^r$ case
+($r=1$) of Brass--Harborth--Nienborg~\cite{BHN95}, whose lower bound
+$\tfrac12(n+\sqrt n)2^{n-1}$ evaluates to exactly $24$ there. Third, in the Source column, ``value; witness ours''
+means the numerical value has historical priority in the cited work, which
+published no machine-readable edge list or spin configuration for it; the
+explicit certificate released here is the present author's own and is not
+claimed to reproduce any configuration of the cited work.
+
+The paper is organised as follows.
+Section~\ref{sec:guide} collects scope, attribution, the verification map,
+and the provenance record in one place (material that earlier revisions
+carried in the abstract).
+Section~\ref{sec:verify} describes the $C_4$ enumeration and verification
+procedure used throughout.
+Sections~\ref{sec:q7}--\ref{sec:q8} present the originally announced $Q_7$
+and $Q_8$ simulated-annealing constructions.
+Section~\ref{sec:oddsquare} introduces the odd-square subclass, proves
+Theorem~\ref{thm:oddsquare}, and presents the reconstructed 682-edge $Q_8$
+witness and its verification.
+Section~\ref{sec:structure} classifies the $19\,866$ $Q_7$ solutions found
+by their dimension profiles, yielding exactly 20 types, and reports the
+odd-square audit (389 of 19\,866).
+Section~\ref{sec:method} describes the two-phase simulated annealing algorithm.
+Section~\ref{sec:q6} reproduces $\ex(Q_6,C_4)=132$ computationally on the
+lower-bound side, with an ILP formulation for the upper-bound side.
+Section~\ref{sec:open} lists open problems.
+
+%% ============================================================
+\section{Reader's Guide: Scope, Attribution, and Provenance}\label{sec:guide}
+
+This section collects in one place the scope limitations, the
+attribution record with primary-source detail, the map of what is
+certified and how to check it, and the provenance of the released
+constructions. Earlier revisions carried this material in the
+abstract; the abstract now summarises, and this section is the
+authoritative expanded statement. Nothing here is new relative to
+the previous revision except where explicitly marked; the text is
+relocated, not retracted.
+
 After this manuscript was first circulated, a reader (S.~Lai) identified an
 overlooked connection to a line of statistical-physics literature on fully
 frustrated hypercubes: under the standard correspondence between edge sets
@@ -352,240 +638,22 @@ Edge lists, ILP files, the odd-square reconstruction and audit scripts, and
 source code are made available at\\
 \url{https://github.com/minamominamoto/c4free-hypercube}
 . The repository is synchronised with each released revision; readers should
-check the commit corresponding to this version, since files introduced by a
-revision (here, among others, \texttt{q6\_decide\_realizability.py},
-\texttt{solve\_field\_ip.py} and the $Q_8$ second-distribution witnesses)
-appear only from that commit onward. The authoritative file list for this
-revision, with SHA-256 sums, is \path{ORIGINAL_DATA_SHA256SUMS.txt},
-\path{ODDSQUARE_BRIDGE_SHA256SUMS.txt} and
-\path{MANUSCRIPT_SHA256SUMS.txt} in the accompanying archive, the last
-covering this document's own \texttt{.tex} and \texttt{.pdf} so that a reader
-can confirm which revision a given file set belongs to.
-\end{abstract}
+check the commit corresponding to this version, since files introduced by
+a revision appear only from that commit onward -- here, among others:
+\texttt{q6\_decide\_realizability.py},
+\texttt{solve\_field\_ip.py},
+and the $Q_8$ second-distribution witnesses. The authoritative file list for this
+revision, with SHA-256 sums, is given by the three manifests in the
+accompanying archive:
+\path{ORIGINAL_DATA_SHA256SUMS.txt},
+\path{ODDSQUARE_BRIDGE_SHA256SUMS.txt}, and
+\path{MANUSCRIPT_SHA256SUMS.txt};
+the last covers this document's own \texttt{.tex} and \texttt{.pdf} so
+that a reader can confirm which revision a given file set belongs to.
 
-\medskip
-\noindent\textbf{MSC 2020:} 05C35, 05C62, 05C50.\\
-\textbf{Keywords:} hypercube, $C_4$-free, extremal graph theory,
-simulated annealing, integer linear programming, dimension profile.
-
-\tableofcontents
 
 %% ============================================================
-\section{Introduction}
-%% ============================================================
 
-The $n$-dimensional hypercube $Q_n$ has vertex set $\{0,1\}^n$, two vertices
-adjacent iff they differ in exactly one coordinate; it has $2^n$ vertices and
-$n\cdot2^{n-1}$ edges.  The problem of determining
-$\ex(Q_n,C_4)=\max\{|E(G)|:G\subseteq Q_n,\,G\text{ is }C_4\text{-free}\}$
-was raised by Erd\H{o}s~\cite{Erd84} and remains open in general.
-
-The best known asymptotic bounds are
-\begin{equation}\label{eq:bounds}
-\tfrac{1}{2}(n+\sqrt{n})\cdot2^{n-1}\;\le\;\ex(Q_n,C_4)
-\quad (n=4^r),
-\qquad
-\ex(Q_n,C_4)\;\le\;(0.60318+o(1))\cdot n\cdot2^{n-1},
-\end{equation}
-where the lower bound is due to Brass, Harborth, and
-Nienborg~\cite{BHN95} and holds, in this form, only when $n$ is a power
-of~$4$; the side condition is attached to the displayed inequality rather
-than left to the surrounding text, since the two halves of~\eqref{eq:bounds}
-have different scopes. The upper bound is a statement about the edge
-Tur\'an \emph{density} $\pi_e=\limsup_n\ex(Q_n,C_4)/(n2^{n-1})$, not a
-pointwise inequality valid at every finite $n$; the constant $0.60318$
-is due to Baber~\cite{Bab12}, who used the semidefinite flag algebra
-method to improve the earlier bound of Thomason and Wagner~\cite{TW09};
-the intermediate value $0.6068$ is due to Balogh, Hu, Lidick\'y, and
-Liu~\cite{BHLL12}.
-For general $n\ge9$, the weaker bound
-$\tfrac{1}{2}(n+0.9\sqrt{n})\cdot2^{n-1}$ applies~\cite{BHN95}.
-A wording caution is useful for cross-checking the literature: LNSW26's
-discussion of this BHN expression contains a sentence calling it an ``at
-most'' bound, whereas BHN95's own statement gives both expressions as lower
-bounds on the maximum edge count, which settles the direction at the source;
-an ``at most'' reading is also internally untenable at $n=16$, where the
-tight $n=4^r$ form gives $(16+4)\cdot2^{14}=327\,680$, exceeding
-$(16+0.9\cdot4)\cdot2^{14}=321\,126.4$. We follow BHN95.
-Exact values have been determined for small $n$; Harborth and Nienborg~\cite{HN94}
-proved $\ex(Q_6,C_4)=132$.
-
-Our main results are:
-
-\begin{theorem}\label{thm:main}
-\begin{enumerate}[label=(\roman*)]
-  \item $\ex(Q_7,C_4)\ge304$.
-  \item $\ex(Q_8,C_4)\ge682$.
-\end{enumerate}
-\end{theorem}
-
-Part (i) is not new: it follows from the 1979 construction of Derrida,
-Pomeau, Toulouse, and Vannimenus~\cite{DPTV79} (Section~\ref{sec:oddsquare}),
-and we present it here as an independently reproduced and machine-verified
-result rather than as a novel bound. Part (ii) improves our originally
-announced bound $\ex(Q_8,C_4)\ge680$, but here too the bare existence
-claim is not new in substance: Marinari, Parisi, and Ritort~\cite{MPR95}
-report, in a single unelaborated sentence and with no accompanying
-spin configuration or machine-checkable certificate, having exhibited a
-$D=8$ ground state attaining Derrida et al.'s improved energy lower
-bound; they describe the method (simulated annealing with a cooling
-procedure) and state the corresponding bound value on their common integer
-scale ($-361$; in their text the attainment statement and this integer occur
-in two separate sentences, combined here),
-but provide no graph-theoretic translation and no reproducible
-computational artifact. Combined with the
-signed-graph/odd-square correspondence and edge-count--field-sum
-translation we give in Section~\ref{sec:oddsquare}, this would imply
-the existence of a 682-edge odd-square subgraph of $Q_8$ -- but as an
-existence claim with no public certificate, it is not independently
-verifiable, and we do not treat it as settling the question on its
-own. What
-Part~(ii) contributes beyond that prior existence claim is: an explicit
-graph-theoretic translation of MPR's result into edge-count terms
-(Section~\ref{sec:oddsquare-exact}); a publicly released, explicit,
-machine-verifiable 682-edge certificate, which MPR's paper does not
-supply (they report the result in energy units only, without an
-explicit spin configuration); and the structural analysis of that
-certificate (Proposition~\ref{prop:q8oddsquare}). The specific
-certificate we release attains the same bound value MPR report; its
-own provenance is recorded as a dated private-correspondence account
-rather than an independently reproducible computational log (see
-Section~\ref{sec:oddsquareverify}); we do not claim it reproduces any
-particular configuration MPR may have used internally. That asymmetry ---
-the headline certificate being the one artefact whose \emph{derivation} could
-not be re-executed --- is closed in this revision by
-\texttt{q8\_A\_recover.py}, a fixed-seed search that finds, with no input from
-the released witness, a spin configuration realising the same optimal field
-distribution (seed $90008$, hit at iteration $207\,579$ \emph{at the
-script's default iteration budget}: the budget parameter enters the annealing
-temperature schedule, so this exact hit -- and the byte-identical output,
-which \texttt{reproduce\_core.py} now asserts by SHA-256 -- is conditional
-on the default $250\,000$-iteration setting, a different budget yielding a
-different, equally valid witness; $682$ edges,
-$h|_U=\{0{:}1,2{:}84,4{:}43\}$, square histogram $\{1{:}301,3{:}1491\}$,
-released as \texttt{q8\_A\_witness.json}). It is a different edge set from the
-released witness, as expected; what is now reproducible is the existence, not
-the particular artefact.
-Both bounds are realised by explicit constructions (supplementary files
-\texttt{q7\_edges\_304.jsonl.part1--3} and \texttt{q8\_odd\_square\_682.json};
-the originally announced 680-edge $Q_8$ witness, \texttt{q8\_edges\_680.jsonl},
-is retained as a simulated-annealing data point, see
-Section~\ref{sec:q8}).
-
-Within the \emph{odd-square} subclass --- edge sets meeting every square in
-an odd number of edges --- the extremal value $g(n)$ is determined exactly
-for $n=6,7,8$:
-
-\begin{theorem}[Exact odd-square values]\label{thm:oddsquare}
-$g(6)=132$, $g(7)=304$, and $g(8)=682$. The numerical values for $n=6,7$
-have historical priority in Derrida--Pomeau--Toulouse--Vannimenus~\cite{DPTV79},
-and MPR95~\cite{MPR95} reported attainment of the corresponding $n=8$
-ground-state bound. The assertion here is a self-contained graph-theoretic
-re-proof/certification of those values, not a claim that the three numbers
-themselves are new.
-\end{theorem}
-
-\noindent To keep the priority record in one place rather than scattered
-across the Abstract, this introduction, Section~\ref{sec:oddsquare}, and Open
-Problem~\ref{op:equality}, the attribution of the three values is:
-
-\begin{center}\small
-\begin{tabular}{@{}c p{6.6cm} p{3.9cm}@{}}
-\toprule
-$n$ & value $g(n)$: priority & contribution here\\
-\midrule
-$6$ & attained by DPTV79 ($D{=}6$ ground state); recorded by LNSW26 (per~\cite{Emlek26}) & certificate; short proof\\
-$7$ & DPTV79 (explicit $D{=}7$ construction) & certificates; short proof\\
-$8$ & MPR95 (attainment reported in energy units, no data) & $682$-edge translation; certificate; short proof\\
-\bottomrule
-\end{tabular}
-\end{center}
-
-\noindent Here ``short proof'' means Lemma~\ref{lem:quant}'s self-contained
-derivation of the optima DPTV tabulate; in no row are the numerical values
-themselves claimed as new.
-
-\noindent All three values are self-contained within the released
-materials: each upper bound follows from Lemma~\ref{lem:fieldbound} and
-Lemma~\ref{lem:quant} (Section~\ref{sec:oddsquare-exact}), and each
-lower bound is witnessed by an explicit, machine-verified odd-square
-edge list released with this paper
-(Section~\ref{sec:oddsquareverify}). The citations
-to~\cite{DPTV79,MPR95} record historical priority for the values, not a
-dependency of the proofs. One point of possible confusion: the released
-132-edge $Q_6$ construction \texttt{q6\_edges\_132.jsonl} is a genuine,
-independently machine-verified $C_4$-free witness for
-$\ex(Q_6,C_4)\ge132$, but it is \emph{not} odd-square; the odd-square
-witness for $g(6)\ge132$ is the separate file
-\texttt{q6\_odd\_square\_132.json}.
-
-\noindent Theorem~\ref{thm:oddsquare} is proved in
-Section~\ref{sec:oddsquare}. Combined with $g(n)\le\ex(Q_n,C_4)$, it in
-fact implies Theorem~\ref{thm:main}'s lower bounds
-$\ex(Q_7,C_4)\ge304$ and $\ex(Q_8,C_4)\ge682$ directly (redundantly with
-the explicit constructions of Sections~\ref{sec:q7}--\ref{sec:q8}). What
-it does \emph{not} resolve is whether these bounds are exact, i.e.\
-whether $\ex(Q_7,C_4)=304$ and $\ex(Q_8,C_4)=682$: a general
-$C_4$-free subgraph need not be odd-square, so $g(n)=\ex(Q_n,C_4)$ does
-not follow automatically, and of the $19\,866$
-published 304-edge $Q_7$ solutions, only 389 are odd-square
-(Section~\ref{sec:structure}).
-
-\begin{table}[ht]
-\centering\small
-\caption{Known values and lower bounds of $\ex(Q_n,C_4)$. The BHN column
-  gives Brass--Harborth--Nienborg estimates from Eq.~\eqref{eq:bounds}; the
-  domain caveats attached to that column, the status of the $n=4$ entry,
-  and the meaning of the Source column are spelled out in the text
-  immediately below the table.}
-\label{tab:values}\medskip
-\begin{tabular}{@{}ccccp{5.1cm}@{}}
-\toprule
-$n$ & $|E(Q_n)|$ & $\ex(Q_n,C_4)$ & BHN (Eq.~\ref{eq:bounds}) & Source\\
-\midrule
-4 &   32 & 24  & $24$ (tight, $n=4^1$) & folklore; cf.~\cite{Chu92} (see below)\\
-5 &   80 & 56  & n/a (outside domain) & Emamy-K et al.~\cite{EGR92}\\
-6 &  192 & 132 & n/a (outside domain) & Harborth--Nienborg~\cite{HN94}\\
-7 &  448 & $\ge\mathbf{304}$ & outside domain$^{\dagger}$ & value attained by~\cite{DPTV79}; witness ours\\
-8 & 1024 & $\ge\mathbf{682}$ & outside domain$^{\dagger}$ & bound-attainment reported by~\cite{MPR95} (energy units); $682$-edge translation and witness ours\\
-\bottomrule
-\end{tabular}
-\end{table}
-
-Three caveats attach to Table~\ref{tab:values}. First,
-Eq.~\eqref{eq:bounds}'s tight form applies only for $n=4^r$ and its weaker
-form only for $n\ge9$~\cite{BHN95}, so the $n=5,6$ entries are not covered
-by either stated form (marked n/a) and the $n=7,8$ entries lie \emph{beyond}
-the stated domain of both forms (marked $\dagger$): the out-of-domain
-extrapolations of the $n\ge9$ form evaluate there to $\approx300.2$ and
-$\approx674.9$ respectively, figures recorded here only, for illustrative
-comparison, never as proven bounds; no claim in this paper depends on them.
-Second, the $n=4$ value is elementary and is listed as folklore: we could
-not locate an explicit page-level statement of it in~\cite{Chu92}, and
-neither OEIS~A245762 nor the Emléktábla collection attributes the $n=4$
-entry individually. Third, in the Source column, ``value; witness ours''
-means the numerical value has historical priority in the cited work, which
-published no machine-readable edge list or spin configuration for it; the
-explicit certificate released here is the present author's own and is not
-claimed to reproduce any configuration of the cited work.
-
-The paper is organised as follows.
-Section~\ref{sec:verify} describes the $C_4$ enumeration and verification
-procedure used throughout.
-Sections~\ref{sec:q7}--\ref{sec:q8} present the originally announced $Q_7$
-and $Q_8$ simulated-annealing constructions.
-Section~\ref{sec:oddsquare} introduces the odd-square subclass, proves
-Theorem~\ref{thm:oddsquare}, and presents the reconstructed 682-edge $Q_8$
-witness and its verification.
-Section~\ref{sec:structure} classifies the $19\,866$ $Q_7$ solutions found
-by their dimension profiles, yielding exactly 20 types, and reports the
-odd-square audit (389 of 19\,866).
-Section~\ref{sec:method} describes the two-phase simulated annealing algorithm.
-Section~\ref{sec:q6} reproduces $\ex(Q_6,C_4)=132$ computationally on the
-lower-bound side, with an ILP formulation for the upper-bound side.
-Section~\ref{sec:open} lists open problems.
-
-%% ============================================================
 \section{$C_4$ Enumeration and Verification}\label{sec:verify}
 %% ============================================================
 
@@ -684,7 +752,10 @@ Solution~A and Solution~B as if they belonged to a single construction.
 
 \begin{proposition}\label{prop:q8struct}
 Both 680-edge solutions are $C_4$-free and locally maximal (every
-non-edge of $Q_8$ creates at least one $C_4$ upon addition), with edge
+non-edge of $Q_8$ creates at least one $C_4$ upon addition -- that is,
+maximal with respect to edge addition; throughout this paper ``locally
+maximal'' means exactly this and implies no stronger optimality
+notion), with edge
 density $680/1024=66.4\%$ (compared with $304/448=67.9\%$ for the $Q_7$
 construction) and $\lambda_1+\lambda_{\min}=0$ (automatic for any subgraph of
 the bipartite $Q_8$; not by itself a distinguishing structural feature).
@@ -1033,7 +1104,10 @@ are $U$-split at exactly one even-parity corner \emph{on average}. The
 odd-square condition forces the pointwise version: a sign product $-1$
 over the four edges of $s$ means $s_i(v)s_j(v)=-s_i(z)s_j(z)$ at its two
 even-parity corners, so $\operatorname{spl}_U(s)=1$ for \emph{every}
-$s$, and symmetrically on the odd-parity side. The bundled deterministic
+$s$, and symmetrically on the odd-parity side. We use the average-split
+reformulation diagnostically, not as a search filter: evaluating
+$\sum_s\operatorname{spl}_U(s)$ already inspects every square, so it is
+no cheaper than the odd-square test itself. The bundled deterministic
 script \texttt{field\_identity\_defect.py} verifies the formula -- and
 every numerical instance of it quoted in this paper -- on the released
 certificates and on random edge sets, using only the standard library.
@@ -1690,7 +1764,9 @@ the C branch of the search reconstructs a full spin vector whose recomputed
 $h$-histogram and edge count are $\{0{:}2,2{:}24,4{:}6\}$ and $132$.
 Proposition~\ref{prop:q6realizability} thus closes the question DPTV79 left open
 in 1979 and upgrades MPR95's tentative ``seems not to'' to a proof --
-for both of the non-realisable distributions, where MPR95 spoke of one.
+for both of the non-realisable distributions, where MPR95 spoke of one
+(DPTV79's own sentence is plural: ``We do not know if the other solutions
+given in table 1 for $d=6$ are realizable'', p.~622).
 
 Earlier revisions of this manuscript reported instead a heuristic search
 (simulated annealing on the $L_1$ distance between the current and target
@@ -1897,7 +1973,10 @@ $34\,227\,200$ of them (Proposition~\ref{prop:orbits}) --- while whether it
 meets \emph{every} $\mathrm{Aut}(Q_7)$-orbit is unknown, since the total
 number of orbits is not known (Open Problem~\ref{op:orbits}). Either way,
 none of the shared structural properties below is claimed for every possible
-$304$-edge $C_4$-free subgraph of $Q_7$.
+$304$-edge $C_4$-free subgraph of $Q_7$. This section is an independent
+contribution about that catalogue: apart from the odd-square audit of
+Section~\ref{sec:oddsquareaudit} (the $389$), its results neither depend
+on nor feed into Theorems~\ref{thm:main} and~\ref{thm:oddsquare}.
 
 %% ============================================================
 
@@ -1923,7 +2002,11 @@ Table~\ref{tab:types} lists all 20 types with frequencies and structural invaria
 \begin{table}[ht]
 \centering\small
 \caption{The 20 dimension-profile types of 304-edge $C_4$-free subgraphs of
-  $Q_7$, sorted by decreasing frequency.
+  $Q_7$, sorted by decreasing frequency. Each profile is the seven
+  per-direction edge counts written in non-increasing order -- a canonical
+  form independent of how the seven directions are labelled, which is what
+  makes profiles $\mathrm{Aut}(Q_7)$-invariants and lets the orbit
+  discussion below refer to them directly.
   $H$: Shannon entropy of normalised profile (bits).}
 \label{tab:types}\medskip
 \begin{tabular}{clrrl}
@@ -2091,7 +2174,27 @@ SHA-256 byte-identical to the released \texttt{q7\_orbit\_census.json}.
 (An earlier revision of the driver ran the census in the release directory,
 where it silently resumed the bundled finished checkpoint, so its
 ``re-run'' completed without performing any new search; the
-\texttt{--fresh} mode exists to close that gap.) The stabiliser pass
+\texttt{--fresh} mode exists to close that gap.) This revision adds a
+lighter, certificate-based route that removes the need for any group sweep
+on the reader's side: \texttt{q7\_orbit\_witnesses.json} records, for
+every one of the $19\,866$ solutions, an explicit group element mapping
+its orbit representative to it, and, for every orbit, the
+lexicographically minimal incidence vector over all $645\,120$ images of
+the representative (the orbit's canonical form) together with an element
+attaining it. The standard-library checker
+\texttt{q7\_orbit\_witness\_check.py} verifies in well under a minute
+that every witness element does map its representative to its solution,
+that the certified assignment coincides with the released census, that
+each stored canonical form is attained by its stored element, and that the
+$180$ canonical forms are pairwise distinct -- certifying the orbit
+\emph{assignment} (hence ``at most $180$ orbits'') without redoing the
+sweep. Its \texttt{-{}-canonical} mode (numpy; census-scale wall time,
+sliceable with \texttt{-{}-orbits} for time-limited environments)
+re-verifies that each stored canonical form is the true orbit minimum;
+since the canonical form is an $\mathrm{Aut}(Q_7)$-invariant, minimality
+together with pairwise distinctness certifies ``exactly $180$''
+independently of the census scan. This answers a review request for an
+orbit-equivalence certificate lighter than a full recomputation. The stabiliser pass
 persists its results into the JSON artefact and refuses an incomplete
 checkpoint rather than treating the sentinel orbit id $-1$ as if it were a
 real orbit.
@@ -2915,7 +3018,10 @@ that $\ex(Q_6,C_4)\le132$~\cite{HN94}, this gives $\ex(Q_6,C_4)=132$.
 We did not independently verify optimality of $132$ for this ILP
 instance within a practical runtime (see below); the upper bound
 $\ex(Q_6,C_4)\le132$ used here rests on~\cite{HN94}, not on our own
-solve of the ILP.
+solve of the ILP. We are, moreover, not aware of a published independent
+re-verification of that combinatorial proof; readers for whom this matters
+should weigh the unrestricted $n=6$ equality accordingly (the odd-square
+value $g(6)=132$ is unaffected, being self-contained here).
 \end{proposition}
 
 We independently re-solved \texttt{q6\_ilp.mps} with HiGHS~1.15.1
@@ -3152,12 +3258,18 @@ AI-assisted output, independently executed the verification and witness
 scripts against the released data, and takes full responsibility for the
 accuracy and integrity of the work. Because \texttt{verify.py} is both
 AI-assisted and the release's primary certificate checker, the certificate
-checks were additionally re-implemented during this revision in a separate
-program sharing no code with \texttt{verify.py}; that re-implementation was
+checks are additionally covered by a second implementation,
+\texttt{cross\_verify.py}, now bundled with the release: it shares no code
+and no core mechanism with \texttt{verify.py} (bitmask common-neighbour
+counting over Hamming-distance-$2$ pairs instead of square enumeration by
+corner tuples, and a sorted-tuple set instead of hashing for the
+catalogue-level distinctness of the $19\,866$ edge sets), and it reproduces
+the same verdicts on every released certificate. That re-implementation is
 itself AI-assisted, so it mitigates the single-implementation risk rather
-than adding a human-written check, and it reproduced the same verdicts on
-every released certificate, including the square-intersection histograms
-and the catalogue-level distinctness of the $19\,866$ edge sets. The specific model version(s) of
+than adding a human-written check. (An earlier ad-hoc re-implementation,
+reported at this point by the previous revision, was not preserved in the
+release and was therefore unauditable, as a round of review noted; the
+bundled script supersedes it.) The specific model version(s) of
 Claude used across the original submission and this revision were not
 recorded at the time and cannot be confirmed retrospectively; the
 disclosure above is accurate as to which tasks AI assistance was used

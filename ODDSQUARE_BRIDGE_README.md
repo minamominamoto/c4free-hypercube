@@ -209,6 +209,18 @@ computation:
   `_fresh` files first) and then requires SHA-256 identity between
   `q7_orbit_census_fresh.json` and the released `q7_orbit_census.json`.
   Delete the two `_fresh` files to force a new from-scratch start.
+- Lighter certificate route (round 79): `q7_orbit_witnesses.json` +
+  `q7_orbit_witness_check.py`. The JSON stores an explicit group element
+  per solution mapping its orbit representative to it, plus each orbit's
+  canonical form (lexicographically minimal incidence vector over all
+  645,120 images) with an attaining element. Default checker mode
+  (standard library, ~16 s) certifies the whole assignment and "at most
+  180 orbits" with no group sweep; `--canonical` (numpy, census-scale,
+  sliceable via `--orbits A:B`) re-verifies minimality, which with the
+  pairwise distinctness of the 180 canonical forms certifies "exactly
+  180" independently of the census scan. Generator:
+  `q7_orbit_witnesses_gen.py` (asserts agreement with the released
+  census before writing).
 
 ## Cycle-space rank and the exact defect formula
 

@@ -83,6 +83,34 @@ Marinari–Parisi–Ritort 1995). This led to:
   round-77 review noted these type means were re-derivable but not printed
   by any bundled script; this closes that gap. Run by
   `reproduce_core.py --structural`.
+- `cross_verify.py` is a bundled INDEPENDENT re-implementation of the
+  certificate checks, sharing no code and no core mechanism with
+  `verify.py`: C4-freeness and the odd-square condition via bitmask
+  common-neighbour counting over Hamming-distance-2 pairs (instead of
+  square enumeration by corner tuples), and catalogue-level distinctness
+  of the 19,866 edge sets via a sorted-tuple set (no hashing). Standard
+  library only, about 30 s; run by `reproduce_core.py` by default. It
+  makes the manuscript's single-implementation-risk mitigation auditable
+  (a round-78 review noted the previously reported second implementation
+  was not preserved in the release).
+- `q7_orbit_witnesses.json` + `q7_orbit_witness_check.py`: an
+  orbit-witness CERTIFICATE for the Aut(Q7) orbit decomposition. The
+  JSON records, for each of the 19,866 solutions, a group element mapping
+  its orbit representative to it, and per orbit the lexicographically
+  minimal incidence vector over all 645,120 images (the canonical form)
+  plus an element attaining it. The checker's default mode (standard
+  library, ~16 s) verifies every witness, the identity of the certified
+  assignment with the released census, attainment of every canonical
+  form, and their pairwise distinctness — certifying the assignment and
+  "at most 180 orbits" without any group sweep. `--canonical` (numpy,
+  census-scale wall time, sliceable with `--orbits A:B` for time-limited
+  environments; ~400 s here as three slices) re-verifies that each
+  canonical form is the true orbit minimum, which together with
+  distinctness certifies "exactly 180" independently of the census scan.
+  Default mode runs in `reproduce_core.py`'s default path; `--canonical`
+  in `--structural`. The generator (`q7_orbit_witnesses_gen.py`, numpy,
+  checkpointed) is included for regeneration; it asserts its assignment
+  equals the released census before writing.
 - `verify.py` now also asserts **catalogue-level pairwise distinctness** of
   the 19,866 Q7 edge sets (previously its "no duplicates" check was only
   per-solution), and `reproduce_core.py` now regression-tests the byte-exact
@@ -114,7 +142,12 @@ at each proposal), so treat its runtime as highly variable.
 `--fresh --stabilisers`; note the census budget takes effect only
 **between** orbits, so on slower hardware a single large orbit can run for
 several minutes before the first checkpoint is written — use generous
-budgets there. `q7_lambda1_by_type.py` takes about 6 s.
+budgets there. `q7_lambda1_by_type.py` takes about 6 s. Round-79 additions:
+`cross_verify.py` about 30 s; `q7_orbit_witness_check.py` default mode
+about 16 s, and `--canonical` about 400 s total (run here as three
+`--orbits` slices of ~133 s each); generating the witness certificate
+from scratch (`q7_orbit_witnesses_gen.py`) took 529 s over three
+checkpointed invocations.
 
 Every C4-free claim is independently re-checkable with a dependency-free
 script (standard library only; no third-party packages, no network):
@@ -205,6 +238,9 @@ Input conventions differ and are intentional:
 | `cycle_space_rank.py` | takes **no** arguments; needs no input files |
 | `field_identity_defect.py` | takes **no** arguments; reads the fixed certificate names from CWD (`q6_odd_square_132.json`, `q6_edges_132.jsonl`, `q7_edges_304.jsonl.part1`, `q8_odd_square_682.json`, `q8_edges_680.jsonl`) |
 | `q7_lambda1_by_type.py` | optional positional arguments: the three part files (defaults: fixed names from CWD); requires numpy |
+| `cross_verify.py` | takes **no** arguments; reads the fixed certificate names from CWD |
+| `q7_orbit_witness_check.py` | takes no required arguments; reads the three part files, `q7_orbit_witnesses.json` and `q7_orbit_census.json` from CWD; `--canonical [--orbits A:B]` needs numpy |
+| `q7_orbit_witnesses_gen.py` | generator for `q7_orbit_witnesses.json` (numpy; `--budget` seconds, checkpointed in `q7_orbit_witnesses_ckpt.npz`); not needed for verification |
 | `q6_other_distributions.py` | to reproduce the released 20-row control CSV **byte-identically**, the invocation is exactly `python3 q6_other_distributions.py --profile paper --targets C --iters 60000 --csv q6_realized_control_results.csv --json q6_realized_control_summary.json` (this is what `reproduce_core.py --experiments` runs). Running `--profile paper --control` instead **appends** the control runs to the A/B results and yields an 80-row CSV that will not match the released 20-row file. The iteration budgets differ by design and match the paper's protocol: 300,000 for the A/B targets, 60,000 for the realised-distribution control — the budget asymmetry the paper itself flags. |
 
 The three conventions above (positional part files, optional part files, fixed names read from CWD) are a historical artefact of when each script was written. Rather than change interfaces that reviewers have already exercised, the simplest advice is: **run everything from the directory containing the released files, and use `reproduce_core.py`**, which supplies the right arguments to each script. If you invoke a script directly and it exits with `FileNotFoundError` or an argparse usage message, consult the row above rather than guessing.

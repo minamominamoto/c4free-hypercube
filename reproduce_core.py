@@ -2,7 +2,11 @@
 """One-command reproducibility driver for the paper's core computational claims.
 
 Default mode uses only the Python standard library and checks:
-  1. all released C4-free / odd-square certificates (verify.py);
+  1. all released C4-free / odd-square certificates (verify.py), then the
+     same certificates re-verified by the independent implementation
+     cross_verify.py (bitmask common-neighbour counting, no shared code),
+     then the Aut(Q7) orbit-witness certificate
+     (q7_orbit_witness_check.py, default mode);
   2. the exact field integer programme for n=6,7,8 (solve_field_ip.py);
   3. the cycle-space rank identity |E|-2^n+1 = (n-2)2^{n-1}+1 for n=3..8
      (cycle_space_rank.py);
@@ -119,6 +123,12 @@ def main(argv=None):
 
     step = 1
     run_step(step, "certificate verification", [PYTHON, ROOT / "verify.py"])
+    step += 1
+    run_step(step, "independent re-verification (cross_verify.py, no shared code)",
+             [PYTHON, ROOT / "cross_verify.py"])
+    step += 1
+    run_step(step, "Aut(Q7) orbit-witness certificate (assignment + canonical forms)",
+             [PYTHON, ROOT / "q7_orbit_witness_check.py"])
     step += 1
     run_step(step, "exact field integer programme", [PYTHON, ROOT / "solve_field_ip.py"])
     step += 1
@@ -305,6 +315,12 @@ def main(argv=None):
             ROOT / "q7_orbit_census_fresh.json",
             ROOT / "q7_orbit_census.json",
             "from-scratch orbit census vs released artefact",
+        )
+        step += 1
+        run_step(
+            step,
+            "orbit-witness canonical minimality (--canonical, full sweep)",
+            [PYTHON, ROOT / "q7_orbit_witness_check.py", "--canonical"],
         )
 
     print("\n" + "=" * 72)
