@@ -75,6 +75,14 @@ Marinari–Parisi–Ritort 1995). This led to:
   Σ_{v∈U} h(v)² = n²·2^(n−1) − 4·Σ_s spl_U(s) — including every quoted
   split histogram and total — on the released certificates and on seeded
   random edge sets.
+- `q7_lambda1_by_type.py` (numpy) recomputes the paper's 20-row
+  dimension-profile table directly from the released catalogue — per-type
+  solution counts, profile entropies, and the per-type **mean** spectral
+  radius λ₁ — and asserts every printed figure against the paper, together
+  with the exhaustive individual-solution range [4.78543, 4.79129]. A
+  round-77 review noted these type means were re-derivable but not printed
+  by any bundled script; this closes that gap. Run by
+  `reproduce_core.py --structural`.
 - `verify.py` now also asserts **catalogue-level pairwise distinctness** of
   the 19,866 Q7 edge sets (previously its "no duplicates" check was only
   per-solution), and `reproduce_core.py` now regression-tests the byte-exact
@@ -88,6 +96,25 @@ Q7 solutions into memory at once; peak RSS is around 700 MB, comparable to
 `analyze_q7_structure.py`. Budget roughly 1 GB of free memory; on a single modern core `verify.py` takes
 about 20 seconds and `analyze_q7_structure.py` two to three minutes (both
 machine-dependent); `--structural` adds the expensive numpy passes.
+
+**Measured environment and timings (round 78).** All wall times quoted in
+this README and in the paper were measured on: one vCPU of an Intel Xeon @
+2.10 GHz, ~4 GB RAM, Linux, Python 3.12.3, numpy 2.4.4 (no GPU is used by
+any script; everything here is single-core CPU work). `requirements.txt`
+pins `numpy==2.3.5`; a round-77 reviewer independently reproduced every
+numpy-dependent result and SHA-256 value under numpy 2.4.4, and we observed
+no version sensitivity. Measured on this machine: `reproduce_core.py`
+(default, standard library only) 85 s end to end; within it,
+`q8_A_recover.py --seeds 90008 --iters 250000` takes 18 s standalone — but
+this is the most hardware-sensitive step (one review environment reported
+over 600 s without completing; the search recomputes local fields broadly
+at each proposal), so treat its runtime as highly variable.
+`q7_orbit_census.py --fresh` ran to completion in 362 s of census work
+(here as two checkpointed invocations of 201 s + 161 s) plus 9 s for
+`--fresh --stabilisers`; note the census budget takes effect only
+**between** orbits, so on slower hardware a single large orbit can run for
+several minutes before the first checkpoint is written — use generous
+budgets there. `q7_lambda1_by_type.py` takes about 6 s.
 
 Every C4-free claim is independently re-checkable with a dependency-free
 script (standard library only; no third-party packages, no network):
@@ -177,6 +204,7 @@ Input conventions differ and are intentional:
 | `q6_parity_obstruction.py` | takes **no** arguments; needs no input files |
 | `cycle_space_rank.py` | takes **no** arguments; needs no input files |
 | `field_identity_defect.py` | takes **no** arguments; reads the fixed certificate names from CWD (`q6_odd_square_132.json`, `q6_edges_132.jsonl`, `q7_edges_304.jsonl.part1`, `q8_odd_square_682.json`, `q8_edges_680.jsonl`) |
+| `q7_lambda1_by_type.py` | optional positional arguments: the three part files (defaults: fixed names from CWD); requires numpy |
 | `q6_other_distributions.py` | to reproduce the released 20-row control CSV **byte-identically**, the invocation is exactly `python3 q6_other_distributions.py --profile paper --targets C --iters 60000 --csv q6_realized_control_results.csv --json q6_realized_control_summary.json` (this is what `reproduce_core.py --experiments` runs). Running `--profile paper --control` instead **appends** the control runs to the A/B results and yields an 80-row CSV that will not match the released 20-row file. The iteration budgets differ by design and match the paper's protocol: 300,000 for the A/B targets, 60,000 for the realised-distribution control — the budget asymmetry the paper itself flags. |
 
 The three conventions above (positional part files, optional part files, fixed names read from CWD) are a historical artefact of when each script was written. Rather than change interfaces that reviewers have already exercised, the simplest advice is: **run everything from the directory containing the released files, and use `reproduce_core.py`**, which supplies the right arguments to each script. If you invoke a script directly and it exits with `FileNotFoundError` or an argparse usage message, consult the row above rather than guessing.

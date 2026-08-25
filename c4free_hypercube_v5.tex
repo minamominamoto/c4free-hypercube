@@ -810,7 +810,10 @@ homomorphism from the cycle space of $Q_n$ (over $\mathrm{GF}(2)$, under
 symmetric difference) to $\{\pm1\}$, since edges shared by two cycles cancel
 in their symmetric difference and likewise cancel in the product. The
 squares of $Q_n$ generate its cycle space (a standard fact for hypercubes:
-every cycle is a symmetric difference of squares; the bundled
+every cycle is a symmetric difference of squares -- for general $n$ this
+follows, e.g., from the theorem that every partial cube has a cycle basis
+consisting of convex cycles~\cite{HLS14}, the convex cycles of $Q_n$ being
+exactly its squares; the bundled
 deterministic script \texttt{cycle\_space\_rank.py} verifies this by
 direct $\mathrm{GF}(2)$ rank computation for every $n$ used in this
 paper, asserting that the rank of the square incidence vectors equals
@@ -1402,8 +1405,9 @@ $S=|E|-(D2^{D-1}-|E|)=2|E|-D2^{D-1}$, hence explicitly
 \[
   |E|=\frac{D2^{D-1}-N\sqrt D\,(H/N)}{2}.
 \]
-At $D=8,S=340$ (equivalently $|E|=(1024+340)/2=682$) this is
-$H\approx-120.2$, or $H/N\approx-0.470$ per site. As a cross-check
+At $D=8,S=340$ (equivalently $|E|=(1024+340)/2=682$) this is, step by
+step, $H/N=-S/(N\sqrt D)=-340/(256\sqrt8)=-340/724.077\ldots
+=-0.46956\ldots$, i.e.\ $H\approx-120.2$, about $-0.470$ per site. As a cross-check
 against MPR95's own text: they report (in their D=9 discussion) that
 ``on a scale where the minimal energy jump is 1'' their D=9 naive
 bound $H/N=-1/2$ corresponds to an integer value of $-384$ (i.e.\ a
@@ -1575,7 +1579,12 @@ annealing, that at $D=6$ only configurations corresponding to the first solution
 of DPTV's Table~I are realisable and that ``the other solution of the Diophantine
 equation \emph{seems not to} correspond to any spin configuration'' -- a
 tentative negative finding, in the singular, with no released configuration or
-decision procedure. Since Proposition~\ref{prop:q6oddsquare} identifies
+decision procedure. (Note the grammatical mismatch between the two sources
+themselves: DPTV79 write ``the other solutions'' where MPR95 write ``the
+other solution''; on the exhaustive count below -- exactly three optima, of
+which two are non-realisable -- the plural is the accurate reading, and we
+take MPR95's singular as loose phrasing rather than as a competing count.)
+Since Proposition~\ref{prop:q6oddsquare} identifies
 C with DPTV's first solution by multiplicity, the question is whether A and B
 are realisable. Here ``realisable'' prescribes the histogram on the chosen
 bipartition side $U$ only; $U^c$ is not constrained. This is the same one-side
@@ -1651,9 +1660,13 @@ depth-first search with counter-overflow pruning, which agrees (the node
 counts below are properties of this implementation and its search order,
 recorded for orientation only: they carry no reproduction obligation, and a
 differently ordered search will visit different counts; the parity
-obstruction above is the search-order-independent proof): a $v\in U$ has $m(v)$ determined as soon as its six neighbours are
-assigned, so any partial assignment exceeding a target count is cut. Global spin
-flip fixes every $h$, so one $U^{c}$ spin may be pinned. The search finds a
+obstruction above is the search-order-independent proof): the search assigns
+the $32$ $U^{c}$ spins in a fixed index order and keeps one running counter
+per value $m\in\{0,1,2,3\}$; a $v\in U$ has $m(v)$ determined as soon as the
+last of its six neighbours in that order is assigned, at which point $m(v)$
+is tallied, and the branch is cut the moment any counter exceeds the
+target's multiplicity for that value. Global spin
+flip fixes every $h$, so the first $U^{c}$ spin may be pinned. The search finds a
 realisation for C ($501$ nodes visited) and exhausts the space for A
 ($655{,}359$ nodes) and B ($22{,}129{,}151$ nodes) without a realisation;
 Without the symmetry reduction the two non-realisable searches, which exhaust
@@ -2068,8 +2081,11 @@ anything. The strong route is \texttt{reproduce\_core.py --structural},
 which re-runs the census \emph{from scratch}: it invokes
 \texttt{q7\_orbit\_census.py --fresh}, whose checkpoint and output live
 in separate \texttt{\_fresh} files and which never reads the bundled
-checkpoint, runs it to completion (about six minutes on commodity
-hardware), computes the stabiliser pass on the fresh census, and then
+checkpoint, runs it to completion (about six minutes in our single-core
+container; the budget takes effect only between orbits, so on slower
+hardware individual orbits can run substantially longer before the first
+checkpoint -- the repository README records the measured environment and
+times), computes the stabiliser pass on the fresh census, and then
 requires the resulting \texttt{q7\_orbit\_census\_fresh.json} to be
 SHA-256 byte-identical to the released \texttt{q7\_orbit\_census.json}.
 (An earlier revision of the driver ran the census in the release directory,
@@ -3157,8 +3173,12 @@ Theorem~5.2 statement and attribution and its Theorem~5.4 bound were checked
 verbatim against the Introduction and Section~\ref{sec:oddsquare}, its ``at
 most'' wording for the lower bound was confirmed on the page, and the
 $n\le6$ value list was confirmed \emph{absent} from the preprint (see
-Section~\ref{sec:oddsquare}); the published version remained inaccessible
-to us. This disclosure should not be read
+Section~\ref{sec:oddsquare}); these preprint checks were carried out on
+25~August~2026 against HAL \texttt{hal-04080411}. On 26~August~2026 we
+additionally confirmed the published version's bibliographic record by DOI
+resolution (10.1145/3777401), but its full text remained inaccessible to
+us, so we could not check whether the published version differs from the
+preprint on any of these points. This disclosure should not be read
 as a claim that the author independently re-transcribed every quoted passage
 without AI assistance.
 
@@ -3194,6 +3214,9 @@ arXiv:1201.3587, 2012.
 \bibitem{EGR92} M.\,R.~Emamy-K., P.~Guan, and P.\,I.~Rivera-Vega, On the
   characterization of the maximum squareless subgraphs of the 5-cube,
   \textit{Congr.\ Numer.}\ \textbf{88} (1992), 97--109.
+\bibitem{HLS14} M.~Hellmuth, J.~Leydold, and P.\,F.~Stadler, Convex cycle
+  bases, \textit{Ars Math.\ Contemp.} \textbf{7} (2014), no.~1, 123--140,
+  \url{https://amc-journal.eu/index.php/amc/article/view/226}.
 \bibitem{Har53} F.~Harary, On the notion of balance of a signed graph,
   \textit{Michigan Math.\ J.}\ \textbf{2} (1953), 143--146.
 \bibitem{Erd84} P.~Erd\H{o}s, On some problems in graph theory, combinatorial

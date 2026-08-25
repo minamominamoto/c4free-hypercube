@@ -18,7 +18,9 @@ Default mode uses only the Python standard library and checks:
  10. the exact Type-18 automorphism claims, including 46/101 order-3 cases.
 
 Optional modes:
-  --structural   also run analyze_q7_structure.py, q7_hamming_tally.py,
+  --structural   also run analyze_q7_structure.py, q7_lambda1_by_type.py
+                 (asserts the paper's 20 per-type mean lambda_1 values),
+                 q7_hamming_tally.py,
                  q7_order3_automorphisms.py and q7_oddsquare_orbits.py (all require numpy;
                  analyze_q7_structure.py is the expensive one), then rerun the
                  full Aut(Q7)-orbit census from scratch (--fresh; no bundled
@@ -27,6 +29,8 @@ Optional modes:
                  the released q7_orbit_census.json
   --experiments  rerun the deterministic Q6 A/B targeted SA protocol and compare
                  its logs with the bundled canonical logs
+                 (historical/provenance-only: superseded as evidence by the
+                 exhaustive decision, and slow)
   --all          run both optional modes
 
 Usage:
@@ -100,7 +104,8 @@ def main(argv=None):
     parser.add_argument(
         "--experiments",
         action="store_true",
-        help="rerun deterministic Q6 targeted SA experiment and compare logs",
+        help="rerun deterministic Q6 targeted SA experiment and compare logs "
+             "(historical/provenance-only, superseded as evidence; slow)",
     )
     parser.add_argument(
         "--all",
@@ -248,6 +253,12 @@ def main(argv=None):
             step,
             "full Q7 structural/statistical analysis (numpy)",
             [PYTHON, ROOT / "analyze_q7_structure.py", *Q7_PARTS],
+        )
+        step += 1
+        run_step(
+            step,
+            "per-type mean lambda_1 table (20 types, asserted against the paper)",
+            [PYTHON, ROOT / "q7_lambda1_by_type.py", *Q7_PARTS],
         )
         step += 1
         run_step(

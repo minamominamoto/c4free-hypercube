@@ -106,6 +106,40 @@ was never a proof, and the exhaustive decision now supplies one.
   consistency check, not an independent recomputation. The paper's
   computational appendix discloses this.)
 
+## Round-78 additions
+
+- `q7_lambda1_by_type.py` (numpy): recomputes the paper's 20-row
+  dimension-profile table directly from the released catalogue and asserts
+  every printed figure — per-type solution counts, profile entropies, the
+  per-type **mean** spectral radius lambda_1 (each rounded independently to
+  four decimals), and the exhaustive individual range [4.78543, 4.79129].
+  Added because a round-77 review noted the type means, while independently
+  re-derivable, were not printed by any bundled script. Wired into
+  `reproduce_core.py --structural` immediately after
+  `analyze_q7_structure.py`.
+- `reproduce_core.py --experiments` is now labelled
+  historical/provenance-only (superseded as evidence by the exhaustive
+  realizability decision; slow) in both the module docstring and the
+  argparse help.
+- README now records the measured environment and wall times (single Intel
+  Xeon vCPU @ 2.10 GHz, ~4 GB RAM, Python 3.12.3, numpy 2.4.4; no GPU used
+  anywhere): `reproduce_core.py` default 85 s; `q8_A_recover.py` 18 s here
+  but over 600 s in one review environment (hardware-sensitive);
+  `q7_orbit_census.py --fresh` 362 s + 9 s stabilisers, with the note that
+  the census budget takes effect only between orbits.
+- Manuscript-side round-78 changes (for completeness): the
+  DPTV79-plural/MPR95-singular mismatch about "the other solution(s)" is
+  now stated explicitly in one sentence; the MPR95 energy conversion shows
+  the explicit intermediate step -340/(256*sqrt(8)) = -0.46956...; the
+  exhaustive-decision proof now names the fixed assignment order and
+  per-value counters of the DFS pruning; the census timing sentence points
+  at the README's measured environment; the general-n cycle-space claim now
+  carries a literature citation (Hellmuth-Leydold-Stadler 2014, convex
+  cycle bases of partial cubes); and the LNSW26 disclosure records the
+  preprint access date (2026-08-25), the DOI-record confirmation of the
+  published version (2026-08-26), and that the published full text remained
+  inaccessible.
+
 ## Commands
 
 Core checks, standard library only:
