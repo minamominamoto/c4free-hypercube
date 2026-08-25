@@ -494,7 +494,7 @@ Problem~\ref{op:equality}, the attribution of the three values is:
 \toprule
 $n$ & value $g(n)$: priority & contribution here\\
 \midrule
-$6$ & attained by DPTV79 ($D{=}6$ ground state); recorded by LNSW26 & certificate; short proof\\
+$6$ & attained by DPTV79 ($D{=}6$ ground state); recorded by LNSW26 (per~\cite{Emlek26}) & certificate; short proof\\
 $7$ & DPTV79 (explicit $D{=}7$ construction) & certificates; short proof\\
 $8$ & MPR95 (attainment reported in energy units, no data) & $682$-edge translation; certificate; short proof\\
 \bottomrule
@@ -533,31 +533,17 @@ published 304-edge $Q_7$ solutions, only 389 are odd-square
 
 \begin{table}[ht]
 \centering\small
-\caption{Known values and lower bounds of $\ex(Q_n,C_4)$.
-  The BHN column gives Brass--Harborth--Nienborg estimates from
-  Eq.~\eqref{eq:bounds}; that equation's tight form applies only for
-  $n=4^r$ and its weaker form only for $n\ge9$~\cite{BHN95}, so the
-  $n=5,6$ entries are not covered by either stated form (marked n/a)
-  and the $n=7,8$ entries lie \emph{beyond} the stated domain of both
-  forms (marked $\dagger$): the out-of-domain extrapolations of the
-  $n\ge9$ form evaluate there to $\approx300.2$ and $\approx674.9$
-  respectively, figures recorded in this caption only, for illustrative
-  comparison, never as proven bounds; no claim in this paper depends on
-  them. The $n=4$ value is elementary and is listed as folklore: we could
-  not locate an explicit page-level statement of it in~\cite{Chu92}, and
-  neither OEIS~A245762 nor the Emléktábla collection attributes the $n=4$
-  entry individually.
-  In the Source column, ``value; witness ours'' means the numerical
-  value has historical priority in the cited work, which published no
-  machine-readable edge list or spin configuration for it; the explicit
-  certificate released here is the present author's own and is not
-  claimed to reproduce any configuration of the cited work.}
+\caption{Known values and lower bounds of $\ex(Q_n,C_4)$. The BHN column
+  gives Brass--Harborth--Nienborg estimates from Eq.~\eqref{eq:bounds}; the
+  domain caveats attached to that column, the status of the $n=4$ entry,
+  and the meaning of the Source column are spelled out in the text
+  immediately below the table.}
 \label{tab:values}\medskip
 \begin{tabular}{@{}ccccp{5.1cm}@{}}
 \toprule
 $n$ & $|E(Q_n)|$ & $\ex(Q_n,C_4)$ & BHN (Eq.~\ref{eq:bounds}) & Source\\
 \midrule
-4 &   32 & 24  & $24$ (tight, $n=4^1$) & folklore; cf.~\cite{Chu92} (see caption)\\
+4 &   32 & 24  & $24$ (tight, $n=4^1$) & folklore; cf.~\cite{Chu92} (see below)\\
 5 &   80 & 56  & n/a (outside domain) & Emamy-K et al.~\cite{EGR92}\\
 6 &  192 & 132 & n/a (outside domain) & Harborth--Nienborg~\cite{HN94}\\
 7 &  448 & $\ge\mathbf{304}$ & outside domain$^{\dagger}$ & value attained by~\cite{DPTV79}; witness ours\\
@@ -565,6 +551,23 @@ $n$ & $|E(Q_n)|$ & $\ex(Q_n,C_4)$ & BHN (Eq.~\ref{eq:bounds}) & Source\\
 \bottomrule
 \end{tabular}
 \end{table}
+
+Three caveats attach to Table~\ref{tab:values}. First,
+Eq.~\eqref{eq:bounds}'s tight form applies only for $n=4^r$ and its weaker
+form only for $n\ge9$~\cite{BHN95}, so the $n=5,6$ entries are not covered
+by either stated form (marked n/a) and the $n=7,8$ entries lie \emph{beyond}
+the stated domain of both forms (marked $\dagger$): the out-of-domain
+extrapolations of the $n\ge9$ form evaluate there to $\approx300.2$ and
+$\approx674.9$ respectively, figures recorded here only, for illustrative
+comparison, never as proven bounds; no claim in this paper depends on them.
+Second, the $n=4$ value is elementary and is listed as folklore: we could
+not locate an explicit page-level statement of it in~\cite{Chu92}, and
+neither OEIS~A245762 nor the Emléktábla collection attributes the $n=4$
+entry individually. Third, in the Source column, ``value; witness ours''
+means the numerical value has historical priority in the cited work, which
+published no machine-readable edge list or spin configuration for it; the
+explicit certificate released here is the present author's own and is not
+claimed to reproduce any configuration of the cited work.
 
 The paper is organised as follows.
 Section~\ref{sec:verify} describes the $C_4$ enumeration and verification
@@ -807,12 +810,13 @@ homomorphism from the cycle space of $Q_n$ (over $\mathrm{GF}(2)$, under
 symmetric difference) to $\{\pm1\}$, since edges shared by two cycles cancel
 in their symmetric difference and likewise cancel in the product. The
 squares of $Q_n$ generate its cycle space (a standard fact for hypercubes:
-every cycle is a symmetric difference of squares; we independently
-verified this by direct $\mathrm{GF}(2)$ rank computation for every
-$n$ used in this paper, $n=3,\ldots,8$ -- cycle space dimension
-$E-V+1$ equal to the rank of the
-square vectors in every case, including $n=7$'s dimension $321$ and
-$n=8$'s dimension $769$), so this homomorphism is
+every cycle is a symmetric difference of squares; the bundled
+deterministic script \texttt{cycle\_space\_rank.py} verifies this by
+direct $\mathrm{GF}(2)$ rank computation for every $n$ used in this
+paper, asserting that the rank of the square incidence vectors equals
+the cycle-space dimension $E-V+1=(n-2)2^{n-1}+1$ for each of
+$n=3,\ldots,8$ -- the six dimensions being $5$, $17$, $49$, $129$,
+$321$ and $769$), so this homomorphism is
 determined by its values on the squares; since it is $+1$ on every square,
 it is $+1$ on every cycle. A signature with product $+1$ on every cycle of
 a connected graph is a \emph{coboundary}: $\tau(x,y)=t(x)t(y)$ for some
@@ -881,10 +885,13 @@ Brass--Harborth--Nienborg's~\cite{BHN95} when $n$ is a power of~$4$;
 for $n=6,7,8$ (not powers of~$4$) this upper bound is
 strictly looser than the lower bound, so LNSW26's bounds
 do not determine $g(n)$ at these values. The sharpening therefore applies at $n=7,8$ but \emph{not} at $n=6$:
-LNSW26 record the exact values $g(n)=1,3,9,24,56,132$ for $n\le6$, as
-reported in the 20th Emléktábla Workshop problem
-collection~\cite{Emlek26}; so the \emph{record} of $g(6)=132$ is already in
-LNSW26 and the value is not new here, while its historical \emph{attainment}
+the 20th Emléktábla Workshop problem collection~\cite{Emlek26} credits
+LNSW26 with the exact values $g(n)=1,3,9,24,56,132$ for $n\le6$. (During
+source verification we obtained and read the LNSW26 preprint in full; the
+value list does not appear in it, so this attribution rests on
+\cite{Emlek26} alone -- the published version, which we could not access,
+may contain it.) On that attribution the \emph{record} of $g(6)=132$ is
+already in LNSW26 and the value is not new here, while its historical \emph{attainment}
 is DPTV79's: their $D=6$ ground state has $60$ negative bonds out of $192$
 (p.~622), i.e.\ $132$ positive edges, and MPR95 note that constructions
 saturating the improved bound exist for $D\le7$. What
@@ -997,6 +1004,38 @@ $\sum_{v\in U}s_i(v)s_j(v)=0$ for every fixed $i\ne j$. Summing over all
 ordered pairs $i\ne j$ and adding the $n\cdot|U|$ diagonal contribution
 gives $\sum_{v\in U}h(v)^2=n\cdot2^{n-1}$.
 \end{proof}
+
+\begin{remark}[Exact defect formula]\label{rem:defect}
+The bookkeeping in this proof runs without the odd-square hypothesis and
+yields an exact formula for arbitrary edge sets. For any $E\subseteq
+E(Q_n)$, call a square $s$ \emph{$U$-split at} its even-parity corner $v$
+if exactly one of the two edges of $s$ incident to $v$ lies in $E$
+(equivalently $s_i(v)s_j(v)=-1$ for the direction pair $\{i,j\}$ of $s$),
+and let $\operatorname{spl}_U(s)\in\{0,1,2\}$ count the even-parity
+corners of $s$ at which it is $U$-split. Each square has exactly two
+even-parity corners, related by $v\mapsto v\oplus e_i\oplus e_j$, and
+belongs to exactly one direction pair; running the ordered-pair sum of the
+proof without the cancellation step, each square contributes
+$2-2\operatorname{spl}_U(s)$ once per ordering of its direction pair, so
+\[
+\sum_{v\in U}h(v)^2
+= n\cdot2^{n-1} + n(n-1)\,2^{n-1} - 4\sum_{s}\operatorname{spl}_U(s)
+= n^2\,2^{n-1} - 4\sum_{s}\operatorname{spl}_U(s),
+\]
+the sum running over all $\binom n2\,2^{n-2}$ squares of $Q_n$. Hence the
+identity $\sum_{v\in U}h(v)^2=n\cdot2^{n-1}$ holds for a given side of
+the bipartition \emph{if and only if}
+$\sum_s\operatorname{spl}_U(s)=\binom n2\,2^{n-2}$, i.e.\ iff squares
+are $U$-split at exactly one even-parity corner \emph{on average}. The
+odd-square condition forces the pointwise version: a sign product $-1$
+over the four edges of $s$ means $s_i(v)s_j(v)=-s_i(z)s_j(z)$ at its two
+even-parity corners, so $\operatorname{spl}_U(s)=1$ for \emph{every}
+$s$, and symmetrically on the odd-parity side. The bundled deterministic
+script \texttt{field\_identity\_defect.py} verifies the formula -- and
+every numerical instance of it quoted in this paper -- on the released
+certificates and on random edge sets, using only the standard library.
+\end{remark}
+
 This proof uses only that \emph{every} square has product $-1$ (the
 odd-square condition), so it is sufficient for the identity to hold; it
 is not necessary. Testing against all $19\,866$ published $304$-edge
@@ -1034,16 +1073,32 @@ in the direction-pair-then-base enumeration order of Lemma~\ref{lem:c4},
 in $1,3,1,3,3,1$ edges) has $U$-degree multiset $\{1,1,1,3\}$ against
 $\{0,2,2,2\}$ on the complement, while still satisfying
 $\sum_{v\in U}h(v)^2=\sum_{v\in U^c}h(v)^2=12=3\cdot2^2$ on each side
-separately. We do not characterise the identity's full
-necessary-and-sufficient condition here. To be explicit about its
-logical status: the identity is neither a characterisation of
-odd-squareness (the $Q_3$ example just given is odd-square without the
-$U$/complement symmetry that holds for all $19\,866$ $Q_7$ solutions)
-nor a coincidence specific to the released catalogue (it is a forced
-consequence, via Proposition~\ref{prop:rigid} and $\sum_{v\in
-U}\deg(v)=|E|$, of \emph{any} $304$-edge subgraph of $Q_7$ having all
-degrees in $\{4,5\}$ -- a structural fact about that particular edge
-count, established independently of odd-squareness).
+separately. Remark~\ref{rem:defect} settles the identity's exact
+logical status for arbitrary edge sets: it holds on a side iff squares are
+split at one corner of that side \emph{on average},
+$\sum_s\operatorname{spl}_U(s)=\binom n2\,2^{n-2}$. Odd-squareness is
+the pointwise case ($\operatorname{spl}_U(s)=1$ for every square, both
+sides at once), and the average can be met without it: the catalogue's
+very first record -- the non-odd-square solution mentioned in
+Section~\ref{sec:oddsquare-exact} -- has per-square split histogram
+$\{0{:}60,\,1{:}552,\,2{:}60\}$ on $U$, sixty deficits exactly
+cancelled by sixty excesses for a total of $672=\binom72\,2^{5}$,
+against the pointwise $\{1{:}672\}$ of the odd-square record $34$. So
+the identity is neither a characterisation of odd-squareness (the $Q_3$
+example just given is odd-square without the $U$/complement symmetry that
+holds for all $19\,866$ $Q_7$ solutions, and record $0$ satisfies the
+identity without being odd-square) nor a coincidence specific to the
+released catalogue (for the $19\,866$ it is a forced consequence, via
+Proposition~\ref{prop:rigid} and $\sum_{v\in U}\deg(v)=|E|$, of
+\emph{any} $304$-edge subgraph of $Q_7$ having all degrees in $\{4,5\}$
+-- a structural fact about that particular edge count, established
+independently of odd-squareness). The one-sided failure of the $Q_8$
+Solution~B noted above is likewise quantified exactly by the formula: on
+its failing side $\sum_s\operatorname{spl}_U(s)=1794=1792+2$, accounting
+for $\sum_{v\in U}h(v)^2=1024-4\cdot2=1016$, while the complementary
+side has exactly $1792$ splits and sum $1024$.
+\texttt{field\_identity\_defect.py} recomputes each of these numbers
+from the released certificates.
 
 \begin{lemma}[Nonnegativity at the maximum]\label{lem:nonneg}
 If $E$ is odd-square in $Q_n$ with $|E|$ maximum (i.e.\ $|E|=g(n)$), then
@@ -1256,7 +1311,7 @@ $72$, $160$, $340$ for $n=6,7,8$ respectively, matching the bounds
 above, and returns exactly $3$, $1$ and $2$ optimal $h$-distributions
 respectively --- for $n=6$,
 $\{2{:}30,6{:}2\}$, $\{0{:}1,2{:}27,4{:}3,6{:}1\}$ and
-$\{0{:}2,2{:}24,4{:}6\}$; for $n=7$, $\{1{:}16,3{:}48\}$; for $n=8$,
+$\{0{:}2,2{:}24,4{:}6\}$ (labelled A, B and C throughout); for $n=7$, $\{1{:}16,3{:}48\}$; for $n=8$,
 $\{2{:}87,4{:}40,6{:}1\}$ and $\{0{:}1,2{:}84,4{:}43\}$.
 These counts also follow from Lemma~\ref{lem:quant} in a line, so the
 enumeration is a check and not a source. The multiplicity phenomenon itself
@@ -1265,15 +1320,15 @@ concentrates on three or four integers they find many solutions, and that
 this happens exactly at $d=6$ and $d=8$ -- the two dimensions at which the
 programme here returns more than one optimal distribution. At $n=7$, $\Delta=0$ forces
 $h\in\{1,3\}$ pointwise and $\sum h=160$ over $|U|=64$ then fixes the
-multiplicities, giving one distribution. At $n=6$, $\Delta=16$ admits only the
-decomposition $8+8$, so exactly two vertices have $h\in\{0,6\}$ and the other
-$30$ have $h\in\{2,4\}$; writing $j$ for the number of those two at $h=6$ and
+multiplicities, giving one distribution. At $n=6$, the $\Delta=16$ analysis
+above already fixes exactly two vertices at $h\in\{0,6\}$ and the other
+$30$ at $h\in\{2,4\}$; writing $j$ for the number of those two at $h=6$ and
 $k$ for the number of the remaining $30$ at $h=4$, $\sum h=72$ reads
-$6j+0\cdot(2-j)+4k+2(30-k)=72$, i.e.\ $3j+k=6$, whose solutions
+$6j+4k+2(30-k)=72$, i.e.\ $3j+k=6$, whose solutions
 $(j,k)=(2,0),(1,3),(0,6)$ give exactly A, B and C. At
-$n=8$, $\Delta=8$ leaves one vertex at $h\in\{0,6\}$ and $127$ at
-$h\in\{2,4\}$; the same count gives $3j+k=43$ with $j\in\{0,1\}$, hence
-$(j,k)=(1,40)$ and $(0,43)$ --- the two distributions above. Both $n=8$
+$n=8$, the $\Delta=8$ analysis above leaves one vertex at $h\in\{0,6\}$ and
+$127$ at $h\in\{2,4\}$; the same count gives $3j+k=43$ with $j\in\{0,1\}$,
+hence $(j,k)=(1,40)$ and $(0,43)$ --- the two distributions above. Both $n=8$
 distributions are realised: the released $682$-edge witness
 (\texttt{q8\_odd\_square\_682.json}) attains $\{0{:}1,2{:}84,4{:}43\}$,
 and $\{2{:}87,4{:}40,6{:}1\}$ is realised by two further witnesses in
@@ -1288,7 +1343,7 @@ realises each optimal distribution on one side of the bipartition (the
 $682$-edge witness, by contrast, has $\{0{:}1,2{:}84,4{:}43\}$ on both sides).
 Whether some odd-square $682$-edge set realises $\{2{:}87,4{:}40,6{:}1\}$ on
 \emph{both} sides we have not determined.
-For $n=6$, only distribution~C $=\{0{:}2,2{:}24,4{:}6\}$ is realised;
+For $n=6$, only distribution~C is realised;
 distributions A and B are provably not realisable
 (Proposition~\ref{prop:q6realizability}, an exhaustive finite decision).
 For $n=7$, the unique optimal distribution is necessarily realised. Thus $n=8$
@@ -1386,11 +1441,18 @@ independent checks are $D=8$ and $D=10$. At $D=10$, $m=512$, $Q=5120$, $(a,b)=(2
 $\Delta=9216-6S$, so $S\le1536$ (with $\Delta=0$, distribution
 $\{2{:}256,4{:}256\}$), and
 $768\times(-1536/(1024\sqrt{10}))\approx-364.29\approx-364$, matching
-MPR95's reported $D=10$ value of $-364$ to the same rounding rule. The scale factor is in fact forced rather than fitted: at $D=9$ a single spin
-flip changes $H/N$ by exactly $2/(N\sqrt D)=2/(512\cdot3)=1/768$, so $768$ is
-what MPR95's ``minimum energy jump equal to $1$'' scale must mean there. (The
-same quantity at $D=8$ is $2/(256\cdot2\sqrt2)=1/(256\sqrt2)\approx1/362.04$,
-confirming that $768$ is not a $D=8$ quantisation unit.) A further point
+MPR95's reported $D=10$ value of $-364$ to the same rounding rule. The scale factor is in fact forced rather than fitted. Every configuration
+has $S=2|E|-D\,2^{D-1}$ with $D\,2^{D-1}$ even for $D\ge2$, so $S$ is an even
+integer and the achievable values of $H/N=-S/(N\sqrt D)$ lie on a lattice of
+pitch $2/(N\sqrt D)$. (A single spin flip at $v$ changes $S$ by $-2h(v)$ and
+hence $H/N$ by $2|h(v)|/(N\sqrt D)$ in magnitude -- a vertex-dependent
+multiple of the pitch, equal to the pitch itself only when $|h(v)|=1$; for
+even $D$ every $h(v)$ is even, so no single flip ever realises the pitch
+there. The quantisation unit is the lattice pitch, not any particular flip.)
+At $D=9$ the pitch is $2/(512\cdot3)=1/768$, so $768$ is what MPR95's
+``minimum energy jump equal to $1$'' scale must mean there; the same pitch at
+$D=8$ is $2/(256\cdot2\sqrt2)=1/(256\sqrt2)\approx1/362.04$, confirming that
+$768$ is not a $D=8$ quantisation unit. A further point
 corroborates it empirically: MPR95
 also report their \emph{attained} $D=9$ value both as $-0.494792$ and as
 $-380$ on the integer scale, and $768\times(-0.494792)=-379.99\ldots$, so $768$
@@ -1497,7 +1559,7 @@ specifically.
 \noindent\textbf{Realizability of the other two optimal $n=6$ field
 distributions: an exhaustive decision.} The field-bound DP
 (Section~\ref{sec:oddsquare-exact}; \texttt{solve\_field\_ip.py}) identifies
-exactly three optimal $h$-distributions on $U$ for $n=6$:
+exactly three optimal $h$-distributions on $U$ for $n=6$, labelled as there:
 distribution~C~$=\{0{:}2,2{:}24,4{:}6\}$ (realised above),
 A~$=\{2{:}30,6{:}2\}$, and B~$=\{0{:}1,2{:}27,4{:}3,6{:}1\}$.
 DPTV79 (p.~622) noted that solutions besides their first were listed in
@@ -1969,27 +2031,54 @@ Type-$18$ solutions of Section~\ref{sec:profiles}: that type is precisely the
 pair of orbits with the largest stabilisers.
 \end{proposition}
 
-The census is computed by \texttt{q7\_orbit\_census.py}, which applies every
-group element to an unassigned solution and records which catalogue members
-appear among the images, using a random-projection signature to prefilter and
-an exact comparison of the $448$-byte incidence vector to confirm every hit.
-The exact confirmation is not optional: a single signature collision merges two
+The census is computed by \texttt{q7\_orbit\_census.py} by exhaustive
+group action, with no sampling and no extrapolation anywhere. The scan is
+deterministic: solutions are visited in fixed catalogue order, and to the
+first still-unassigned solution the script applies \emph{all}
+$645\,120=7!\cdot2^{7}$ elements of $\mathrm{Aut}(Q_7)$ (every coordinate
+permutation composed with every translation), recording which catalogue
+members appear among the images; a $64$-bit random-projection signature
+with a fixed seed prefilters candidate matches, and an exact comparison of
+the full $448$-entry edge-incidence vector confirms every hit. The exact
+confirmation is not optional: a single signature collision merges two
 orbits, and in a signature-only trial run on the odd-square subset it did.
-The completed census is released as an artefact, not only as a computation:
-\texttt{q7\_orbit\_census.json} carries the orbit assignment of all
+Stabiliser orders are then computed per orbit, again exhaustively: only
+coordinate permutations preserving the representative's direction-count
+vector can fix it (an automorphism permutes directions), so the scan runs
+over exactly that subgroup times all $128$ translations -- a pruning that
+discards no fixing element -- and the orbit length is $645\,120$ divided
+by the stabiliser order. Internal cross-checks require the per-orbit
+catalogue counts to sum to $19\,866$ and the orbit lengths to
+$34\,227\,200$. Every step being deterministic, a completed run
+reproduces the released artefacts byte for byte.
+
+The completed census is released as an artefact, not only as a computation.
+The file \texttt{q7\_orbit\_census.json} carries the orbit assignment of all
 $19\,866$ solutions, the per-orbit catalogue counts, the stabiliser orders
 and orbit lengths, and the $34\,227\,200$ total, together with the finished
 checkpoint \texttt{q7\_orbit\_census\_ckpt.npz}; both are listed in the
-SHA-256 manifest, and the lightweight \texttt{q7\_orbit\_census\_check.py}
-(standard library, under a second) re-verifies every census-derived number
-stated in Proposition~\ref{prop:orbits} from that artefact alone, so a
-reader need not re-run the multi-invocation census to audit these figures.
-The bundled one-command driver covers both paths:
-\texttt{reproduce\_core.py} runs the artefact checker by default, and
-\texttt{reproduce\_core.py --structural} additionally re-runs the census to
-completion and then the stabiliser pass (which now persists its results into
-the JSON artefact). The latter now refuses an incomplete checkpoint
-rather than treating the sentinel orbit id $-1$ as if it were a real orbit.
+SHA-256 manifest. Two verification routes of different strength are
+bundled, and they should not be conflated. The lightweight
+\texttt{q7\_orbit\_census\_check.py} (standard library, under a second)
+re-verifies every census-derived number stated in
+Proposition~\ref{prop:orbits} from the released JSON alone: this checks
+the \emph{internal consistency of the finished artefact}, not the group
+action itself, so a reader can audit the stated figures without re-running
+anything. The strong route is \texttt{reproduce\_core.py --structural},
+which re-runs the census \emph{from scratch}: it invokes
+\texttt{q7\_orbit\_census.py --fresh}, whose checkpoint and output live
+in separate \texttt{\_fresh} files and which never reads the bundled
+checkpoint, runs it to completion (about six minutes on commodity
+hardware), computes the stabiliser pass on the fresh census, and then
+requires the resulting \texttt{q7\_orbit\_census\_fresh.json} to be
+SHA-256 byte-identical to the released \texttt{q7\_orbit\_census.json}.
+(An earlier revision of the driver ran the census in the release directory,
+where it silently resumed the bundled finished checkpoint, so its
+``re-run'' completed without performing any new search; the
+\texttt{--fresh} mode exists to close that gap.) The stabiliser pass
+persists its results into the JSON artefact and refuses an incomplete
+checkpoint rather than treating the sentinel orbit id $-1$ as if it were a
+real orbit.
 
 Three consequences. First, \emph{every} represented orbit has stabiliser order
 divisible by $3$, so Proposition~\ref{prop:rigid}(vi), already obtained by a
@@ -2878,6 +2967,29 @@ principle, verify on the dual side.
     options, and solver versions all remain unexplored dimensions, so
     we draw no generalisation about off-the-shelf SAT or MIP solvers
     as a class.
+    A speculative structural remark on where a $305$-edge example would
+    have to live, if one exists. Since $g(7)=304$, any such example is
+    necessarily non-odd-square, and Remark~\ref{rem:defect} quantifies
+    how far from odd-square it must be: for any $305$-edge set,
+    $\sum_{v\in U}\deg(v)=305$ on \emph{each} side of the bipartition,
+    and an exhaustive dynamic programme over integer degree sequences
+    shows the minimum of $\sum_{v\in U}h(v)^2$ is then $456$, attained
+    only by the degree multiset $\{4^{15},5^{49}\}$; since $456>448$,
+    the field identity fails strictly on \emph{both} sides, so each side
+    carries a split deficit of at least two squares,
+    $\sum_s\operatorname{spl}_U(s)\le670=\binom72\,2^{5}-2$.
+    Separately, every $305$-edge $C_4$-free set contains $305$ distinct
+    $304$-edge $C_4$-free subsets, each extendable (restore the deleted
+    edge) and hence \emph{not} locally maximal, whereas all $19\,866$
+    released solutions are locally maximal
+    (Proposition~\ref{prop:rigid}(iv)); so none of those $305$ subsets
+    coincides with any catalogue member, and a $305$-edge example, if one
+    exists, remains invisible to the released catalogue even after
+    deleting any single edge. Neither observation is evidence of
+    nonexistence; each only pins down where a counterexample would have
+    to live: at least two split-defective squares away from odd-square on
+    each side, and strictly outside the catalogue's single-edge-deletion
+    neighbourhood.
   \item\label{op:q8exact} Determine $\ex(Q_8,C_4)$ exactly. Is it $682$, or can a
     non-odd-square construction exceed $g(8)=682$? The $Q_7$ audit of
     Section~\ref{sec:oddsquareaudit} shows the two questions are genuinely
@@ -3039,7 +3151,14 @@ primary-source PDF passages were checked directly at the page level: DPTV79
 pp.~620--622 for the $h\ge0$ restriction and the first lower bound, Table~I,
 the $H_6$ construction, field multiplicities, and
 overfrustrated-plaquette count, and MPR95 pp.~3--4 of the arXiv preprint (cond-mat/9410089; the journal pagination is \textit{J.\ Phys.\ A} \textbf{28}, 327--334) for the $D=8,9,10$ energy
-statements and Hamiltonian normalisation. This disclosure should not be read
+statements and Hamiltonian normalisation. In this revision the LNSW26
+preprint was additionally obtained and read in full (AI-assisted): its
+Theorem~5.2 statement and attribution and its Theorem~5.4 bound were checked
+verbatim against the Introduction and Section~\ref{sec:oddsquare}, its ``at
+most'' wording for the lower bound was confirmed on the page, and the
+$n\le6$ value list was confirmed \emph{absent} from the preprint (see
+Section~\ref{sec:oddsquare}); the published version remained inaccessible
+to us. This disclosure should not be read
 as a claim that the author independently re-transcribed every quoted passage
 without AI assistance.
 

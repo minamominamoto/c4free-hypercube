@@ -17,9 +17,22 @@ keeping the speed.
 
 Writes a checkpoint after each orbit so the run can be resumed.
 
+The scan order over solutions, the seeded random-projection signature, and
+the orbit numbering are all deterministic, so a census run to completion
+reproduces the released q7_orbit_census.json byte for byte (the JSON is
+written with a fixed key order for exactly this reason).
+
+--fresh runs a from-scratch census whose checkpoint and JSON live in
+separate files (q7_orbit_census_fresh_ckpt.npz / q7_orbit_census_fresh.json):
+it never reads the released checkpoint and never writes the released
+artefacts, so the released, manifest-listed files cannot be overwritten by
+it. A fresh run resumes its own checkpoint across invocations; delete the
+two _fresh files to force a new from-scratch start.
+
 Requires numpy. Usage:
     python3 q7_orbit_census.py               # run (resumes if checkpoint exists)
     python3 q7_orbit_census.py --report      # summarise a finished run
+    python3 q7_orbit_census.py --fresh       # from-scratch run, separate files
 """
 import argparse
 import hashlib
@@ -39,6 +52,22 @@ PARTS = ['q7_edges_304.jsonl.part1',
          'q7_edges_304.jsonl.part3']
 CKPT = 'q7_orbit_census_ckpt.npz'
 OUT = 'q7_orbit_census.json'
+FRESH_CKPT = 'q7_orbit_census_fresh_ckpt.npz'
+FRESH_OUT = 'q7_orbit_census_fresh.json'
+
+# Fixed key order for the JSON artefact, matching the released file, so that a
+# regenerated artefact is byte-identical to the released one whenever their
+# contents agree. Keys absent from the data (e.g. before the --stabilisers
+# pass) are simply skipped.
+CANON_KEYS = ('stabiliser_orders', 'orbit_lengths', 'labelled_total',
+              'orbits', 'catalogue_sizes', 'catalogue_sizes_sorted',
+              'assignment')
+
+
+def write_out(path, data):
+    ordered = {k: data[k] for k in CANON_KEYS if k in data}
+    with open(path, 'w', encoding='utf-8', newline='\n') as f:
+        json.dump(ordered, f)
 
 SLOT = {}
 for _d in range(N):
@@ -92,7 +121,13 @@ def main():
                     help='seconds to work before saving and exiting')
     ap.add_argument('--chunk', type=int, default=64,
                     help='permutations per batched matmul')
+    ap.add_argument('--fresh', action='store_true',
+                    help='from-scratch census using separate files '
+                         f'({FRESH_CKPT} / {FRESH_OUT}); never reads or '
+                         'writes the released artefacts')
     args = ap.parse_args()
+    ckpt = FRESH_CKPT if args.fresh else CKPT
+    out = FRESH_OUT if args.fresh else OUT
 
     import time
     t0 = time.time()
@@ -107,13 +142,13 @@ def main():
     sig_sorted = sig[order]
 
     cat_sig = hashlib.sha256(M.tobytes()).hexdigest()
-    if os.path.exists(CKPT):
-        z = np.load(CKPT)
+    if os.path.exists(ckpt):
+        z = np.load(ckpt)
         stored = str(z['catalogue_sha256']) if 'catalogue_sha256' in z else ''
         if stored != cat_sig:
             print('checkpoint does not match this catalogue '
                   f'(stored {stored[:12]}..., computed {cat_sig[:12]}...); '
-                  'delete q7_orbit_census_ckpt.npz and rerun')
+                  f'delete {ckpt} and rerun')
             return 3
         orbit = z['orbit'].tolist()
         sizes = z['sizes'].tolist()
@@ -124,7 +159,7 @@ def main():
         sizes = []
 
     if args.report:
-        report(orbit, sizes, dirs, n)
+        report(orbit, sizes, dirs, n, out)
         return 0
 
     if args.stabilisers:
@@ -134,7 +169,7 @@ def main():
                   f'only {assigned}/{n} solutions are assigned. '
                   f'Run the census to completion first.', file=sys.stderr)
             return 2
-        stabilisers(M, dirs, orbit)
+        stabilisers(M, dirs, orbit, out)
         return 0
 
     trans = np.array([slot_perm(tuple(range(N)), a) for a in range(V)])
@@ -151,7 +186,7 @@ def main():
         # make progress. Each invocation therefore always finishes the orbit
         # it has started.
         if done_here and time.time() - t0 > args.budget:
-            np.savez(CKPT, orbit=np.array(orbit), sizes=np.array(sizes),
+            np.savez(ckpt, orbit=np.array(orbit), sizes=np.array(sizes),
                  catalogue_sha256=np.array(cat_sig))
             print(f'budget reached: {sum(1 for x in orbit if x >= 0)}/{n} '
                   f'assigned, {len(sizes)} orbits; checkpoint saved')
@@ -176,13 +211,14 @@ def main():
         sizes.append(len(found))
         done_here += 1
 
-    np.savez(CKPT, orbit=np.array(orbit), sizes=np.array(sizes),
+    if done_here:
+        np.savez(ckpt, orbit=np.array(orbit), sizes=np.array(sizes),
                  catalogue_sha256=np.array(cat_sig))
-    report(orbit, sizes, dirs, n)
+    report(orbit, sizes, dirs, n, out)
     return 0
 
 
-def report(orbit, sizes, dirs, n):
+def report(orbit, sizes, dirs, n, out=OUT):
     assert all(x >= 0 for x in orbit), 'decomposition incomplete'
     print(f'ORBITS: {len(sizes)}')
     print(f'catalogue sizes histogram: '
@@ -200,9 +236,9 @@ def report(orbit, sizes, dirs, n):
     # still consistent with this census; drop it otherwise, so a stale pass
     # can never masquerade as belonging to a fresh decomposition.
     data = {}
-    if os.path.exists(OUT):
+    if os.path.exists(out):
         try:
-            with open(OUT, encoding='utf-8') as f:
+            with open(out, encoding='utf-8') as f:
                 old = json.load(f)
         except (json.JSONDecodeError, OSError):
             old = {}
@@ -221,14 +257,13 @@ def report(orbit, sizes, dirs, n):
                  # orbit id.
                  'catalogue_sizes_sorted': sorted(sizes, reverse=True),
                  'assignment': orbit})
-    with open(OUT, 'w', encoding='utf-8', newline='\n') as f:
-        json.dump(data, f)
-    print(f'wrote {OUT}')
+    write_out(out, data)
+    print(f'wrote {out}')
 
 
 
 
-def stabilisers(M, dirs, orbit):
+def stabilisers(M, dirs, orbit, out=OUT):
     """Stabiliser order of one representative per orbit, and the implied total
     number of labelled solutions in the orbits represented.
 
@@ -270,7 +305,7 @@ def stabilisers(M, dirs, orbit):
         return out
 
     t0 = time.time()
-    out = {}
+    res = {}
     for o in sorted(reps):
         i = reps[o]
         v = M[i]
@@ -278,19 +313,19 @@ def stabilisers(M, dirs, orbit):
         for pi in preserving(dirs[i]):
             idx = slot_perm(pi, 0)[trans]
             cnt += int((v[idx] == v).all(axis=1).sum())
-        out[o] = cnt
-    hist = Counter(out.values())
-    lengths = Counter(GROUP // c for c in out.values())
-    total = sum(GROUP // c for c in out.values())
+        res[o] = cnt
+    hist = Counter(res.values())
+    lengths = Counter(GROUP // c for c in res.values())
+    total = sum(GROUP // c for c in res.values())
     print(f'stabiliser orders (per orbit): {dict(sorted(hist.items()))}')
     print(f'orbit lengths: {dict(sorted(lengths.items(), reverse=True))}')
     print(f'total labelled solutions in these orbits: {total}')
     print(f'catalogue is {100 * len(orbit) / total:.4f}% of that')
     print(f'all stabiliser orders divisible by 3: '
-          f'{all(c % 3 == 0 for c in out.values())}')
+          f'{all(c % 3 == 0 for c in res.values())}')
     ok = (dict(hist) == {3: 142, 6: 32, 12: 4, 24: 1, 72: 1}
           and total == 34227200
-          and all(c % 3 == 0 for c in out.values()))
+          and all(c % 3 == 0 for c in res.values()))
     print('RESULT:', 'matches the paper' if ok
           else 'MISMATCH against the values stated in the paper')
     if not ok:
@@ -299,18 +334,17 @@ def stabilisers(M, dirs, orbit):
     # run is distributable and checkable (q7_orbit_census_check.py) without
     # re-executing the census or this pass.
     data = {}
-    if os.path.exists(OUT):
-        with open(OUT, encoding='utf-8') as f:
+    if os.path.exists(out):
+        with open(out, encoding='utf-8') as f:
             data = json.load(f)
-    ids = sorted(out)
-    data['stabiliser_orders'] = [out[o] for o in ids]     # aligned by orbit id
-    data['orbit_lengths'] = [GROUP // out[o] for o in ids]  # aligned by orbit id
+    ids = sorted(res)
+    data['stabiliser_orders'] = [res[o] for o in ids]     # aligned by orbit id
+    data['orbit_lengths'] = [GROUP // res[o] for o in ids]  # aligned by orbit id
     data['labelled_total'] = total
-    with open(OUT, 'w', encoding='utf-8', newline='\n') as f:
-        json.dump(data, f)
-    print(f'updated {OUT} with stabiliser data')
+    write_out(out, data)
+    print(f'updated {out} with stabiliser data')
     print(f'[{time.time() - t0:.0f}s]')
-    return out
+    return res
 
 if __name__ == '__main__':
     sys.exit(main())

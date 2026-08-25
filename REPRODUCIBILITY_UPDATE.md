@@ -71,6 +71,41 @@ was never a proof, and the exhaustive decision now supplies one.
   extrapolation; the change is disclosed in the file header, and the search
   logic is untouched.
 
+## Round-77 additions
+
+- `cycle_space_rank.py`: dependency-free GF(2) elimination showing that the
+  squares of Q_n span its cycle space for every n used in the paper
+  (n = 3..8): rank = E − V + 1 = (n−2)·2^(n−1) + 1, i.e. 5, 17, 49, 129,
+  321, 769. Run by `reproduce_core.py` by default; the manuscript's spanning
+  claim now points at this bundled machine check instead of "routine to
+  verify".
+- `field_identity_defect.py`: verifies the paper's exact defect formula
+  `sum_{v in U} h(v)^2 = n^2·2^(n−1) − 4·sum_s spl_U(s)` (new Remark after
+  the field-identity lemma) on every released certificate, reproducing each
+  quoted split histogram and total (Q7 catalogue record 0:
+  {0:60, 1:552, 2:60} with total exactly 672 = C(7,2)·2^5; Q8 Solution B:
+  1794 = 1792 + 2 splits on the failing side against exactly 1792 on the
+  complement), and additionally on 203 deterministic edge sets each for
+  n = 4 and n = 5 (empty, full, single edge, 200 seeded random). Both
+  bipartition sides are checked throughout. Run by `reproduce_core.py` by
+  default.
+- `q7_orbit_census.py --fresh`: from-scratch census kept in separate files
+  (`q7_orbit_census_fresh_ckpt.npz` / `q7_orbit_census_fresh.json`). It
+  never reads the bundled checkpoint and never writes the released
+  artefacts; the computation is deterministic, so a completed fresh run must
+  reproduce the released JSON byte for byte. To support that byte identity
+  the JSON writer now emits a fixed canonical key order, and the checkpoint
+  is rewritten only by an invocation that actually computed something.
+- `reproduce_core.py --structural` now performs the strong census check: it
+  deletes stale `_fresh` files, runs `q7_orbit_census.py --fresh` to
+  completion followed by `--fresh --stabilisers`, and requires SHA-256
+  identity between `q7_orbit_census_fresh.json` and the released
+  `q7_orbit_census.json`. (The previous driver re-ran the census in the
+  release directory, where it resumed the bundled completed checkpoint,
+  found nothing left to do, and rewrote the same content — an internal
+  consistency check, not an independent recomputation. The paper's
+  computational appendix discloses this.)
+
 ## Commands
 
 Core checks, standard library only:

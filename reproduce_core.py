@@ -4,19 +4,27 @@
 Default mode uses only the Python standard library and checks:
   1. all released C4-free / odd-square certificates (verify.py);
   2. the exact field integer programme for n=6,7,8 (solve_field_ip.py);
-  3. the exhaustive Q6 realizability decision: distributions A and B are not
+  3. the cycle-space rank identity |E|-2^n+1 = (n-2)2^{n-1}+1 for n=3..8
+     (cycle_space_rank.py);
+  4. the exact defect formula sum h^2 = n^2 2^{n-1} - 4 sum spl(s) on the
+     released witnesses and on random edge sets (field_identity_defect.py);
+  5. the exhaustive Q6 realizability decision: distributions A and B are not
      realisable, C is (q6_decide_realizability.py);
-  4. the two Q8 witnesses for the second optimal field distribution
+  6. the two Q8 witnesses for the second optimal field distribution
      {2:87,4:40,6:1} (verify_q8_B_witnesses.py);
-  5. byte-for-byte regeneration of the Q6 odd-square witness;
-  6. byte-for-byte regeneration of the Q8 odd-square witness;
-  7. the exhaustive Q7 odd-square audit and its released CSV;
-  8. the exact Type-18 automorphism claims, including 46/101 order-3 cases.
+  7. byte-for-byte regeneration of the Q6 odd-square witness;
+  8. byte-for-byte regeneration of the Q8 odd-square witness;
+  9. the exhaustive Q7 odd-square audit and its released CSV;
+ 10. the exact Type-18 automorphism claims, including 46/101 order-3 cases.
 
 Optional modes:
   --structural   also run analyze_q7_structure.py, q7_hamming_tally.py,
                  q7_order3_automorphisms.py and q7_oddsquare_orbits.py (all require numpy;
-                 analyze_q7_structure.py is the expensive one)
+                 analyze_q7_structure.py is the expensive one), then rerun the
+                 full Aut(Q7)-orbit census from scratch (--fresh; no bundled
+                 checkpoint is read) and require the resulting
+                 q7_orbit_census_fresh.json to be byte-identical (SHA-256) to
+                 the released q7_orbit_census.json
   --experiments  rerun the deterministic Q6 A/B targeted SA protocol and compare
                  its logs with the bundled canonical logs
   --all          run both optional modes
@@ -108,6 +116,12 @@ def main(argv=None):
     run_step(step, "certificate verification", [PYTHON, ROOT / "verify.py"])
     step += 1
     run_step(step, "exact field integer programme", [PYTHON, ROOT / "solve_field_ip.py"])
+    step += 1
+    run_step(step, "cycle-space rank identity (n=3..8)",
+             [PYTHON, ROOT / "cycle_space_rank.py"])
+    step += 1
+    run_step(step, "exact defect formula on witnesses and random edge sets",
+             [PYTHON, ROOT / "field_identity_defect.py"])
     step += 1
     run_step(
         step,
@@ -254,18 +268,33 @@ def main(argv=None):
             [PYTHON, ROOT / "q7_oddsquare_orbits.py"],
         )
         step += 1
+        # From-scratch census: the --fresh run never reads the bundled
+        # checkpoint, and any leftover _fresh files from an earlier run are
+        # removed first so this stage always certifies a clean regeneration.
+        for stale in (ROOT / "q7_orbit_census_fresh_ckpt.npz",
+                      ROOT / "q7_orbit_census_fresh.json"):
+            if stale.exists():
+                print(f"removing stale {stale.name} for a from-scratch census",
+                      flush=True)
+                stale.unlink()
         run_step(
             step,
-            "full Aut(Q7)-orbit census of the 19,866 solutions (180 orbits)",
-            [PYTHON, ROOT / "q7_orbit_census.py", "--budget", "100000"],
+            "full Aut(Q7)-orbit census from scratch (180 orbits, --fresh)",
+            [PYTHON, ROOT / "q7_orbit_census.py", "--fresh",
+             "--budget", "100000"],
         )
         step += 1
         run_step(
             step,
-            "stabiliser orders per orbit and the 34,227,200 total",
-            [PYTHON, ROOT / "q7_orbit_census.py", "--stabilisers"],
+            "stabiliser orders per orbit and the 34,227,200 total (--fresh)",
+            [PYTHON, ROOT / "q7_orbit_census.py", "--fresh", "--stabilisers"],
         )
         step += 1
+        require_same(
+            ROOT / "q7_orbit_census_fresh.json",
+            ROOT / "q7_orbit_census.json",
+            "from-scratch orbit census vs released artefact",
+        )
 
     print("\n" + "=" * 72)
     print("RESULT: ALL REQUESTED REPRODUCIBILITY CHECKS PASSED")

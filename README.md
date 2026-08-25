@@ -60,7 +60,21 @@ Marinari–Parisi–Ritort 1995). This led to:
   checkpoint `q7_orbit_census_ckpt.npz`. The lightweight
   `q7_orbit_census_check.py` verifies the artefact's internal consistency
   and every census-derived number stated in the paper in under a second,
-  and is wired into `reproduce_core.py`'s default path.
+  and is wired into `reproduce_core.py`'s default path. The strong route is
+  `reproduce_core.py --structural`, which now re-runs the census **from
+  scratch**: it invokes `q7_orbit_census.py --fresh` (separate
+  `q7_orbit_census_fresh_ckpt.npz` / `q7_orbit_census_fresh.json` files;
+  the bundled checkpoint is never read), runs it to completion, and then
+  requires the fresh JSON to be SHA-256 byte-identical to the released
+  `q7_orbit_census.json`.
+- Two further dependency-free checks are wired into `reproduce_core.py`'s
+  default path: `cycle_space_rank.py` asserts by direct GF(2) elimination
+  that the squares of Q_n span its cycle space for n=3..8 (rank = E−V+1 =
+  (n−2)·2^(n−1)+1, i.e. 5, 17, 49, 129, 321, 769), and
+  `field_identity_defect.py` verifies the paper's exact defect formula
+  Σ_{v∈U} h(v)² = n²·2^(n−1) − 4·Σ_s spl_U(s) — including every quoted
+  split histogram and total — on the released certificates and on seeded
+  random edge sets.
 - `verify.py` now also asserts **catalogue-level pairwise distinctness** of
   the 19,866 Q7 edge sets (previously its "no duplicates" check was only
   per-solution), and `reproduce_core.py` now regression-tests the byte-exact
@@ -131,7 +145,8 @@ Copy the files you need to a disposable working directory first. In particular:
   release, so running the census inside the release directory writes over
   certified files. (Against the bundled completed checkpoint it resumes,
   finds nothing left to do, and rewrites the same content — but treat it as
-  an overwrite risk and prefer a working copy.)
+  an overwrite risk and prefer a working copy. The `--fresh` mode writes
+  only the two `_fresh` files and never touches the certified pair.)
 
 The SHA-256 manifests authenticate only the files explicitly listed in them.
 Additional generated files do not invalidate a manifest, but overwriting a
@@ -142,6 +157,7 @@ directories for the regeneration steps that would otherwise write outputs.
 
 `verify.py`, `generate_q6_132.py`, `search_q6.py`, `generate_q8_682.py`,
 `audit_q7_odd_square.py`, `solve_field_ip.py`, `q6_decide_realizability.py`,
+`cycle_space_rank.py`, `field_identity_defect.py`,
 and `reproduce_core.py` use only the Python standard library, as noted above.
 `q7_hamming_tally.py`, `q7_order3_automorphisms.py`, `q7_oddsquare_orbits.py`
 and `q7_orbit_census.py` additionally need `numpy`.
@@ -159,6 +175,8 @@ Input conventions differ and are intentional:
 | `q7_orbit_census.py` | takes **no** part-file arguments; reads the fixed part names from CWD and writes/resumes a checkpoint there |
 | `q8_A_recover.py` | takes **no** required arguments; needs no input files. The defaults (`--seeds 90000..90011 --iters 250000`) reproduce the released `q8_A_witness.json` exactly (seed 90008, iteration 207579). **`--iters` is not just a stopping rule** — it enters the annealing temperature schedule, so a different budget finds a different (equally valid) witness. Writes to `q8_A_witness_run.json`, **not** to the manifest-listed `q8_A_witness.json`. |
 | `q6_parity_obstruction.py` | takes **no** arguments; needs no input files |
+| `cycle_space_rank.py` | takes **no** arguments; needs no input files |
+| `field_identity_defect.py` | takes **no** arguments; reads the fixed certificate names from CWD (`q6_odd_square_132.json`, `q6_edges_132.jsonl`, `q7_edges_304.jsonl.part1`, `q8_odd_square_682.json`, `q8_edges_680.jsonl`) |
 | `q6_other_distributions.py` | to reproduce the released 20-row control CSV **byte-identically**, the invocation is exactly `python3 q6_other_distributions.py --profile paper --targets C --iters 60000 --csv q6_realized_control_results.csv --json q6_realized_control_summary.json` (this is what `reproduce_core.py --experiments` runs). Running `--profile paper --control` instead **appends** the control runs to the A/B results and yields an 80-row CSV that will not match the released 20-row file. The iteration budgets differ by design and match the paper's protocol: 300,000 for the A/B targets, 60,000 for the realised-distribution control — the budget asymmetry the paper itself flags. |
 
 The three conventions above (positional part files, optional part files, fixed names read from CWD) are a historical artefact of when each script was written. Rather than change interfaces that reviewers have already exercised, the simplest advice is: **run everything from the directory containing the released files, and use `reproduce_core.py`**, which supplies the right arguments to each script. If you invoke a script directly and it exits with `FileNotFoundError` or an argparse usage message, consult the row above rather than guessing.
@@ -175,7 +193,16 @@ persists into the JSON) and the finished checkpoint
 `q7_orbit_census_ckpt.npz`, so `--report` and `--stabilisers` run in seconds
 against the bundled checkpoint, and `q7_orbit_census_check.py` verifies the
 artefact against every census-derived number in the paper with no
-recomputation at all. The budget is checked only between orbits, and only after this
+recomputation at all. A from-scratch rerun is the strong check:
+`q7_orbit_census.py --fresh` keeps its checkpoint and JSON in separate
+files (`q7_orbit_census_fresh_ckpt.npz` / `q7_orbit_census_fresh.json`),
+never reads or writes the bundled pair, resumes its own checkpoint across
+invocations, and — the whole computation being deterministic — must
+reproduce the released JSON byte for byte on completion; delete the two
+`_fresh` files to force a new from-scratch start. `reproduce_core.py
+--structural` runs exactly this (removing stale `_fresh` files first) and
+then requires SHA-256 identity between `q7_orbit_census_fresh.json` and
+the released `q7_orbit_census.json`. The budget is checked only between orbits, and only after this
 invocation has completed at least one, so a single slow orbit may overrun it --
 that is deliberate, since a partly processed orbit cannot be checkpointed. The
 checkpoint stores the catalogue's SHA-256 and a resume against different input is

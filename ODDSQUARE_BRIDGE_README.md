@@ -198,4 +198,37 @@ computation:
   the stabiliser histogram {3:142, 6:32, 12:4, 24:1, 72:1}, orbit lengths and
   the 34,227,200 total, and the Type-18 tie-in (the stabiliser-24 and -72
   orbits meet the catalogue in 55 and 46 members). Run automatically by
-  `reproduce_core.py`.
+  `reproduce_core.py`. This checks the internal consistency of the finished
+  artefact, not the group action itself.
+- The strong route is a from-scratch rerun: `q7_orbit_census.py --fresh`
+  keeps its checkpoint and JSON in separate files
+  (`q7_orbit_census_fresh_ckpt.npz` / `q7_orbit_census_fresh.json`) and
+  never reads the bundled checkpoint; the computation is deterministic, so a
+  completed fresh run must reproduce the released JSON byte for byte.
+  `reproduce_core.py --structural` runs exactly this (removing stale
+  `_fresh` files first) and then requires SHA-256 identity between
+  `q7_orbit_census_fresh.json` and the released `q7_orbit_census.json`.
+  Delete the two `_fresh` files to force a new from-scratch start.
+
+## Cycle-space rank and the exact defect formula
+
+Two further dependency-free checkers accompany the manuscript's
+field-identity lemma and its new remark; both are wired into
+`reproduce_core.py`'s default path:
+
+- `cycle_space_rank.py` — asserts by direct GF(2) elimination that the
+  squares of Q_n span its cycle space for every n used in the paper
+  (n = 3..8): the rank of the square incidence vectors equals the
+  cycle-space dimension E − V + 1 = (n−2)·2^(n−1) + 1, i.e. 5, 17, 49,
+  129, 321, 769. No arguments, no input files, runs in under a second.
+- `field_identity_defect.py` — verifies the exact defect formula
+  `sum_{v in U} h(v)^2 = n^2·2^(n−1) − 4·sum_s spl_U(s)` on every released
+  certificate, reproducing each split histogram and total quoted in the
+  paper (the Q7 catalogue's first record: histogram {0:60, 1:552, 2:60}
+  with total exactly 672 = C(7,2)·2^5, the identity holding on average
+  without holding pointwise; Q8 Solution B: 1794 = 1792 + 2 splits on the
+  failing side against exactly 1792 on the complement), and additionally
+  checks the formula on 203 deterministic edge sets each for n = 4 and
+  n = 5 (empty, full, single edge, and 200 seeded random subsets;
+  `random.Random(20260825)`). Both sides of the bipartition are checked
+  throughout.
