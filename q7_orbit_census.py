@@ -196,15 +196,33 @@ def report(orbit, sizes, dirs, n):
           else 'MISMATCH against the values stated in the paper')
     if not ok:
         raise SystemExit(1)
+    # Preserve stabiliser data from a previous --stabilisers pass if it is
+    # still consistent with this census; drop it otherwise, so a stale pass
+    # can never masquerade as belonging to a fresh decomposition.
+    data = {}
+    if os.path.exists(OUT):
+        try:
+            with open(OUT, encoding='utf-8') as f:
+                old = json.load(f)
+        except (json.JSONDecodeError, OSError):
+            old = {}
+        st = old.get('stabiliser_orders')
+        if (isinstance(st, list) and len(st) == len(sizes)
+                and all(isinstance(s, int) and s > 0 and GROUP % s == 0
+                        for s in st)):
+            data['stabiliser_orders'] = st
+            data['orbit_lengths'] = [GROUP // s for s in st]
+            data['labelled_total'] = sum(GROUP // s for s in st)
+    data.update({'orbits': len(sizes),
+                 # Aligned by orbit id: catalogue_sizes[k] is the number of
+                 # released catalogue members assigned to orbit k.
+                 'catalogue_sizes': list(sizes),
+                 # Convenience ranking only; intentionally not indexed by
+                 # orbit id.
+                 'catalogue_sizes_sorted': sorted(sizes, reverse=True),
+                 'assignment': orbit})
     with open(OUT, 'w', encoding='utf-8', newline='\n') as f:
-        json.dump({'orbits': len(sizes),
-                   # Aligned by orbit id: catalogue_sizes[k] is the number of
-                   # released catalogue members assigned to orbit k.
-                   'catalogue_sizes': list(sizes),
-                   # Convenience ranking only; intentionally not indexed by
-                   # orbit id.
-                   'catalogue_sizes_sorted': sorted(sizes, reverse=True),
-                   'assignment': orbit}, f)
+        json.dump(data, f)
     print(f'wrote {OUT}')
 
 
@@ -277,6 +295,20 @@ def stabilisers(M, dirs, orbit):
           else 'MISMATCH against the values stated in the paper')
     if not ok:
         raise SystemExit(1)
+    # Persist the stabiliser data into the census artefact, so the completed
+    # run is distributable and checkable (q7_orbit_census_check.py) without
+    # re-executing the census or this pass.
+    data = {}
+    if os.path.exists(OUT):
+        with open(OUT, encoding='utf-8') as f:
+            data = json.load(f)
+    ids = sorted(out)
+    data['stabiliser_orders'] = [out[o] for o in ids]     # aligned by orbit id
+    data['orbit_lengths'] = [GROUP // out[o] for o in ids]  # aligned by orbit id
+    data['labelled_total'] = total
+    with open(OUT, 'w', encoding='utf-8', newline='\n') as f:
+        json.dump(data, f)
+    print(f'updated {OUT} with stabiliser data')
     print(f'[{time.time() - t0:.0f}s]')
     return out
 

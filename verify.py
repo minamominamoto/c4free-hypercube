@@ -23,7 +23,11 @@ performed by generate_q6_132.py and generate_q8_682.py; this script does not
 import or reuse either script's logic. For the Q7 catalogue it also checks the
 two inexpensive structural assertions stated in the paper: every one of
 the 19,866 solutions is locally maximal in Q7, and their union covers all 448
-Q7 edges. It also independently confirms that the first released 680-edge Q8
+Q7 edges. It also asserts catalogue-level pairwise distinctness: the 19,866
+normalised edge sets are all different from one another (checked via SHA-256
+over each sorted edge list; this is a different check from the per-solution
+"no duplicates" above, which only forbids a repeated edge INSIDE one
+solution). It also independently confirms that the first released 680-edge Q8
 solution (Solution A) is odd-square.
 
 Note that q6_edges_132.jsonl and q6_odd_square_132.json are two DIFFERENT
@@ -219,6 +223,8 @@ def main():
         completion = completion_triples_by_edge(n)
         q7_union = set() if n == 7 else None
         q7_nonmax = 0
+        q7_keys = set()
+        q7_dupes = 0
         print("\nQ%d: expecting %d solution(s), %d edges each; "
               "%d four-cycles checked per solution"
               % (n, nsol, ec, ncycles))
@@ -248,6 +254,21 @@ def main():
             if n == 7:
                 es = build_edge_set(edges)
                 q7_union.update(es)
+                # Catalogue-level pairwise distinctness: hash the sorted,
+                # normalised edge list; a repeated digest is reported as a
+                # duplicate. This compares solutions to EACH OTHER, unlike the
+                # per-solution "no duplicates" check above, which only forbids
+                # a repeated edge inside one solution.
+                key = hashlib.sha256(
+                    ";".join("%d,%d" % e for e in sorted(es)).encode()
+                ).digest()
+                if key in q7_keys:
+                    q7_dupes += 1
+                    if q7_dupes <= 5:
+                        print("  [FAIL] solution %d duplicates an earlier "
+                              "solution's edge set" % i)
+                else:
+                    q7_keys.add(key)
                 local_ok, addable_edge = locally_maximal_in_cube(
                     es, cube_edges, completion
                 )
@@ -269,6 +290,13 @@ def main():
             elif len(sols) == nsol:
                 print("  [OK] Q7 catalogue union covers all %d cube edges"
                       % len(cube_edges))
+            if q7_dupes:
+                print("  [FAIL] %d duplicate edge set(s) across the catalogue"
+                      % q7_dupes)
+                all_ok = False
+            elif len(sols) == nsol:
+                print("  [OK] all %d Q7 edge sets are pairwise distinct "
+                      "across the catalogue" % len(q7_keys))
         if n == 8 and ec == 680 and len(sols) >= 1:
             odd_ok, odd_msg = verify_odd_square(sols[0], 8, 680)
             if odd_ok:

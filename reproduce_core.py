@@ -115,6 +115,23 @@ def main(argv=None):
         [PYTHON, ROOT / "q8_A_recover.py", "--seeds", "90008",
          "--iters", "250000", "--output", "q8_A_witness_check.json"],
     )
+    # The README's "exact reproduction" claim is regression-tested here, not
+    # merely re-run: the regenerated file must be byte-identical (SHA-256) to
+    # the bundled witness. Note the default budget matters: --iters enters the
+    # annealing temperature schedule, so a different budget gives a different
+    # (equally valid) witness rather than this exact file.
+    require_same(
+        ROOT / "q8_A_witness_check.json",
+        ROOT / "q8_A_witness.json",
+        "Q8 682-edge recovered witness (seed 90008, default budget)",
+    )
+    step += 1
+    run_step(
+        step,
+        "orbit-census artefact consistency (q7_orbit_census.json)",
+        [PYTHON, ROOT / "q7_orbit_census_check.py",
+         ROOT / "q7_orbit_census.json"],
+    )
     step += 1
     run_step(
         step,

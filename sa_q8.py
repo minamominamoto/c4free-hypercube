@@ -8,8 +8,12 @@ Brass公式下限 (n=8, 0.9√n版):
 NOTE (added retrospectively): Brass's 0.9*sqrt(n) bound is only proven
 for n>=9; the n=8 value above is an unproven extrapolation, not a
 proven lower bound, per the accompanying manuscript's discussion of
-this same constant. Preserved as originally run, comment unchanged
-elsewhere in this file for provenance.
+this same constant. Preserved as originally run, with one further
+retrospective exception: the runtime print labels that called this
+value a lower bound ("Brass公式下限") now label it an out-of-domain
+extrapolation, so the released code's screen output no longer asserts
+a bound that the manuscript itself disclaims in four places. The
+search logic is unchanged.
 
 目標: 675辺超を確認し、さらに上を狙う
 
@@ -60,10 +64,10 @@ for k1 in range(n):
 
 print(f"Q{n}: {num_vertices}頂点, {N_EDGES}辺, C4数={len(all_squares)}")
 
-# Brass公式下限
+# Brass式の適用域外外挿値（下限ではない; ヘッダのNOTE参照）
 import math as _math
 brass_lb = 0.5 * (n + 0.9 * _math.sqrt(n)) * (2 ** (n - 1))
-print(f"Brass公式下限: {brass_lb:.1f}辺")
+print(f"Brass式外挿値(適用域外・下限ではない): {brass_lb:.1f}辺")
 print(f"目標: {int(brass_lb) + 1}辺以上")
 
 # ==============================
@@ -300,8 +304,8 @@ while time.time() - start_time < RUNTIME:
 # ==============================
 print(f"\n=== 最終結果 ===")
 print(f"ex(Q8, C4) >= {best_valid_count}辺")
-print(f"Brass公式下限: {brass_lb:.1f}辺")
-print(f"更新量: +{best_valid_count - int(brass_lb)}辺")
+print(f"Brass式外挿値(適用域外・下限ではない): {brass_lb:.1f}辺")
+print(f"外挿値との差: +{best_valid_count - int(brass_lb)}辺")
 print(f"総試行数: {stats['trial']}")
 print(f"Phase2回数: {stats['phase2_attempts']}")
 print(f"総時間: {time.time()-start_time:.0f}秒")

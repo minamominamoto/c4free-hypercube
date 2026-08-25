@@ -122,6 +122,13 @@ depth-first search with counter pruning:
 | B `{0:1,2:27,4:3,6:1}` | 22,129,151 | NOT REALISABLE |
 | C `{0:2,2:24,4:6}` | 501 | REALISABLE (132 edges reconstructed) |
 
+The node counts above are properties of this particular implementation and
+search order: they are recorded for orientation only, carry no reproduction
+obligation, and a differently ordered search will visit different counts. The
+search-order-independent proof that A and B are not realisable is the GF(2)
+parity obstruction (`q6_parity_obstruction.py`, rank 16 and the reachable
+coset weight distribution); the DFS is kept for completeness.
+
 Wall time is about 19 seconds total on one modern core; the C branch also
 rebuilds a full spin vector and re-derives the histogram and edge count as an
 end-to-end check. `--full` additionally repeats each search without the global-spin-flip
@@ -146,6 +153,15 @@ by `q6_decide_realizability.py` and are no longer offered as evidence** — a
 plateau is not a proof, and the iteration budgets for the targets and the
 control were not equal.
 
+To regenerate the released files byte-identically: the A/B run is
+`python3 q6_other_distributions.py --profile paper --csv
+q6_other_distributions_results.csv --json q6_other_distributions_summary.json`
+(300,000 iterations), and the 20-row control file requires exactly
+`python3 q6_other_distributions.py --profile paper --targets C --iters 60000
+--csv q6_realized_control_results.csv --json q6_realized_control_summary.json`.
+Note that `--profile paper --control` **appends** the control to the A/B
+results (an 80-row CSV) and will not match the released 20-row control file.
+
 ## Q7 audit
 
 Place the three published Q7 JSONL parts in this directory or pass their paths:
@@ -163,3 +179,23 @@ global index, content hash, raw direction counts, sorted dimension profile, and
 square histogram.
 
 Both scripts use only the Python standard library.
+
+## Q7 orbit census (completed artefact)
+
+The full Aut(Q7)-orbit decomposition of the 19,866-solution catalogue is
+bundled as a completed artefact rather than left as a multi-invocation
+computation:
+
+- `q7_orbit_census.json` — orbit assignment for all 19,866 solutions
+  (180 orbits), per-orbit catalogue counts, stabiliser orders, orbit lengths,
+  and the labelled total 34,227,200. Produced by running
+  `q7_orbit_census.py` to completion followed by `--stabilisers` (which now
+  persists its results into this JSON).
+- `q7_orbit_census_ckpt.npz` — the finished checkpoint, so `--report` and
+  `--stabilisers` run in seconds without redoing the census.
+- `q7_orbit_census_check.py` — lightweight (standard library, under a second)
+  checker: verifies orbit count, full assignment coverage, per-orbit counts,
+  the stabiliser histogram {3:142, 6:32, 12:4, 24:1, 72:1}, orbit lengths and
+  the 34,227,200 total, and the Type-18 tie-in (the stabiliser-24 and -72
+  orbits meet the catalogue in 55 and 46 members). Run automatically by
+  `reproduce_core.py`.
