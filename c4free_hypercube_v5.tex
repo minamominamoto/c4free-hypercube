@@ -78,11 +78,12 @@ without any released configuration, by Marinari, Parisi and Ritort
 formulation directly. Our contribution is accordingly narrow and
 explicit: a short self-contained proof of the optima via a mod-$8$
 refinement of the classical two-point inequality; the certificates
-themselves, with dependency-free verifiers; and an exhaustive decision
---- closing a question DPTV posed and left open in 1979 --- of which of
-the three optimal $n=6$ field distributions are realisable (exactly one
-is; the other two are not, upgrading MPR's tentative single-case report
-to a proof covering both). Full attribution, with primary-source
+themselves, with dependency-free verifiers; and an exhaustive decision of the realisability of the optimal $n=6$
+field distributions --- settling the question DPTV left open in 1979
+about their ``other solutions'' --- where an independent integer
+programme shows the optimal distributions number exactly three, and the
+decision shows exactly one of them is realisable (the other two are not,
+upgrading MPR's tentative single-case report to a proof covering both). Full attribution, with primary-source
 quotations and our translation conventions, is spelled out in
 Sections~\ref{sec:guide} and~\ref{sec:oddsquare}.
 
@@ -90,18 +91,24 @@ Independently of the odd-square results, we classify the $19\,866$
 previously released $304$-edge $C_4$-free subgraphs of $Q_7$ (exactly
 $389$ of them odd-square) into $20$ dimension-profile types, establish
 their common structural core (degree sequence $\{4^{32},5^{96}\}$,
-spectral radius in $[4.78543,4.79129]$, local maximality), and decompose
+spectral radius in $[4.78543,4.79129]$, local maximality --- properties
+of the released catalogue, not claims about all $304$-edge solutions),
+and decompose
 them into $180$ $\mathrm{Aut}(Q_7)$-orbits containing $34\,227\,200$
 labelled solutions, of which the released files are $0.058\%$; whether
 these are \emph{all} orbits of $304$-edge solutions is open. This
-revision adds an orbit-witness certificate that makes the orbit
-decomposition checkable in seconds by a standard-library script. For
+revision adds an orbit-witness certificate whose standard-library checker
+verifies the orbit \emph{assignment} in seconds (hence ``at most $180$
+orbits''); its \texttt{-{}-canonical} mode certifies ``exactly $180$''
+independently of the census scan. For
 $Q_6$, the unrestricted value $\ex(Q_6,C_4)=132$ rests on
 Harborth--Nienborg's combinatorial upper bound, which we did not
 independently verify; the odd-square $g(6)=132$ is self-contained here.
-Every numerical claim is re-checkable from the released code and data;
-the repository, its SHA-256 manifests, and the provenance record are
-collected in Section~\ref{sec:guide}. Edge lists and code:\\
+Every numerical claim in the mathematical results and certificate
+analyses is re-checkable from the released code and data; the provenance
+record separates such claims from purely historical statements, and it,
+the repository, and its SHA-256 manifests are collected in
+Section~\ref{sec:guide}. Edge lists and code:\\
 \url{https://github.com/minamominamoto/c4free-hypercube}.
 \end{abstract}
 
@@ -244,7 +251,7 @@ Problem~\ref{op:equality}, the attribution of the three values is:
 \toprule
 $n$ & value $g(n)$: priority & contribution here\\
 \midrule
-$6$ & attained by DPTV79 ($D{=}6$ ground state); recorded by LNSW26 (per~\cite{Emlek26}) & certificate; short proof\\
+$6$ & attained by DPTV79 ($D{=}6$ ground state); value attributed to LNSW26 by~\cite{Emlek26} & certificate; short proof\\
 $7$ & DPTV79 (explicit $D{=}7$ construction) & certificates; short proof\\
 $8$ & MPR95 (attainment reported in energy units, no data) & $682$-edge translation; certificate; short proof\\
 \bottomrule
@@ -295,14 +302,14 @@ $n$ & $|E(Q_n)|$ & $\ex(Q_n,C_4)$ & BHN (Eq.~\ref{eq:bounds}) & Source\\
 \midrule
 4 &   32 & 24  & $24$ (tight, $n=4^1$) & elementary (proof below); construction via~\cite{BHN95}\\
 5 &   80 & 56  & n/a (outside domain) & Emamy-K et al.~\cite{EGR92}\\
-6 &  192 & 132 & n/a (outside domain) & Harborth--Nienborg~\cite{HN94}\\
+6 &  192 & 132$^{\ddagger}$ & n/a (outside domain) & Harborth--Nienborg~\cite{HN94}\\
 7 &  448 & $\ge\mathbf{304}$ & outside domain$^{\dagger}$ & value attained by~\cite{DPTV79}; witness ours\\
 8 & 1024 & $\ge\mathbf{682}$ & outside domain$^{\dagger}$ & bound-attainment reported by~\cite{MPR95} (energy units); $682$-edge translation and witness ours\\
 \bottomrule
 \end{tabular}
 \end{table}
 
-Three caveats attach to Table~\ref{tab:values}. First,
+Four caveats attach to Table~\ref{tab:values}. First,
 Eq.~\eqref{eq:bounds}'s tight form applies only for $n=4^r$ and its weaker
 form only for $n\ge9$~\cite{BHN95}, so the $n=5,6$ entries are not covered
 by either stated form (marked n/a) and the $n=7,8$ entries lie \emph{beyond}
@@ -323,7 +330,12 @@ $\tfrac12(n+\sqrt n)2^{n-1}$ evaluates to exactly $24$ there. Third, in the Sour
 means the numerical value has historical priority in the cited work, which
 published no machine-readable edge list or spin configuration for it; the
 explicit certificate released here is the present author's own and is not
-claimed to reproduce any configuration of the cited work.
+claimed to reproduce any configuration of the cited work. Fourth
+($\ddagger$), the $n=6$ upper bound $\ex(Q_6,C_4)\le132$ is used here on
+the authority of~\cite{HN94} and has not been independently re-verified in
+this work (our own ILP attempt did not close the optimality gap,
+Section~\ref{sec:q6upper}); the odd-square value $g(6)=132$ is
+self-contained and unaffected.
 
 The paper is organised as follows.
 Section~\ref{sec:guide} collects scope, attribution, the verification map,
@@ -354,7 +366,21 @@ constructions. Earlier revisions carried this material in the
 abstract; the abstract now summarises, and this section is the
 authoritative expanded statement. Nothing here is new relative to
 the previous revision except where explicitly marked; the text is
-relocated, not retracted.
+relocated, not retracted. One reading convention, stated once here
+instead of piecemeal: several quantities reported in this paper (for
+example the square split in Proposition~\ref{prop:q6oddsquare}(ii), the
+$\operatorname{Tr}(A^4)$ value in Proposition~\ref{prop:rigid}(iii), and
+the $h\ge0$ restriction of Lemma~\ref{lem:nonneg}) are arithmetically
+forced by the edge count, the degree sequence, or the odd-square
+condition rather than independent findings; where this happens the text
+marks them as consistency checks, and they should be read as such, not as
+separate results. A second convention of the same kind: every
+\emph{certified} mathematical claim in this paper depends only on
+artefacts bundled with the release; the items individually marked as
+reported-but-not-auditable (S.~Lai's independent cross-check, the
+recovered $72$-hour solver log, the SAT/MIP trial statistics, and MPR95's
+energy inputs) support the provenance and attribution narrative only,
+never a theorem.
 
 After this manuscript was first circulated, a reader (S.~Lai) identified an
 overlooked connection to a line of statistical-physics literature on fully
@@ -440,7 +466,7 @@ for instance, OEIS A245762 lists $a(6)=132$ with an
 supplying the term, while citing Harborth--Nienborg~\cite{HN94} for the result
 itself; it links generator scripts, though not an odd-square edge list.
 Note also that the \emph{values} $g(n)$ for $n\le6$, including $g(6)=132$, are
-recorded by LNSW26 (as reported in~\cite{Emlek26}), so at $n=6$ what is offered
+attributed to LNSW26 by~\cite{Emlek26}, so at $n=6$ what is offered
 here is a certificate for a known value, not the value; and (iii) an exhaustive decision, in Section~\ref{sec:oddsquareverify},
 of a question DPTV posed and left open in 1979 -- which of the
 several $n=6$ optima described in their Table~I are actually realisable by a
@@ -530,8 +556,11 @@ $g(6)\ge132$ (histogram $\{1{:}30,\,3{:}210\}$). For every bound, a complete, de
 all four-cycles (240 for $Q_6$, 672 for $Q_7$, 1\,792 for $Q_8$) establishes
 $C_4$-freeness, and every \emph{construction} certificate reported here
 (the edge sets themselves, their $C_4$-freeness, and the $Q_6$ and
-$Q_8$ odd-square conditions) is reproducible by an independent,
-dependency-free verifier (\texttt{verify.py}), with the $Q_7$
+$Q_8$ odd-square conditions) is reproducible by a dependency-free
+verifier that is independent of all search and generation code
+(\texttt{verify.py}; \emph{implementation-level} independence is supplied
+separately by the bundled second implementation \texttt{cross\_verify.py}
+described in Section~\ref{sec:guide}), with the $Q_7$
 odd-square membership of individual solutions separately reproducible
 via \texttt{audit\_q7\_odd\_square.py}. The further structural and
 statistical claims reported below (spectral-radius ranges, pairwise
@@ -961,10 +990,10 @@ strictly looser than the lower bound, so LNSW26's bounds
 do not determine $g(n)$ at these values. The sharpening therefore applies at $n=7,8$ but \emph{not} at $n=6$:
 the 20th Emléktábla Workshop problem collection~\cite{Emlek26} credits
 LNSW26 with the exact values $g(n)=1,3,9,24,56,132$ for $n\le6$. (During
-source verification we obtained and read the LNSW26 preprint in full; the
-value list does not appear in it, so this attribution rests on
-\cite{Emlek26} alone -- the published version, which we could not access,
-may contain it.) On that attribution the \emph{record} of $g(6)=132$ is
+source verification we obtained and read the LNSW26 preprint in full, and,
+on 26~August~2026, the published version's full text (ACM
+Trans.\ Comput.\ Theory \textbf{18}(1), Art.~6); the value list appears in
+neither, so this attribution rests on \cite{Emlek26} alone.) On that attribution the \emph{record} of $g(6)=132$ is
 already in LNSW26 and the value is not new here, while its historical \emph{attainment}
 is DPTV79's: their $D=6$ ground state has $60$ negative bonds out of $192$
 (p.~622), i.e.\ $132$ positive edges, and MPR95 note that constructions
@@ -1067,7 +1096,12 @@ $v\in U$, the square on $\{v,v\oplus e_i,v\oplus e_j,z\}$ where
 $z=v\oplus e_i\oplus e_j\in U$. Its four edges have signs $s_i(v)$,
 $s_j(v)$, and (computed from $z$'s own perspective, since a sign is a
 single scalar attached to the edge) $s_j(z)$, $s_i(z)$. The odd-square
-condition means their product is $-1$:
+condition means their product is $-1$ --- recall the convention fixed at
+the start of this section: $\sigma(e)=+1$ iff $e\in E$, so a square
+meeting $E$ in an odd number of edges carries an odd number ($4$ minus an
+odd number, i.e.\ $1$ or $3$) of $-1$ factors among its four signs, and
+its sign product is $-1$; ``odd-square'' and ``negative square'' are the
+same condition under this convention. Thus:
 $s_i(v)s_j(v)\cdot s_j(z)s_i(z)=-1$. Writing $X=s_i(v)s_j(v)$ and
 $Y=s_i(z)s_j(z)$, both lie in $\{\pm1\}$ and $XY=-1$ forces $X=-Y$, i.e.\
 $s_i(v)s_j(v)+s_i(z)s_j(z)=0$. The map $v\mapsto z=v\oplus e_i\oplus e_j$
@@ -1177,6 +1211,12 @@ side has exactly $1792$ splits and sum $1024$.
 \texttt{field\_identity\_defect.py} recomputes each of these numbers
 from the released certificates.
 
+The next lemma sits on no critical path in this paper: no upper- or
+lower-bound argument below uses it (as re-stated after
+Lemma~\ref{lem:quant}). We record it because DPTV79 state the
+restriction and because the released witnesses satisfy it --- forcedly,
+via their degree sequences.
+
 \begin{lemma}[Nonnegativity at the maximum]\label{lem:nonneg}
 If $E$ is odd-square in $Q_n$ with $|E|$ maximum (i.e.\ $|E|=g(n)$), then
 $h(v)\ge0$ for every $v\in\{0,1\}^n$.
@@ -1277,17 +1317,29 @@ gives the single inequality used for all three values of $n$:
 Before specialising, one relaxation is worth recording. Cauchy--Schwarz gives
 $S\le\sqrt{Q\,m}=\sqrt n\,2^{n-1}$ and hence
 $|E|\le2^{n-2}(n+\sqrt n)$ --- the same expression as the
-Brass--Harborth--Nienborg lower bound in~\eqref{eq:bounds}. So at $n=4^r$,
-where BHN's construction attains that value and every odd-square set obeys the
-relaxation, the two meet and
-$g(n)=2^{n-2}(n+\sqrt n)$ exactly; the BHN construction is optimal within the
-odd-square subclass at those $n$. This is the shortest explanation of why
+Brass--Harborth--Nienborg lower bound in~\eqref{eq:bounds}. So at $n=4^r$
+the two meet and $g(n)=2^{n-2}(n+\sqrt n)$ exactly. For the lower-bound
+half of this equality it is not enough that BHN's construction attains
+that edge count: $g(n)$ requires an \emph{odd-square} set of that size,
+and this is precisely what LNSW26 supply --- they prove that the BHN
+construction induces a signature of $Q_n$ in which every $4$-cycle is
+negative (equivalently, that the construction is odd-square), a fact they
+note does not follow from BHN's original work (\cite{LNSW26},
+Section~5.2 and Theorem~5.4; cf.\ Section~\ref{sec:oddsquare} above). With
+that identification the BHN construction is optimal within the odd-square
+subclass at those $n$. This is the shortest explanation of why
 LNSW26's bounds close precisely at powers of $4$, and it locates what
-Lemma~\ref{lem:quant} adds: at $n=6,7,8$ the relaxation is not tight, and the
-mod-$8$ refinement is what recovers the exact value.
+Lemma~\ref{lem:quant} adds: at $n=6,7,8$ the relaxation is not tight. At
+$n=7$ nonnegativity alone already gives the exact $S\le160$, and at $n=8$
+integrality plus the parity of $S$ (each $h(v)$ has the parity of $n$ by
+Lemma~\ref{lem:fieldbound}, so $S$ is even) gives the exact $S\le340$; the
+mod-$8$ refinement is what is \emph{essential} at $n=6$, where it excludes
+$S=74$.
 The nonnegativity is the classical bound $S\le(Q+ab\,m)/(a+b)$; the
-congruence is what removes the residual gap between that real bound and
-the true integer optimum. No computational filter is invoked in this modular
+congruence removes whatever residual gap elementary integrality and the
+parity of $S$ leave between that real bound and the true integer optimum
+-- among our three instances this extra strength is needed only at $n=6$,
+as the specialisations below make explicit. No computational filter is invoked in this modular
 step: Lemma~\ref{lem:quant} proves term by term that every summand in
 $\Delta$ is a nonnegative multiple of $8$, so their sum has the same property. We apply \eqref{eq:quantsum} with the pair
 $(a,b)$ of parity-correct integers straddling the root-mean-square field
@@ -1321,7 +1373,8 @@ S\le72,
 \qquad\text{whence}\qquad
 g(6)\le\frac{192+72}{2}=132 .
 \]
-At $S=72$ we have $\Delta=16$. By Lemma~\ref{lem:quant} each vertex
+(The exclusion of $S=74$ just performed is the one place among our three
+instances where the congruence is essential.) At $S=72$ we have $\Delta=16$. By Lemma~\ref{lem:quant} each vertex
 contributes a value in $\{0,8,24,48,\ldots\}$ (the set $4u(u-1)$,
 $u\in\mathbb{Z}$); since $16$ is not in that set, the only decomposition of
 $16$ is $8+8$, so exactly two vertices of $U$ have $h\in\{0,6\}$ and the
@@ -1333,7 +1386,9 @@ without~\cite{HN94}, which we retain only for the unrestricted value
 $\ex(Q_6,C_4)=132$ (Section~\ref{sec:q6}).
 
 \textbf{$n=7$.} Here $m=64$, $Q=448$, $(a,b)=(1,3)$, so
-$\Delta=640-4S\ge0$ gives $S\le160$, attained with $\Delta=0$. By
+$\Delta=640-4S\ge0$ gives $S\le160$, attained with $\Delta=0$ (the
+congruence adds nothing at $n=7$: it only restates that $S$ is even,
+automatic since every $h(v)$ is odd and $|U|=64$ is even). By
 Lemma~\ref{lem:quant} equality $\Delta=0$ forces $h(v)\in\{1,3\}$ at
 \emph{every} $v\in U$; combined with $\sum h=160$ and $|U|=64$ this
 pins the distribution to $\{1{:}16,\,3{:}48\}$ uniquely. Hence
@@ -1359,8 +1414,8 @@ also satisfying $S=160$ -- exactly because that identity holds
 regardless of odd-squareness.) So $g(7)=304$.
 
 \textbf{$n=8$.} Here $m=128$, $Q=1024$, $(a,b)=(2,4)$, so
-$\Delta=2048-6S$. Nonnegativity gives $S\le341.\overline{3}$; the
-congruence $2048\equiv0\pmod8$ again forces $S\equiv0\pmod4$, so
+$\Delta=2048-6S$. Nonnegativity gives $S\le341.\overline{3}$; every
+$h(v)$ is even (parity of $n=8$), so $S$ is even and
 \[
 S\le340,
 \qquad\text{whence}\qquad
@@ -1368,7 +1423,10 @@ g(8)\le\frac{1024+340}{2}=682 .
 \]
 At $S=340$ we have $\Delta=8$: \emph{exactly one} vertex of $U$
 contributes, and it has $h\in\{0,6\}$, the other $127$ having
-$h\in\{2,4\}$. Pointwise equality $h(v)\in\{2,4\}$ everywhere is
+$h\in\{2,4\}$. (The mod-$8$ congruence independently forces
+$S\equiv0\pmod4$, consistent with the above, but evenness already
+suffices at $n=8$; as at $n=7$, the congruence's essential use is at
+$n=6$ only.) Pointwise equality $h(v)\in\{2,4\}$ everywhere is
 therefore \emph{impossible} at the optimum for $n=8$ --- in contrast
 with $n=7$, where $\Delta=0$ does force it. The released $682$-edge
 witness attains $S=340$ with $h$-distribution
@@ -1388,7 +1446,10 @@ $72$, $160$, $340$ for $n=6,7,8$ respectively, matching the bounds
 above, and returns exactly $3$, $1$ and $2$ optimal $h$-distributions
 respectively --- for $n=6$,
 $\{2{:}30,6{:}2\}$, $\{0{:}1,2{:}27,4{:}3,6{:}1\}$ and
-$\{0{:}2,2{:}24,4{:}6\}$ (labelled A, B and C throughout); for $n=7$, $\{1{:}16,3{:}48\}$; for $n=8$,
+$\{0{:}2,2{:}24,4{:}6\}$ (labelled A, B and C throughout; in DPTV79's
+Table~I terms, C is their ``first solution'' and A and B are their ``other
+solutions'', the realisable one thus being C, see
+Section~\ref{sec:oddsquareverify}); for $n=7$, $\{1{:}16,3{:}48\}$; for $n=8$,
 $\{2{:}87,4{:}40,6{:}1\}$ and $\{0{:}1,2{:}84,4{:}43\}$.
 These counts also follow from Lemma~\ref{lem:quant} in a line, so the
 enumeration is a check and not a source. The multiplicity phenomenon itself
@@ -1482,7 +1543,9 @@ $S=|E|-(D2^{D-1}-|E|)=2|E|-D2^{D-1}$, hence explicitly
 At $D=8,S=340$ (equivalently $|E|=(1024+340)/2=682$) this is, step by
 step, $H/N=-S/(N\sqrt D)=-340/(256\sqrt8)=-340/724.077\ldots
 =-0.46956\ldots$, i.e.\ $H\approx-120.2$, about $-0.470$ per site. As a cross-check
-against MPR95's own text: they report (in their D=9 discussion) that
+against MPR95's own text: they report (in their $D{=}9$ discussion, pp.~3--4 of
+arXiv:cond-mat/9410089, the passage checked at page level as recorded in
+the Acknowledgements) that
 ``on a scale where the minimal energy jump is 1'' their D=9 naive
 bound $H/N=-1/2$ corresponds to an integer value of $-384$ (i.e.\ a
 scale factor of $768=384/(1/2)$), and state that on this same scale
@@ -1766,7 +1829,14 @@ Proposition~\ref{prop:q6realizability} thus closes the question DPTV79 left open
 in 1979 and upgrades MPR95's tentative ``seems not to'' to a proof --
 for both of the non-realisable distributions, where MPR95 spoke of one
 (DPTV79's own sentence is plural: ``We do not know if the other solutions
-given in table 1 for $d=6$ are realizable'', p.~622).
+given in table 1 for $d=6$ are realizable'', p.~622). We stress that the
+mathematical content of the proposition --- of the three optimal
+distributions, exactly one is realisable on a fixed side --- stands
+independently of any reading of DPTV79's Table~I: that reading (obtained,
+as disclosed in Section~\ref{sec:oddsquare}, from the surrounding prose
+and the completeness of our own enumeration rather than from a direct
+transcription) enters only the historical identification of \emph{which}
+question is thereby closed, not the proposition itself.
 
 Earlier revisions of this manuscript reported instead a heuristic search
 (simulated annealing on the $L_1$ distance between the current and target
@@ -2194,7 +2264,13 @@ re-verifies that each stored canonical form is the true orbit minimum;
 since the canonical form is an $\mathrm{Aut}(Q_7)$-invariant, minimality
 together with pairwise distinctness certifies ``exactly $180$''
 independently of the census scan. This answers a review request for an
-orbit-equivalence certificate lighter than a full recomputation. The stabiliser pass
+orbit-equivalence certificate lighter than a full recomputation. For
+calibration of how much the census can carry: the catalogue it decomposes
+is the de-duplicated output of the recorded heuristic searches; we are
+not aware of any published $304$-edge $C_4$-free subgraph of $Q_7$
+outside it, and those searches surfaced nothing beyond the $180$ orbits
+--- but they were heuristic, so we venture no conjecture about
+completeness in either direction. The stabiliser pass
 persists its results into the JSON artefact and refuses an incomplete
 checkpoint rather than treating the sentinel orbit id $-1$ as if it were a
 real orbit.
@@ -2246,7 +2322,10 @@ times, down to a single occurrence for one combination
 ($3$/$20$, 1 pair) and two occurrences for three others
 ($12$/$17$, $16$/$17$, and $9$/$14$). Type-$1$/type-$2$ pairs, our earlier illustrative
 example, do occur ($22$ of the $636$) but are far from
-representative of the minimum's structure.
+representative of the minimum's structure. The maximum is rarer still:
+$d_H=274$ is attained by exactly $\mathbf{85}$ of the
+$197\,319\,045$ pairs. Both extremes are thus vanishingly thin tails
+around a bulk concentrated near the median $196$.
 
 For historical completeness only, not as a reviewable computational
 result: a failed search targeting $305$ edges was also reported. No seed list
@@ -2972,6 +3051,15 @@ provenance claim is made.
 
 \subsection{Upper bound: integer linear program}\label{sec:q6upper}
 
+A framing remark first: this subsection documents a deliberately retained
+\emph{unfinished} computational experiment. No claim in this paper rests
+on it --- the upper bound $\ex(Q_6,C_4)\le132$ rests on~\cite{HN94}
+throughout --- and the formulation is kept in full for two reasons: it is
+the specification of the released artefacts \texttt{q6\_ilp.mps} and
+\texttt{q6\_ilp\_edge\_map.csv}, which a reader may wish to attack with a
+stronger solver, and it is the substance of the withdrawal, recorded on
+the title page, of v1--v4's claim of a computational proof.
+
 Label the 192 edges of $Q_6$ as $x_0,\ldots,x_{191}\in\{0,1\}$
 (matching the released \texttt{q6\_ilp.mps}'s $0$-indexed variable
 names; the text elsewhere in this paper is otherwise $1$-indexed for
@@ -3287,10 +3375,13 @@ most'' wording for the lower bound was confirmed on the page, and the
 $n\le6$ value list was confirmed \emph{absent} from the preprint (see
 Section~\ref{sec:oddsquare}); these preprint checks were carried out on
 25~August~2026 against HAL \texttt{hal-04080411}. On 26~August~2026 we
-additionally confirmed the published version's bibliographic record by DOI
-resolution (10.1145/3777401), but its full text remained inaccessible to
-us, so we could not check whether the published version differs from the
-preprint on any of these points. This disclosure should not be read
+additionally obtained and read the published version's full text (ACM
+Trans.\ Comput.\ Theory \textbf{18}(1), Art.~6, pp.~1--25,
+doi:10.1145/3777401; AI-assisted retrieval): its Section~5 numbering
+(Theorem~5.2, Theorem~5.4) matches the preprint's, its Theorem~5.4 proof
+states the negative-$4$-cycle property of the BHN construction as quoted
+in Section~\ref{sec:oddsquare-exact}, and the $n\le6$ value list is
+absent from the published version as well. This disclosure should not be read
 as a claim that the author independently re-transcribed every quoted passage
 without AI assistance.
 

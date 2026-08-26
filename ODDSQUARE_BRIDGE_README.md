@@ -209,7 +209,7 @@ computation:
   `_fresh` files first) and then requires SHA-256 identity between
   `q7_orbit_census_fresh.json` and the released `q7_orbit_census.json`.
   Delete the two `_fresh` files to force a new from-scratch start.
-- Lighter certificate route (round 79): `q7_orbit_witnesses.json` +
+- Lighter certificate route (this revision): `q7_orbit_witnesses.json` +
   `q7_orbit_witness_check.py`. The JSON stores an explicit group element
   per solution mapping its orbit representative to it, plus each orbit's
   canonical form (lexicographically minimal incidence vector over all

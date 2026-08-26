@@ -2,9 +2,11 @@
 # The default reproducibility path (`python3 reproduce_core.py`) needs ONLY the
 # Python standard library; this file is not required for the core certificates.
 #
-# Pins selected for the 2026-08-23 reproducibility package. highspy 1.15.1 is
-# also the version documented as tested by the recovered HiGHS lineage.
-numpy==2.3.5
+# Pins match the environment that generated (and re-verified) the published
+# SHA-256 values: numpy 2.4.4 is the measured version recorded in README.md.
+# highspy 1.15.1 is also the version documented as tested by the recovered
+# HiGHS lineage.
+numpy==2.4.4
 networkx==3.6.1
 highspy==1.15.1
 PuLP==3.3.2

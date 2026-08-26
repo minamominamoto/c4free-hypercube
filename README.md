@@ -80,7 +80,7 @@ Marinari–Parisi–Ritort 1995). This led to:
   solution counts, profile entropies, and the per-type **mean** spectral
   radius λ₁ — and asserts every printed figure against the paper, together
   with the exhaustive individual-solution range [4.78543, 4.79129]. A
-  round-77 review noted these type means were re-derivable but not printed
+  pre-release review noted these type means were re-derivable but not printed
   by any bundled script; this closes that gap. Run by
   `reproduce_core.py --structural`.
 - `cross_verify.py` is a bundled INDEPENDENT re-implementation of the
@@ -91,7 +91,7 @@ Marinari–Parisi–Ritort 1995). This led to:
   of the 19,866 edge sets via a sorted-tuple set (no hashing). Standard
   library only, about 30 s; run by `reproduce_core.py` by default. It
   makes the manuscript's single-implementation-risk mitigation auditable
-  (a round-78 review noted the previously reported second implementation
+  (a pre-release review noted the previously reported second implementation
   was not preserved in the release).
 - `q7_orbit_witnesses.json` + `q7_orbit_witness_check.py`: an
   orbit-witness CERTIFICATE for the Aut(Q7) orbit decomposition. The
@@ -125,13 +125,14 @@ Q7 solutions into memory at once; peak RSS is around 700 MB, comparable to
 about 20 seconds and `analyze_q7_structure.py` two to three minutes (both
 machine-dependent); `--structural` adds the expensive numpy passes.
 
-**Measured environment and timings (round 78).** All wall times quoted in
+**Measured environment and timings.** All wall times quoted in
 this README and in the paper were measured on: one vCPU of an Intel Xeon @
 2.10 GHz, ~4 GB RAM, Linux, Python 3.12.3, numpy 2.4.4 (no GPU is used by
 any script; everything here is single-core CPU work). `requirements.txt`
-pins `numpy==2.3.5`; a round-77 reviewer independently reproduced every
-numpy-dependent result and SHA-256 value under numpy 2.4.4, and we observed
-no version sensitivity. Measured on this machine: `reproduce_core.py`
+pins `numpy==2.4.4` — the version under which the published SHA-256 values
+were generated and re-verified; a pre-release reviewer independently
+reproduced every numpy-dependent result and SHA-256 value under 2.4.4, and
+we observed no version sensitivity across the 2.3/2.4 series. Measured on this machine: `reproduce_core.py`
 (default, standard library only) 85 s end to end; within it,
 `q8_A_recover.py --seeds 90008 --iters 250000` takes 18 s standalone — but
 this is the most hardware-sensitive step (one review environment reported
@@ -142,8 +143,8 @@ at each proposal), so treat its runtime as highly variable.
 `--fresh --stabilisers`; note the census budget takes effect only
 **between** orbits, so on slower hardware a single large orbit can run for
 several minutes before the first checkpoint is written — use generous
-budgets there. `q7_lambda1_by_type.py` takes about 6 s. Round-79 additions:
-`cross_verify.py` about 30 s; `q7_orbit_witness_check.py` default mode
+budgets there. `q7_lambda1_by_type.py` takes about 6 s. Later additions in this
+revision: `cross_verify.py` about 30 s; `q7_orbit_witness_check.py` default mode
 about 16 s, and `--canonical` about 400 s total (run here as three
 `--orbits` slices of ~133 s each); generating the witness certificate
 from scratch (`q7_orbit_witnesses_gen.py`) took 529 s over three
