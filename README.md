@@ -212,7 +212,7 @@ sha256sum -c ODDSQUARE_BRIDGE_SHA256SUMS.txt      # odd-square material
 **Also on this list:** `q8_A_recover.py` and `q8_B_recover.py` both *used to* default their `--output` to a file listed in `ODDSQUARE_BRIDGE_SHA256SUMS.txt`. They now default to `q8_A_witness_run.json` and `q8_B_witnesses_run.json` respectively, so a bare run no longer overwrites a certified artefact. If you pass `--output` explicitly, avoid the manifest names.
 
 The recovered production-history scripts write fixed filenames in the current
-working directory. **Do not run them in the authenticated release directory.**
+working directory. **Do not run them in the manifest-listed release directory.**
 Copy the files you need to a disposable working directory first. In particular:
 
 - `source.py` and `sa_search.py` overwrite `selected_edges_best.json`;
@@ -230,7 +230,7 @@ Copy the files you need to a disposable working directory first. In particular:
   an overwrite risk and prefer a working copy. The `--fresh` mode writes
   only the two `_fresh` files and never touches the certified pair.)
 
-The SHA-256 manifests authenticate only the files explicitly listed in them.
+The SHA-256 manifests integrity-check only the files explicitly listed in them (they detect alteration or file mix-ups; absent an externally signed digest they do not by themselves prove authorship).
 Additional generated files do not invalidate a manifest, but overwriting a
 listed seed/data file does. `reproduce_core.py` already uses temporary
 directories for the regeneration steps that would otherwise write outputs.

@@ -84,9 +84,8 @@ field distributions --- settling in proof form the question DPTV left open in 19
 about their ``other solutions'' --- where an independent integer
 programme shows the optimal distributions number exactly three, and the
 decision shows exactly one of them is realisable (the other two are not,
-upgrading MPR's tentative single-case report to a proof covering both). Full attribution, with primary-source
-quotations and our translation conventions, is spelled out in a
-dedicated attribution section of the paper.
+upgrading MPR's tentative single-case report to a proof covering both). Full attribution is given, with primary-source quotations and explicit
+translation conventions.
 
 Independently of the odd-square results, we classify the $19\,866$
 previously released $304$-edge $C_4$-free subgraphs of $Q_7$ (exactly
@@ -110,9 +109,8 @@ released certificate or by a bundled deterministic computation --- is
 re-checkable from the released code and data; one-off historical
 observations and the one imported exact result (the unrestricted $n=6$
 upper bound) are marked as such throughout; the provenance
-record separates such claims from purely historical statements; it, the
-repository, and its SHA-256 manifests are collected in a dedicated
-provenance section of the paper. Edge lists and code:\\
+record separates such claims from purely historical statements, and the
+released repository is accompanied by SHA-256 manifests. Edge lists and code:\\
 \url{https://github.com/minamominamoto/c4free-hypercube}.
 \end{abstract}
 
@@ -160,9 +158,13 @@ Introduction, which we checked directly), whereas BHN95's own statement
 gives both expressions as lower bounds on the maximum edge count, which
 settles the direction at the source. We flag this explicitly as a
 direction slip in that secondary description rather than an alternative
-theorem: an ``at most'' reading is internally untenable at $n=16$, where the
-tight $n=4^r$ form gives $(16+4)\cdot2^{14}=327\,680$, exceeding
-$(16+0.9\cdot4)\cdot2^{14}=321\,126.4$. We follow BHN95.
+theorem: an ``at most'' reading is internally untenable at $n=16$: BHN's tight
+$n=4^r$ form is a \emph{lower} bound,
+$\ex(Q_{16},C_4)\ge(16+4)\cdot2^{14}=327\,680$, while the alleged
+reading would assert the \emph{upper} bound
+$\ex(Q_{16},C_4)\le(16+0.9\cdot4)\cdot2^{14}=321\,126.4$ --- a
+certified lower bound exceeding the alleged upper bound, a
+contradiction. We follow BHN95.
 Exact values have been determined for small $n$; Harborth and Nienborg~\cite{HN94}
 proved $\ex(Q_6,C_4)=132$.
 
@@ -725,8 +727,15 @@ ensemble of Section~\ref{sec:structure}) has the following properties:
     structural finding.
   \item $\mathrm{Tr}(A^4)=5216$, attaining the $C_4$-free trace equality
     $\sum_i\deg(i)^2+\sum_{uv\in E}(\deg u+\deg v)-2|E|$. Like the item above
-    this is forced by the degree sequence rather than independent of it (the
-    two summands are equal, so the expression is $2\sum_v\deg(v)^2-2|E|$); see
+    this is forced by the degree sequence rather than independent of it: the
+    two summands are equal because
+    $\sum_{uv\in E}(\deg u+\deg v)=\sum_v\deg(v)^2$ (each vertex's degree
+    is counted once per incident edge), so the expression is
+    $2\sum_v\deg(v)^2-2|E|$; the \emph{equality} of $\mathrm{Tr}(A^4)$
+    with it is where $C_4$-freeness enters --- every off-diagonal entry of
+    $A^2$ is then $0$ or $1$, so
+    $\sum_{i\ne j}(A^2)_{ij}^2=\sum_{i\ne j}(A^2)_{ij}
+    =\sum_v\deg(v)(\deg(v)-1)$. See
     Proposition~\ref{prop:rigid}(iii).
   \item Local maximality: every non-edge of $Q_7$ creates a $C_4$ when added.
 \end{enumerate}
@@ -1084,7 +1093,10 @@ $h(v)$ with $v\in U$ is an integer of the same parity as $n$, and
 \end{lemma}
 \begin{proof}
 For $v\in U$ and direction $i\in\{0,\ldots,n-1\}$ write
-$s_i(v)=\sigma(v,v\oplus e_i)\in\{\pm1\}$, so $h(v)=\sum_i s_i(v)$ and
+$s_i(v)=\sigma(v,v\oplus e_i)\in\{\pm1\}$, so $h(v)=\sum_i s_i(v)$ ---
+in particular $h(v)\equiv n\pmod2$, being a sum of $n$ terms $\pm1$
+(equivalently $h(v)=2\deg_E(v)-n$), which establishes the parity claim
+in the statement --- and
 $h(v)^2=n+\sum_{i\ne j}s_i(v)s_j(v)$. Fix $i\ne j$ and consider, for
 $v\in U$, the square on $\{v,v\oplus e_i,v\oplus e_j,z\}$ where
 $z=v\oplus e_i\oplus e_j\in U$. Its four edges have signs $s_i(v)$,
@@ -1307,8 +1319,10 @@ In particular $(h-a)(h-b)\in\{0,8,24,48,\ldots\}$, so it is either $0$
 \end{lemma}
 \begin{proof}
 $h-a$ is even, say $h-a=2u$ with $u\in\mathbb{Z}$; then $h-b=2u-2$, so
-$(h-a)(h-b)=4u(u-1)$. Consecutive integers $u,u-1$ have product
-$\ge0$ and even, so $4u(u-1)$ is a nonnegative multiple of $8$. It
+$(h-a)(h-b)=4u(u-1)$. Consecutive integers $u,u-1$ have product $\ge0$ and even --- one of
+the two is even --- say $u(u-1)=2k$ with $k\ge0$, so $4u(u-1)=8k$, a
+nonnegative multiple of $8$; its successive values, at
+$u\in\{0,1\},\{-1,2\},\{-2,3\},\ldots$, are $0,8,24,48,\ldots$ It
 vanishes exactly when $u\in\{0,1\}$, i.e.\ $h\in\{a,b\}$.
 \end{proof}
 
@@ -1372,7 +1386,9 @@ reverses the inequality and bounds $S$ from below.
 \textbf{$n=6$.} Here $m=32$, $Q=192$, $(a,b)=(2,4)$, so
 $\Delta=448-6S$. Nonnegativity alone gives only
 $S\le74.\overline{6}$, hence $S\le74$ by parity; but
-$448\equiv0\pmod 8$ forces $6S\equiv0\pmod8$, i.e.\ $S\equiv0\pmod4$.
+$448\equiv0\pmod 8$ forces $6S\equiv0\pmod8$; dividing by
+$\gcd(6,8)=2$ this reads $3S\equiv0\pmod4$, and $3$ is invertible
+modulo $4$, so $S\equiv0\pmod4$.
 The largest such $S$ below $74.\overline{6}$ is
 \[
 S\le72,
@@ -1799,6 +1815,8 @@ k(v)\equiv\tfrac{h(v)+6}{2}\pmod 2,
 \qquad\text{i.e.}\qquad
 k(v)\text{ odd}\iff h(v)\in\{0,4\}.
 \]
+(Explicitly over the even range: $h=0,2,4,6$ give
+$\tfrac{h+6}{2}=3,4,5,6$, of which $3$ and $5$ are odd.)
 Reducing the definition of $k(v)$ modulo $2$ gives
 $k(v)\equiv\sum_i t_{v\oplus e_i}+\sum_i b(v,i)$, so the parity vector
 $p\in\mathrm{GF}(2)^{U}$ is the affine image $p=Mt+B$, where $M$ is the
@@ -2231,7 +2249,9 @@ Every solution in the $19\,866$ satisfies:
 
 Item (vi) was first established by the direct check described next; the
 subsequent full orbit census independently implies it more conceptually and in
-a sharper form. The direct check is retained because it does not depend on
+a sharper form: every stabiliser order in the census is divisible by
+$3$, so each stabiliser contains an element of order $3$ by Cauchy's
+theorem. The direct check is retained because it does not depend on
 completion of the orbit census. An element of
 $\mathrm{Aut}(Q_7)$ acts on edges by permuting directions, so it preserves the
 per-direction edge counts; an order-$3$ element must therefore have an order-$3$
@@ -2326,8 +2346,16 @@ where it silently resumed the bundled finished checkpoint, so its
 \texttt{--fresh} mode exists to close that gap.) This revision adds a
 lighter, certificate-based route that removes the need for any group sweep
 on the reader's side \emph{for verifying the assignment} (``at most
-$180$''); certifying exactness still requires one sweep --- the checker's
-\texttt{-{}-canonical} mode or the fresh census, as detailed below. The certificate \texttt{q7\_orbit\_witnesses.json}
+$180$''); certifying exactness additionally requires ruling out cross-orbit
+coincidences among the $180$ representatives. The routes bundled here do
+this by a full sweep (the checker's \texttt{-{}-canonical} mode or the
+fresh census, as detailed below); a review of this revision demonstrated
+that a far lighter sweep suffices --- after sorting each representative's
+per-direction edge counts, only permutations within blocks of equal
+counts (times the $128$ translations) need be enumerated, which decided
+exactness in about $14$ seconds in the reviewer's implementation --- and
+we record that observation here as a reviewer-contributed improvement
+route. The certificate \texttt{q7\_orbit\_witnesses.json}
 records two things. For every one of the $19\,866$ solutions, it stores
 an explicit group element mapping its orbit representative to it. For
 every orbit, it stores the lexicographically minimal incidence vector
@@ -2433,7 +2461,9 @@ Table~\ref{tab:types} (ranks 5, 7, 10, and 18 there).
 
 Most of that restriction is forced, not empirical. Fix directions $i\ne j$.
 There are $2^{n-2}$ $(i,j)$-squares, and each edge in direction $i$ lies in
-exactly one of them (likewise for $j$), so
+exactly one of them (likewise for $j$), so summing $|E\cap C|$ over the
+$(i,j)$-squares counts each direction-$i$ edge of $E$ once, each
+direction-$j$ edge of $E$ once, and nothing else:
 $\sum_{(i,j)\text{-squares}}|E\cap C|=e_i+e_j$. Odd-squareness makes each
 summand odd, and there are $2^{n-2}$ summands, so for $n\ge3$ the total is
 even: $e_i+e_j$ is even for every pair, i.e.\ \emph{all $e_i$ have the same
@@ -2785,9 +2815,9 @@ respectively --- deliberately \emph{not} to the manifest-listed
 earlier revision did overwrite on a bare run. Some
 verification/analysis scripts also create new side files (for example
 \texttt{q6\_spins.txt} and the orbit-census checkpoint/JSON). The SHA-256
-manifests authenticate only the files they explicitly list; the appearance of
+manifests integrity-check only the files they explicitly list; the appearance of
 additional generated files is normal, whereas overwriting a listed seed file
-changes the authenticated release.
+changes the manifest-listed release.
 
 \subsection{Update: aspects of the \texorpdfstring{$Q_8$}{Q8} 680-edge production pipeline have also been recovered}
 
@@ -3423,7 +3453,8 @@ checks are additionally covered by a second implementation,
 \texttt{cross\_verify.py}, now bundled with the release: it shares no code
 and no core mechanism with \texttt{verify.py} (bitmask common-neighbour
 counting over Hamming-distance-$2$ pairs instead of square enumeration by
-corner tuples, and a sorted-tuple set instead of hashing for the
+corner tuples, and exact sorted-tuple equality in a Python set --- no
+digest or signature hashing --- for the
 catalogue-level distinctness of the $19\,866$ edge sets), and it reproduces
 the same verdicts on every released certificate. That re-implementation is
 itself AI-assisted, so it mitigates the single-implementation risk rather

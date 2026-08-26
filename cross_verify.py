@@ -24,8 +24,8 @@ distance 2 together with their exactly two common Q_n-neighbours, so
     present edges among the four edges joining {u, w} to their two common
     neighbours x = u ^ (bit i), y = u ^ (bit j) is odd (1 or 3).
 
-It also re-checks, by direct means (no hashing of any kind for the
-distinctness test): edge validity (every listed edge is a genuine Q_n
+It also re-checks, by direct means (exact tuple equality in a Python set --- no digest or
+signature hashing --- for the distinctness test): edge validity (every listed edge is a genuine Q_n
 edge, no duplicates inside a solution), the exact edge counts
 (132 / 304 x 19,866 / 680 x 2 / 682), the catalogue size 19,866, and the
 pairwise distinctness of all 19,866 Q7 edge sets via a set of
@@ -158,7 +158,7 @@ def main():
     expect('Q7 catalogue: all valid 304-edge sets', bad_valid == 0,
            f'{bad_valid} failures')
     expect('Q7 catalogue: all C4-free', bad_c4 == 0, f'{bad_c4} failures')
-    expect('Q7 catalogue: pairwise distinct (sorted-tuple set, no hashing)',
+    expect('Q7 catalogue: pairwise distinct (exact tuple equality, no digest hashing)',
            len(distinct) == 19866, f'{len(distinct)} distinct')
 
     if FAIL:
