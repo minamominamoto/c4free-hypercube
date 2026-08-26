@@ -104,6 +104,13 @@ noted; wall times are from the measured environment in `README.md`):
   minimum; minimality plus distinctness certifies "exactly 180"
   independently of the census scan. Default mode in the default path,
   `--canonical` in `--structural`.
+- `verify.py` additionally checks the regenerable second Q8 certificate
+  `q8_A_witness.json` (odd-square, 682 edges, margin distribution
+  {3:42, 4:151, 5:133, 6:16}), so no released 682-edge claim rests solely
+  on the non-regenerable historical artefact. `q7_hamming_tally.py` now
+  prints and asserts the count of pairs attaining the maximum distance
+  (274: exactly 85 pairs), closing a regression gap a pre-release review
+  identified.
 - `cross_verify.py`: bundled independent re-implementation of the
   certificate checks (bitmask common-neighbour counting over
   Hamming-distance-2 pairs; sorted-tuple distinctness, no hashing; no code

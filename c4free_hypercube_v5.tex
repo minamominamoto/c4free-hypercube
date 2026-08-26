@@ -11,6 +11,7 @@
 \hypersetup{colorlinks=true,linkcolor=blue,citecolor=blue,urlcolor=blue}
 \newtheorem{theorem}{Theorem}
 \newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
 \newtheorem{lemma}[theorem]{Lemma}
 \newtheorem{conjecture}[theorem]{Conjecture}
 \theoremstyle{definition}
@@ -79,7 +80,7 @@ formulation directly. Our contribution is accordingly narrow and
 explicit: a short self-contained proof of the optima via a mod-$8$
 refinement of the classical two-point inequality; the certificates
 themselves, with dependency-free verifiers; and an exhaustive decision of the realisability of the optimal $n=6$
-field distributions --- settling the question DPTV left open in 1979
+field distributions --- settling in proof form the question DPTV left open in 1979
 about their ``other solutions'' --- where an independent integer
 programme shows the optimal distributions number exactly three, and the
 decision shows exactly one of them is realisable (the other two are not,
@@ -164,94 +165,12 @@ $(16+0.9\cdot4)\cdot2^{14}=321\,126.4$. We follow BHN95.
 Exact values have been determined for small $n$; Harborth and Nienborg~\cite{HN94}
 proved $\ex(Q_6,C_4)=132$.
 
-Our main results, stated in certificate form -- as the attribution
-immediately below and Section~\ref{sec:oddsquare} spell out, the new
-content is the explicit machine-verifiable certificates and the
-graph-theoretic translation, not the bound values themselves:
-
-\begin{theorem}[Certified lower bounds]\label{thm:main}
-\begin{enumerate}[label=(\roman*)]
-  \item $\ex(Q_7,C_4)\ge304$.
-  \item $\ex(Q_8,C_4)\ge682$.
-\end{enumerate}
-\end{theorem}
-
-Part (i) is not new: it follows from the 1979 construction of Derrida,
-Pomeau, Toulouse, and Vannimenus~\cite{DPTV79} (Section~\ref{sec:oddsquare}),
-and we present it here as an independently reproduced and machine-verified
-result rather than as a novel bound. Part (ii) improves our originally
-announced bound $\ex(Q_8,C_4)\ge680$, but here too the bare existence
-claim is not new in substance: Marinari, Parisi, and Ritort~\cite{MPR95}
-report, in a single unelaborated sentence and with no accompanying
-spin configuration or machine-checkable certificate, having exhibited a
-$D=8$ ground state attaining Derrida et al.'s improved energy lower
-bound; they describe the method (simulated annealing with a cooling
-procedure) and state the corresponding bound value as $-361$ on the
-$D{=}9$ comparison scale they use for cross-dimension bound values --- a
-normalised per-spin energy multiplied by their $D{=}9$ factor of $768$,
-not a count of couplings or any other absolute integer of the $D{=}8$
-model itself; Section~\ref{sec:oddsquare} gives the full conversion (in
-their text the attainment statement and this integer occur in two
-separate sentences, combined here),
-but provide no graph-theoretic translation and no reproducible
-computational artifact. Combined with the
-signed-graph/odd-square correspondence and edge-count--field-sum
-translation we give in Section~\ref{sec:oddsquare}, this would imply
-the existence of a 682-edge odd-square subgraph of $Q_8$ -- but as an
-existence claim with no public certificate, it is not independently
-verifiable, and we do not treat it as settling the question on its
-own. What
-Part~(ii) contributes beyond that prior existence claim is: an explicit
-graph-theoretic translation of MPR's result into edge-count terms
-(Section~\ref{sec:oddsquare-exact}); a publicly released, explicit,
-machine-verifiable 682-edge certificate, which MPR's paper does not
-supply (they report the result in energy units only, without an
-explicit spin configuration); and the structural analysis of that
-certificate (Proposition~\ref{prop:q8oddsquare}). The specific
-certificate we release attains the same bound value MPR report; its
-own provenance is recorded as a dated private-correspondence account
-rather than an independently reproducible computational log (see
-Section~\ref{sec:oddsquareverify}); we do not claim it reproduces any
-particular configuration MPR may have used internally. That leaves an
-asymmetry, and it should be stated with the two files kept apart: the
-headline certificate, \texttt{q8\_odd\_square\_682.json}, remains the one
-released artefact whose \emph{derivation} cannot be re-executed, and this
-revision does \emph{not} close that provenance gap. What it does close is
-the reproducibility of the \emph{existence} claim, through a second,
-independently regenerable $682$-edge witness:
-\texttt{q8\_A\_recover.py} is a fixed-seed search that finds, with no input from
-the released witness, a spin configuration realising the same optimal field
-distribution (seed $90008$, hit at iteration $207\,579$ \emph{at the
-script's default iteration budget}: the budget parameter enters the annealing
-temperature schedule, so this exact hit -- and the byte-identical output,
-which \texttt{reproduce\_core.py} now asserts by SHA-256 -- is conditional
-on the default $250\,000$-iteration setting, a different budget yielding a
-different, equally valid witness, and is scoped to the reference platform
-class: the acceptance step evaluates a floating-point exponential, so the
-byte-identity is an observed stability of CPython on IEEE-754 hardware with
-a standard \texttt{libm} (reproduced in our CPython~3.12 environment and,
-via an RNG-faithful independent re-implementation, by a reviewer), not a
-universal cross-platform guarantee --- and it concerns only the byte-level
-identity of the \emph{regenerated} file: the existence of a $682$-edge
-odd-square subgraph is carried platform-independently by the released
-static certificate and its dependency-free verification; $682$ edges,
-$h|_U=\{0{:}1,2{:}84,4{:}43\}$, square histogram $\{1{:}301,3{:}1491\}$,
-released as \texttt{q8\_A\_witness.json}). It is a different edge set
-from \texttt{q8\_odd\_square\_682.json}, as expected. So the division of
-labour is: the existence of a $682$-edge odd-square subgraph is
-end-to-end reproducible via \texttt{q8\_A\_witness.json}, while the
-headline artefact \texttt{q8\_odd\_square\_682.json} keeps its
-dated-correspondence provenance and is vouched for by verification, not
-by regeneration.
-Both bounds are realised by explicit constructions (supplementary files
-\texttt{q7\_edges\_304.jsonl.part1--3} and \texttt{q8\_odd\_square\_682.json};
-the originally announced 680-edge $Q_8$ witness, \texttt{q8\_edges\_680.jsonl},
-is retained as a simulated-annealing data point, see
-Section~\ref{sec:q8}).
-
-Within the \emph{odd-square} subclass --- edge sets meeting every square in
-an odd number of edges --- the extremal value $g(n)$ is determined exactly
-for $n=6,7,8$:
+Our main theorem determines the extremal value $g(n)$ within the
+\emph{odd-square} subclass --- edge sets meeting every square in an odd
+number of edges --- exactly for $n=6,7,8$, in certificate form; as the
+attribution immediately below and Section~\ref{sec:oddsquare} spell out,
+the new content is the machine-verifiable certificates and the short
+self-contained proof, not the bound values themselves:
 
 \begin{theorem}[Exact odd-square values]\label{thm:oddsquare}
 $g(6)=132$, $g(7)=304$, and $g(8)=682$. The numerical values for $n=6,7$
@@ -262,9 +181,9 @@ re-proof/certification of those values, not a claim that the three numbers
 themselves are new.
 \end{theorem}
 
-\noindent To keep the priority record in one place rather than scattered
-across the Abstract, this introduction, Section~\ref{sec:oddsquare}, and Open
-Problem~\ref{op:equality}, the attribution of the three values is:
+\noindent The attribution of the three values, kept in one place (the
+detailed record with primary-source quotations is
+Section~\ref{sec:oddsquare}; everywhere else defers here):
 
 \begin{center}\small
 \begin{tabular}{@{}c p{6.6cm} p{3.9cm}@{}}
@@ -302,12 +221,43 @@ $\ex(Q_6,C_4)\ge132$, but it is \emph{not} odd-square; the odd-square
 witness for $g(6)\ge132$ is the separate file
 \texttt{q6\_odd\_square\_132.json}.
 
-\noindent Theorem~\ref{thm:oddsquare} is proved in
-Section~\ref{sec:oddsquare}. Combined with $g(n)\le\ex(Q_n,C_4)$, it in
-fact implies Theorem~\ref{thm:main}'s lower bounds
-$\ex(Q_7,C_4)\ge304$ and $\ex(Q_8,C_4)\ge682$ directly (redundantly with
-the explicit constructions of Sections~\ref{sec:q7}--\ref{sec:q8}). What
-it does \emph{not} resolve is whether these bounds are exact, i.e.\
+\begin{corollary}[Certified lower bounds]\label{thm:main}
+$\ex(Q_7,C_4)\ge304$ and $\ex(Q_8,C_4)\ge682$.
+\end{corollary}
+
+\noindent Both parts follow immediately from
+Theorem~\ref{thm:oddsquare} (proved in Section~\ref{sec:oddsquare}) via
+$g(n)\le\ex(Q_n,C_4)$, redundantly with the explicit constructions of
+Sections~\ref{sec:q7}--\ref{sec:q8}. Neither bound value is new, and the
+history is stated plainly here, once. The $Q_7$ value follows from
+DPTV79's explicit 1979 construction~\cite{DPTV79}; we present it as an
+independently reproduced, machine-verified result. For $Q_8$ (improving
+our originally announced $680$), MPR95~\cite{MPR95} report --- in a
+single unelaborated sentence, with no spin configuration and no
+machine-checkable artefact --- a $D=8$ ground state attaining Derrida et
+al.'s improved bound. They state the value as $-361$ on the $D{=}9$
+comparison scale they use across dimensions: a normalised per-spin
+energy times their factor $768$, not a count of couplings or any other
+absolute integer of the $D{=}8$ model (Section~\ref{sec:oddsquare} gives
+the conversion; in their text the attainment statement and the integer
+occur in two separate sentences, combined here). Via the
+signed-graph/odd-square correspondence this would imply a $682$-edge
+odd-square subgraph of $Q_8$, but as an uncertificated existence claim we
+do not treat it as settling the question on its own. What we add at
+$n=8$ is the explicit edge-count translation
+(Section~\ref{sec:oddsquare-exact}); two released $682$-edge
+certificates --- the regenerable \texttt{q8\_A\_witness.json},
+re-derivable end-to-end from seed $90008$
+(Section~\ref{sec:oddsquareverify}), and the historical first witness
+\texttt{q8\_odd\_square\_682.json}, whose dated private-correspondence
+provenance is disclosed there --- and the structural analysis of
+Proposition~\ref{prop:q8oddsquare}. The other supplementary
+constructions are \texttt{q7\_edges\_304.jsonl.part1--3} for $Q_7$ and
+the originally announced 680-edge \texttt{q8\_edges\_680.jsonl},
+retained as a simulated-annealing data point (Section~\ref{sec:q8}).
+
+What the corollary does \emph{not} resolve is whether these bounds are
+exact, i.e.\
 whether $\ex(Q_7,C_4)=304$ and $\ex(Q_8,C_4)=682$: a general
 $C_4$-free subgraph need not be odd-square, so $g(n)=\ex(Q_n,C_4)$ does
 not follow automatically, and of the $19\,866$
@@ -1598,12 +1548,20 @@ factor is MPR95's own $D{=}9$ comparison scale, not an intrinsic
 $D{=}8$ energy-quantisation unit; they use it purely to compare bound
 values across dimensions on one common integer axis. Applying the same
 factor (as MPR95 themselves do for the $D=8$ figure) to our value gives $768\times(-0.4696\ldots)=-360.62\ldots
-\approx-361$, matching their reported integer to within rounding. The
+\approx-361$, matching their reported integer to within rounding. In one
+line, the affine correspondence is
+\[
+-361=\operatorname{round}\!\Bigl(768\cdot\frac{-S}{2^{8}\sqrt8}\Bigr)
+\quad\text{at }S=340,
+\qquad
+|E|=\frac{1024+S}{2}=682 .
+\] The
 identification is not an accident of the rounding width: the neighbouring
-admissible values $S=336$ and $S=344$ give $-356$ and $-365$, so among the
-values $S\equiv0\pmod4$ forced by $\Delta\equiv0\pmod8$, only $S=340$ rounds
-to $-361$ (the intermediate $S=338,342$, excluded by that congruence, would
-give $-359$ and $-363$ under the same nearest-integer rounding rule). Three
+parity-admissible values $S=338$ and $S=342$ give $-359$ and $-363$ under
+the same nearest-integer rounding rule, so among the even values of $S$
+(the lattice our derivation actually uses) only $S=340$ rounds to $-361$;
+one step further out, $S=336$ gives $-356$ and $S=344$ is not admissible
+at all, being excluded by nonnegativity ($S\le341\tfrac13$). Three
 further data points fix and test the scale under the identical rule; their
 evidentiary roles differ, so we state them once here to keep the count
 straight: the $D=9$ \emph{bound} value calibrates the scale (it is what pins
@@ -1905,7 +1863,7 @@ $6-2m(v)$ throughout. They agree on A and B, but they are not the same
 computation restricted.
 
 \textbf{$Q_7$, $g(7)=304$.} The 304-edge odd-square value coincides with our
-originally announced $Q_7$ lower bound (Theorem~\ref{thm:main}(i)); of the
+originally announced $Q_7$ lower bound (Corollary~\ref{thm:main}); of the
 $19\,866$ solutions obtained via the SA-seed-plus-collector pipeline (Section~\ref{sec:q7}),
 389 are themselves odd-square witnesses of $g(7)=304$
 (Section~\ref{sec:structure}), independently confirming reachability of this
@@ -1939,6 +1897,39 @@ edge set \emph{from} the given spin configuration
 identical to any specific configuration MPR may have used internally,
 since they did not publish one; it is an independently derived witness
 attaining the same bound.
+
+\medskip\noindent\emph{Reproducibility and the second witness.} That leaves an
+asymmetry, and it should be stated with the two files kept apart: the
+headline certificate, \texttt{q8\_odd\_square\_682.json}, remains the one
+released artefact whose \emph{derivation} cannot be re-executed, and this
+revision does \emph{not} close that provenance gap. What it does close is
+the reproducibility of the \emph{existence} claim, through a second,
+independently regenerable $682$-edge witness:
+\texttt{q8\_A\_recover.py} is a fixed-seed search that finds, with no input from
+the released witness, a spin configuration realising the same optimal field
+distribution (seed $90008$, hit at iteration $207\,579$ \emph{at the
+script's default iteration budget}: the budget parameter enters the annealing
+temperature schedule, so this exact hit -- and the byte-identical output,
+which \texttt{reproduce\_core.py} now asserts by SHA-256 -- is conditional
+on the default $250\,000$-iteration setting, a different budget yielding a
+different, equally valid witness, and is scoped to the reference platform
+class: the acceptance step evaluates a floating-point exponential, so the
+byte-identity is an observed stability of CPython on IEEE-754 hardware with
+a standard \texttt{libm} (reproduced in our CPython~3.12 environment and,
+via an RNG-faithful independent re-implementation, by a reviewer), not a
+universal cross-platform guarantee --- and it concerns only the byte-level
+identity of the \emph{regenerated} file: the existence of a $682$-edge
+odd-square subgraph is carried platform-independently by the released
+static certificate and its dependency-free verification; $682$ edges,
+$h|_U=\{0{:}1,2{:}84,4{:}43\}$, square histogram $\{1{:}301,3{:}1491\}$,
+released as \texttt{q8\_A\_witness.json}). It is a different edge set
+from \texttt{q8\_odd\_square\_682.json}, as expected. So the division of
+labour is: the existence of a $682$-edge odd-square subgraph is
+end-to-end reproducible via \texttt{q8\_A\_witness.json}, while the
+headline artefact \texttt{q8\_odd\_square\_682.json} keeps its
+dated-correspondence provenance and is vouched for by verification, not
+by regeneration.
+
 
 \begin{proposition}\label{prop:q8oddsquare}
 The witness edge set satisfies:
@@ -1979,7 +1970,17 @@ separately produced implementation, with full agreement; this
 cross-check is recorded as a dated correspondence account (as in
 Section~\ref{sec:oddsquareverify}), not as an independently verifiable
 artefact, since the correspondence, Lai's implementation, and its
-output are not included in the released materials.
+output are not included in the released materials. The regenerable
+second witness \texttt{q8\_A\_witness.json} (seed $90008$;
+Section~\ref{sec:oddsquareverify}) shares items (i)--(iii) and the full
+and $U$-restricted histograms of item (iv) verbatim; its
+local-maximality margin distribution is
+$\{3{:}42,\,4{:}151,\,5{:}133,\,6{:}16\}$ over the same $342$
+non-edges. These were recomputed here by the same direct square
+enumeration; in addition, \texttt{verify.py} now checks \emph{both}
+$682$-edge certificates (odd-square condition, edge count, and the
+respective margin distributions), and \texttt{reproduce\_core.py}
+asserts the second witness's byte-level regeneration by SHA-256.
 
 \noindent\textbf{Second $n=8$ witness.}
 The local-field distribution $\{0{:}1,2{:}84,4{:}43\}$ above is one
@@ -2092,7 +2093,7 @@ none of the shared structural properties below is claimed for every possible
 $304$-edge $C_4$-free subgraph of $Q_7$. This section is an independent
 contribution about that catalogue: apart from the odd-square audit of
 Section~\ref{sec:oddsquareaudit} (the $389$), its results neither depend
-on nor feed into Theorems~\ref{thm:main} and~\ref{thm:oddsquare}.
+on nor feed into Theorem~\ref{thm:oddsquare} and Corollary~\ref{thm:main}.
 
 %% ============================================================
 
@@ -2246,13 +2247,14 @@ pair of orbits with the largest stabilisers.
 
 The census is computed by \texttt{q7\_orbit\_census.py} by exhaustive
 group action, with no sampling and no extrapolation anywhere. The scan is
-deterministic: solutions are visited in fixed catalogue order, and to the
+deterministic. Solutions are visited in fixed catalogue order. To the
 first still-unassigned solution the script applies \emph{all}
-$645\,120=7!\cdot2^{7}$ elements of $\mathrm{Aut}(Q_7)$ (every coordinate
-permutation composed with every translation), recording which catalogue
-members appear among the images; a $64$-bit random-projection signature
-with a fixed seed prefilters candidate matches, and an exact comparison of
-the full $448$-entry edge-incidence vector confirms every hit. The exact
+$645\,120=7!\cdot2^{7}$ elements of $\mathrm{Aut}(Q_7)$ --- every
+coordinate permutation composed with every translation --- and records
+which catalogue members appear among the images. A $64$-bit
+random-projection signature with a fixed seed prefilters candidate
+matches; an exact comparison of the full $448$-entry edge-incidence
+vector then confirms every hit. The exact
 confirmation is not optional: a single signature collision merges two
 orbits, and in a signature-only trial run on the odd-square subset it did.
 Stabiliser orders are then computed per orbit, again exhaustively: only
@@ -2280,7 +2282,11 @@ $|\mathrm{Aut}(Q_7)|/|\mathrm{Stab}|=645\,120/|\mathrm{Stab}|$, and that
 the lengths sum to the labelled total $34\,227\,200$: this checks
 the \emph{internal consistency of the finished artefact}, not the group
 action itself, so a reader can audit the stated figures without re-running
-anything. The strong route is \texttt{reproduce\_core.py --structural},
+anything. A reader who wants the theorem-level ``exactly $180$'' claim
+must therefore run one of the heavy routes: the checker's
+\texttt{-{}-canonical} mode, or the from-scratch rerun below; the light
+route alone certifies the assignment (``at most $180$'').
+The strong route is \texttt{reproduce\_core.py --structural},
 which re-runs the census \emph{from scratch}: it invokes
 \texttt{q7\_orbit\_census.py --fresh}, whose checkpoint and output live
 in separate \texttt{\_fresh} files and which never reads the bundled
@@ -2296,12 +2302,12 @@ where it silently resumed the bundled finished checkpoint, so its
 ``re-run'' completed without performing any new search; the
 \texttt{--fresh} mode exists to close that gap.) This revision adds a
 lighter, certificate-based route that removes the need for any group sweep
-on the reader's side: \texttt{q7\_orbit\_witnesses.json} records, for
-every one of the $19\,866$ solutions, an explicit group element mapping
-its orbit representative to it, and, for every orbit, the
-lexicographically minimal incidence vector over all $645\,120$ images of
-the representative (the orbit's canonical form) together with an element
-attaining it. The standard-library checker
+on the reader's side. The certificate \texttt{q7\_orbit\_witnesses.json}
+records two things. For every one of the $19\,866$ solutions, it stores
+an explicit group element mapping its orbit representative to it. For
+every orbit, it stores the lexicographically minimal incidence vector
+over all $645\,120$ images of the representative --- the orbit's
+canonical form --- together with an element attaining it. The standard-library checker
 \texttt{q7\_orbit\_witness\_check.py} verifies in well under a minute
 that every witness element does map its representative to its solution,
 that the certified assignment coincides with the released census, that
@@ -3192,42 +3198,14 @@ principle, verify on the dual side.
 
 \begin{enumerate}
   \item\label{op:q7exact} Prove or disprove $\ex(Q_7,C_4)=304$.
-    A direct SAT-encoding attack on this question (a $305$-edge
-    $C_4$-free existence query encoded as CNF, $64\,512$ variables and
-    $129\,104$ clauses, with a symmetry-broken variant at $113\,664$
-    variables/$227\,786$ clauses; attempted cube-and-conquer splitting
-    via \texttt{march\_cu} and direct solving via CaDiCaL and Kissat)
-    was attempted over several weeks and did not reach a conclusion:
-    the cube-generation step itself repeatedly failed to complete, and
-    direct solver runs returned \texttt{UNKNOWN} rather than a
-    SAT/UNSAT verdict. A second, independent attempt using a different
-    encoding (Sinz's sequential at-most-$143$ cardinality encoding on
-    the negated edge variables, arriving at the same
-    $64\,512$-variable, $129\,104$-clause scale by a different
-    construction) and solving directly with Kissat (no cube splitting)
-    likewise terminated with no SAT/UNSAT verdict logged. A third,
-    independent approach -- direct branch-and-bound on the original
-    $448$-variable ILP with added symmetry-breaking constraints
-    ($685$ rows total), using HiGHS and warm-started from the known
-    $304$-edge solution -- did not close the optimality gap, which
-    remained at $5.26\%$ (best bound $\approx-320.0$ against the
-    incumbent $-304$) when the log ends. Each run was allowed to
-    continue for days rather than hours; we do not quote wall-clock
-    figures, since they are hardware-dependent and unfalsifiable for a
-    reader. The instance sizes and outcome figures above are
-    \emph{reported results}, not re-generable artefacts of this
-    release: the CNF files and their encoders, the symmetry-broken MIP
-    formulation ($685$ rows), the solver command lines and versions,
-    and the final logs are not bundled, so a reader can neither
-    regenerate nor audit them from the released materials. We record
-    all three as unsuccessful attempts, not as evidence either way;
-    the only conclusion they support is that the \emph{specific
-    formulations and configurations we tried} did not settle the
-    instance -- encoding choices, presolve and symmetry-breaking
-    options, and solver versions all remain unexplored dimensions, so
-    we draw no generalisation about off-the-shelf SAT or MIP solvers
-    as a class.
-    A speculative structural remark on where a $305$-edge example would
+    Three independent computational attacks failed to settle this
+    instance: two SAT encodings (both at the $64\,512$-variable,
+    $129\,104$-clause scale, one with cube-and-conquer splitting) returned
+    no SAT/UNSAT verdict, and a symmetry-broken ILP branch-and-bound
+    stalled at a $5.26\%$ optimality gap. The full record --- reported
+    results, not re-generable artefacts of this release --- is in
+    Appendix~\ref{app:attempts}; it supports no conclusion either way.
+        A speculative structural remark on where a $305$-edge example would
     have to live, if one exists. Since $g(7)=304$, any such example is
     necessarily non-odd-square, and Remark~\ref{rem:defect} quantifies
     how far from odd-square it must be: for any $305$-edge set,
@@ -3446,6 +3424,54 @@ and absence of $C_4$s. That check makes no claim of novelty or optimality for
 those certificates, and none of them is used in any argument here; the
 involvement is recorded because Open Problems~\ref{op:n9} and the minimum-degree
 question above refer to the $n\ge9$ range those certificates occupy.
+
+\appendix
+%% ============================================================
+\section{Record of unsuccessful computational attempts on
+  $\ex(Q_7,C_4)=304$}\label{app:attempts}
+%% ============================================================
+
+This appendix preserves, verbatim and away from the main line of
+the paper, the record of the three unsuccessful attacks on Open
+Problem~\ref{op:q7exact} summarised there. Nothing below is
+re-generable from the released materials, and nothing below is
+used as evidence anywhere in this paper.
+
+A direct SAT-encoding attack on this question (a $305$-edge
+    $C_4$-free existence query encoded as CNF, $64\,512$ variables and
+    $129\,104$ clauses, with a symmetry-broken variant at $113\,664$
+    variables/$227\,786$ clauses; attempted cube-and-conquer splitting
+    via \texttt{march\_cu} and direct solving via CaDiCaL and Kissat)
+    was attempted over several weeks and did not reach a conclusion:
+    the cube-generation step itself repeatedly failed to complete, and
+    direct solver runs returned \texttt{UNKNOWN} rather than a
+    SAT/UNSAT verdict. A second, independent attempt using a different
+    encoding (Sinz's sequential at-most-$143$ cardinality encoding on
+    the negated edge variables, arriving at the same
+    $64\,512$-variable, $129\,104$-clause scale by a different
+    construction) and solving directly with Kissat (no cube splitting)
+    likewise terminated with no SAT/UNSAT verdict logged. A third,
+    independent approach -- direct branch-and-bound on the original
+    $448$-variable ILP with added symmetry-breaking constraints
+    ($685$ rows total), using HiGHS and warm-started from the known
+    $304$-edge solution -- did not close the optimality gap, which
+    remained at $5.26\%$ (best bound $\approx-320.0$ against the
+    incumbent $-304$) when the log ends. Each run was allowed to
+    continue for days rather than hours; we do not quote wall-clock
+    figures, since they are hardware-dependent and unfalsifiable for a
+    reader. The instance sizes and outcome figures above are
+    \emph{reported results}, not re-generable artefacts of this
+    release: the CNF files and their encoders, the symmetry-broken MIP
+    formulation ($685$ rows), the solver command lines and versions,
+    and the final logs are not bundled, so a reader can neither
+    regenerate nor audit them from the released materials. We record
+    all three as unsuccessful attempts, not as evidence either way;
+    the only conclusion they support is that the \emph{specific
+    formulations and configurations we tried} did not settle the
+    instance -- encoding choices, presolve and symmetry-breaking
+    options, and solver versions all remain unexplored dimensions, so
+    we draw no generalisation about off-the-shelf SAT or MIP solvers
+    as a class.
 
 \begin{thebibliography}{99}
 \bibitem{Bab12}

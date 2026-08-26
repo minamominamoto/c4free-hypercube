@@ -92,7 +92,10 @@ Marinari–Parisi–Ritort 1995). This led to:
   library only, about 30 s; run by `reproduce_core.py` by default. It
   makes the manuscript's single-implementation-risk mitigation auditable
   (a pre-release review noted the previously reported second implementation
-  was not preserved in the release).
+  was not preserved in the release). Both verifiers are AI-assisted, as the
+  manuscript's Use-of-AI section discloses: their independence is at the
+  algorithm/implementation level, not a human-written check against an
+  AI-written one.
 - `q7_orbit_witnesses.json` + `q7_orbit_witness_check.py`: an
   orbit-witness CERTIFICATE for the Aut(Q7) orbit decomposition. The
   JSON records, for each of the 19,866 solutions, a group element mapping
@@ -148,14 +151,18 @@ revision: `cross_verify.py` about 30 s; `q7_orbit_witness_check.py` default mode
 about 16 s, and `--canonical` about 400 s total (run here as three
 `--orbits` slices of ~133 s each); generating the witness certificate
 from scratch (`q7_orbit_witnesses_gen.py`) took 529 s over three
-checkpointed invocations.
+checkpointed invocations. `verify.py` now also checks the regenerable
+second Q8 certificate `q8_A_witness.json` (odd-square condition, 682
+edges, and its non-edge violation distribution {3:42, 4:151, 5:133,
+6:16}) alongside the historical `q8_odd_square_682.json`.
 
 **Certifying "exactly 180 orbits".** The quick default checks certify the
 orbit *assignment* ("at most 180"). Exactness has two independent routes,
 run either as a distinct required step if you need the full theorem-level
 claim: `python3 q7_orbit_witness_check.py --canonical` (numpy;
-census-scale wall time; sliceable as `--orbits 0:60` etc. in time-limited
-environments) re-verifies each stored canonical form as the true orbit
+census-scale wall time; sliceable as finely as needed in time-limited
+environments — `--orbits 0:60` ≈ 133 s here, `--orbits 0:20` ≈ 45 s, and a
+240 s per-command cap fits three 0:20-sized slices) re-verifies each stored canonical form as the true orbit
 minimum, which with their pairwise distinctness proves exactness; or
 `python3 reproduce_core.py --structural`, which additionally reruns the
 census from scratch and requires byte-identity with the released

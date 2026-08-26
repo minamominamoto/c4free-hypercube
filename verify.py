@@ -60,7 +60,17 @@ TARGETS = [
 ODDSQUARE_TARGETS = [
     (6, 132, 1, ["q6_odd_square_132.json"]),
     (8, 682, 1, ["q8_odd_square_682.json"]),
+    # regenerable second n=8 witness (seed 90008, q8_A_recover.py)
+    (8, 682, 1, ["q8_A_witness.json"]),
 ]
+
+# Expected non-edge C4-violation (local-maximality margin) distributions,
+# keyed by certificate filename.
+EXPECTED_MARGINS = {
+    "q6_odd_square_132.json": {2: 2, 3: 29, 4: 26, 5: 3},
+    "q8_odd_square_682.json": {3: 41, 4: 159, 5: 120, 6: 22},
+    "q8_A_witness.json": {3: 42, 4: 151, 5: 133, 6: 16},
+}
 
 
 def four_cycle_corners(n):
@@ -356,11 +366,9 @@ def main():
                 bad += 1
                 print("  [FAIL] solution %d: %s" % (i, msg))
                 continue
-            expected_margin = None
-            if n == 6 and ec == 132:
-                expected_margin = {2: 2, 3: 29, 4: 26, 5: 3}
-            elif n == 8 and ec == 682:
-                expected_margin = {3: 41, 4: 159, 5: 120, 6: 22}
+            import os as _os
+            expected_margin = EXPECTED_MARGINS.get(
+                _os.path.basename(paths[0]))
             if expected_margin is not None:
                 got = nonedge_violation_distribution(
                     build_edge_set(edges), cube_edges, completion

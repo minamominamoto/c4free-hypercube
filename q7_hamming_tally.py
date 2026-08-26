@@ -125,6 +125,7 @@ def main():
     print(f'mean         : {weighted}/{total} = {weighted / total:.9f}')
     print(f'median       : {median}')
     print(f'pairs at min : {len(min_pairs)}')
+    print(f'pairs at max : {tally[max(tally)]}')
 
     combos = Counter(tuple(sorted((ranks[i], ranks[j]))) for i, j in min_pairs)
     print(f'profile-type combinations at min : {len(combos)}')
@@ -133,10 +134,11 @@ def main():
 
     expected = {'min': 6, 'max': 274, 'median': 196,
                 'num': 38555373486, 'den': 197319045,
-                'min_pairs': 636, 'combos': 28}
+                'min_pairs': 636, 'combos': 28, 'max_pairs': 85}
     ok = (minimum == expected['min'] and max(tally) == expected['max']
           and median == expected['median'] and weighted == expected['num']
           and total == expected['den'] and len(min_pairs) == expected['min_pairs']
+          and tally[max(tally)] == expected['max_pairs']
           and len(combos) == expected['combos'])
     print('RESULT:', 'matches the paper' if ok
           else 'MISMATCH against the values stated in the paper')
