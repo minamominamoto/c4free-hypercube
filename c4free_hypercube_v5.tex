@@ -212,10 +212,14 @@ certificate we release attains the same bound value MPR report; its
 own provenance is recorded as a dated private-correspondence account
 rather than an independently reproducible computational log (see
 Section~\ref{sec:oddsquareverify}); we do not claim it reproduces any
-particular configuration MPR may have used internally. That asymmetry ---
-the headline certificate being the one artefact whose \emph{derivation} could
-not be re-executed --- is closed in this revision by
-\texttt{q8\_A\_recover.py}, a fixed-seed search that finds, with no input from
+particular configuration MPR may have used internally. That leaves an
+asymmetry, and it should be stated with the two files kept apart: the
+headline certificate, \texttt{q8\_odd\_square\_682.json}, remains the one
+released artefact whose \emph{derivation} cannot be re-executed, and this
+revision does \emph{not} close that provenance gap. What it does close is
+the reproducibility of the \emph{existence} claim, through a second,
+independently regenerable $682$-edge witness:
+\texttt{q8\_A\_recover.py} is a fixed-seed search that finds, with no input from
 the released witness, a spin configuration realising the same optimal field
 distribution (seed $90008$, hit at iteration $207\,579$ \emph{at the
 script's default iteration budget}: the budget parameter enters the annealing
@@ -232,9 +236,13 @@ identity of the \emph{regenerated} file: the existence of a $682$-edge
 odd-square subgraph is carried platform-independently by the released
 static certificate and its dependency-free verification; $682$ edges,
 $h|_U=\{0{:}1,2{:}84,4{:}43\}$, square histogram $\{1{:}301,3{:}1491\}$,
-released as \texttt{q8\_A\_witness.json}). It is a different edge set from the
-released witness, as expected; what is now reproducible is the existence, not
-the particular artefact.
+released as \texttt{q8\_A\_witness.json}). It is a different edge set
+from \texttt{q8\_odd\_square\_682.json}, as expected. So the division of
+labour is: the existence of a $682$-edge odd-square subgraph is
+end-to-end reproducible via \texttt{q8\_A\_witness.json}, while the
+headline artefact \texttt{q8\_odd\_square\_682.json} keeps its
+dated-correspondence provenance and is vouched for by verification, not
+by regeneration.
 Both bounds are realised by explicit constructions (supplementary files
 \texttt{q7\_edges\_304.jsonl.part1--3} and \texttt{q8\_odd\_square\_682.json};
 the originally announced 680-edge $Q_8$ witness, \texttt{q8\_edges\_680.jsonl},
