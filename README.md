@@ -151,7 +151,10 @@ revision: `cross_verify.py` about 30 s; `q7_orbit_witness_check.py` default mode
 about 16 s, and `--canonical` about 400 s total (run here as three
 `--orbits` slices of ~133 s each); generating the witness certificate
 from scratch (`q7_orbit_witnesses_gen.py`) took 529 s over three
-checkpointed invocations. `verify.py` now also checks the regenerable
+checkpointed invocations. `verify_q6_ilp_map.py` (standard library, <1 s, default path)
+machine-checks the Q6 ILP provenance bijections: the CSV's 192 variables
+onto the 192 edges of Q6, and the MPS's 240 constraints onto the 240
+squares. `verify.py` now also checks the regenerable
 second Q8 certificate `q8_A_witness.json` (odd-square condition, 682
 edges, and its non-edge violation distribution {3:42, 4:151, 5:133,
 6:16}) alongside the historical `q8_odd_square_682.json`.

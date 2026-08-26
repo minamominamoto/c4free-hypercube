@@ -111,6 +111,10 @@ noted; wall times are from the measured environment in `README.md`):
   prints and asserts the count of pairs attaining the maximum distance
   (274: exactly 85 pairs), closing a regression gap a pre-release review
   identified.
+- `verify_q6_ilp_map.py`: machine-checks the released Q6 ILP artefacts'
+  stated bijections (192 variables <-> 192 edges; 240 constraints <-> 240
+  squares, handling MPS integrality MARKER lines). Standard library,
+  <1 s; wired into the default path.
 - `cross_verify.py`: bundled independent re-implementation of the
   certificate checks (bitmask common-neighbour counting over
   Hamming-distance-2 pairs; sorted-tuple distinctness, no hashing; no code

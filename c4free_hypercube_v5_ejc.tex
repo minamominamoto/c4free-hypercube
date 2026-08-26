@@ -67,10 +67,11 @@ independently of the census scan. For
 $Q_6$, the unrestricted value $\ex(Q_6,C_4)=132$ rests on
 Harborth--Nienborg's combinatorial upper bound, which we did not
 independently verify; the odd-square $g(6)=132$ is self-contained here.
-Every numerical claim in the certificates and in our own computational
-analyses is re-checkable from the released code and data (the one
-imported exact result --- the unrestricted $n=6$ upper bound --- is
-marked as external throughout); the provenance
+Every certified or deterministic numerical claim --- those backed by a
+released certificate or by a bundled deterministic computation --- is
+re-checkable from the released code and data; one-off historical
+observations and the one imported exact result (the unrestricted $n=6$
+upper bound) are marked as such throughout; the provenance
 record separates such claims from purely historical statements; it, the
 repository, and its SHA-256 manifests are collected in a dedicated
 provenance section of the paper. Edge lists and code:\\
@@ -498,7 +499,11 @@ exhaustive check over all $645\,120$ elements), consisting of the
 identity and two nontrivial elements, both coordinate permutation
 $+$ XOR pairs. We write a permutation as the tuple $p$ with the meaning
 ``bit $i$ of $v$ becomes bit $p[i]$ of the image'', the convention of
-\texttt{type18\_automorphisms.py}. Under $v\mapsto \pi(v\oplus m)$ (XOR first,
+\texttt{type18\_automorphisms.py}. (In symbols this is the \emph{scatter}
+form $\mathrm{im}_{p[i]}=v_i$, equivalently the gather form
+$\mathrm{im}_j=v_{p^{-1}[j]}$; the census and witness scripts implement
+exactly this map, so a reader re-deriving the masks below should read the
+tuple this way and not as ``image bit $i$ equals $v$'s bit $p[i]$''.) Under $v\mapsto \pi(v\oplus m)$ (XOR first,
 then permute) the two elements are then $(5,1,2,3,4,6,0)$ with mask
 $m=33=0100001_2$ and its square $(6,1,2,3,4,0,5)$ with $m=96=1100000_2$; under
 $v\mapsto \pi(v)\oplus m$ the two masks are interchanged. The group itself,
@@ -657,7 +662,7 @@ that a reader can confirm which revision a given file set belongs to.
 
 %% ============================================================
 
-\section{$C_4$ Enumeration and Verification}\label{sec:verify}
+\section{\texorpdfstring{$C_4$}{C4} Enumeration and Verification}\label{sec:verify}
 %% ============================================================
 
 \begin{lemma}[$C_4$ enumeration in $Q_n$]\label{lem:c4}
@@ -689,7 +694,7 @@ We applied this algorithm to all constructions and all $19\,866$ solutions
 of $Q_7$; every call returned \textsc{c4-free}.
 
 %% ============================================================
-\section{The $Q_7$ Construction}\label{sec:q7}
+\section{The \texorpdfstring{$Q_7$}{Q7} Construction}\label{sec:q7}
 %% ============================================================
 
 We constructed a $C_4$-free subgraph of $Q_7$ on 304 edges by
@@ -734,7 +739,7 @@ differ -- a separate check from its per-solution duplicate-edge test),
 all sharing the structural properties stated in Proposition~\ref{prop:rigid}.
 
 %% ============================================================
-\section{The $Q_8$ Construction}\label{sec:q8}
+\section{The \texorpdfstring{$Q_8$}{Q8} Construction}\label{sec:q8}
 %% ============================================================
 
 This section documents the originally announced $Q_8$ witness, found by
@@ -881,8 +886,11 @@ Let $\tau=\sigma_1\sigma_2$ (pointwise product). On every square $C$,
 \]
 The map sending a cycle $C$ to $\prod_{e\in C}\tau(e)\in\{\pm1\}$ is a group
 homomorphism from the cycle space of $Q_n$ (over $\mathrm{GF}(2)$, under
-symmetric difference) to $\{\pm1\}$, since edges shared by two cycles cancel
-in their symmetric difference and likewise cancel in the product. The
+symmetric difference) to $\{\pm1\}$: an edge lying in both cycles
+disappears from their symmetric difference and contributes
+$\tau(e)^2=+1$ to the product of their images, so additive cancellation
+in $\mathrm{GF}(2)$ matches multiplicative cancellation in $\{\pm1\}$
+--- which is exactly the homomorphism property. The
 squares of $Q_n$ generate its cycle space (a standard fact for hypercubes:
 every cycle is a symmetric difference of squares -- for general $n$ this
 follows, e.g., from the theorem that every partial cube has a cycle basis
@@ -923,7 +931,11 @@ one fixed $J$ (or, for $D=8$, exhibiting a ground state attaining
 Derrida et al.'s improved energy lower bound for it, as
 Marinari--Parisi--Ritort report~\cite{MPR95}) therefore does optimise
 over the class defining $g(n)$, not merely over a possibly-proper
-subclass of it.
+subclass of it. (The inclusion that makes this an equality of classes is
+Lemma~\ref{lem:switching} read in the other direction: the fixed $J$'s
+negative edge set is itself odd-square, so by the lemma \emph{every}
+odd-square edge set is switching-equivalent to it, and hence lies in
+that single switching class.)
 
 Under the further correspondence between signed
 hypercubes and Ising spin configurations $s:\{0,1\}^n\to\{\pm1\}$ via
@@ -1109,7 +1121,8 @@ if exactly one of the two edges of $s$ incident to $v$ lies in $E$
 (equivalently $s_i(v)s_j(v)=-1$ for the direction pair $\{i,j\}$ of $s$),
 and let $\operatorname{spl}_U(s)\in\{0,1,2\}$ count the even-parity
 corners of $s$ at which it is $U$-split. Each square has exactly two
-even-parity corners, related by $v\mapsto v\oplus e_i\oplus e_j$, and
+even-parity corners, related by $v\mapsto v\oplus e_i\oplus e_j$ (a map
+that changes exactly two bits and so preserves parity), and
 belongs to exactly one direction pair; running the ordered-pair sum of the
 proof without the cancellation step, each square contributes
 $2-2\operatorname{spl}_U(s)$ once per ordering of its direction pair, so
@@ -1214,7 +1227,8 @@ Suppose $h(v)<0$ for some $v$. Flipping the spin at $v$ (replacing
 $s(v)$ by $-s(v)$, all other spins unchanged) flips $\sigma(v,w)$ for
 every edge $(v,w)$ incident to $v$ and leaves every other edge's sign
 unchanged. Every square containing $v$ has exactly two edges incident
-to $v$; flipping both leaves their product, and hence the whole
+to $v$ (the square's other two edges are not incident to $v$ and their
+signs are untouched); flipping both leaves their product, and hence the whole
 square's sign product, unchanged, so odd-squareness is preserved
 everywhere. At $v$ itself, the positive-edge count changes from
 $p=(n+h(v))/2$ to $q=(n-h(v))/2$, a change of $q-p=-h(v)>0$; no edge
@@ -1366,7 +1380,8 @@ instances where the congruence is essential.) At $S=72$ we have $\Delta=16$. By 
 contributes a value in $\{0,8,24,48,\ldots\}$ (the set $4u(u-1)$,
 $u\in\mathbb{Z}$); the admissible values not exceeding $16$ are $0$ and
 $8$ (the next, $24$, already exceeds it), and $16$ itself is not
-admissible, so the only way to write $16$ as a sum of admissible values
+admissible ($4u(u-1)=16$ has no integer solution: $u(u-1)=4$ has none),
+so the only way to write $16$ as a sum of admissible values
 is $8+8$: exactly two vertices of $U$ have $h\in\{0,6\}$ and the
 remaining $30$ have $h\in\{2,4\}$. The witness of
 Section~\ref{sec:oddsquareverify} attains $S=72$ with $h$-distribution
@@ -1413,7 +1428,9 @@ g(8)\le\frac{1024+340}{2}=682 .
 \]
 At $S=340$ we have $\Delta=8$: \emph{exactly one} vertex of $U$
 contributes, and it has $h\in\{0,6\}$, the other $127$ having
-$h\in\{2,4\}$. (The mod-$8$ congruence independently forces
+$h\in\{2,4\}$ --- as at $n=6$, $8$ decomposes only as one contribution
+of $8$, the next admissible value $24$ already exceeding $\Delta$. (The
+mod-$8$ congruence independently forces
 $S\equiv0\pmod4$, consistent with the above, but evenness already
 suffices at $n=8$; as at $n=7$, the congruence's essential use is at
 $n=6$ only.) Pointwise equality $h(v)\in\{2,4\}$ everywhere is
@@ -1482,7 +1499,8 @@ computation is reproducible with the bundled
 it is a check on the closed-form argument above, not a substitute for
 it, and the two are logically independent in a sense worth making
 explicit: the upper bound $S\le72,160,340$ is established by
-Lemma~\ref{lem:quant} alone, via the mod-$8$ congruence on $\Delta$,
+Lemma~\ref{lem:quant} together with nonnegativity, integrality and the
+parity of $S$ (the congruence adding essential strength only at $n=6$),
 without reference to how many configurations attain it -- the argument
 in each of the three cases above shows directly that no integer
 solution exceeds the stated value, full stop. The DP's role is only to
@@ -1552,12 +1570,13 @@ line, the affine correspondence is
 \qquad
 |E|=\frac{1024+S}{2}=682 .
 \] The
-identification is not an accident of the rounding width: the neighbouring
-parity-admissible values $S=338$ and $S=342$ give $-359$ and $-363$ under
-the same nearest-integer rounding rule, so among the even values of $S$
-(the lattice our derivation actually uses) only $S=340$ rounds to $-361$;
-one step further out, $S=336$ gives $-356$ and $S=344$ is not admissible
-at all, being excluded by nonnegativity ($S\le341\tfrac13$). Three
+identification is not an accident of the rounding width: the nearest
+admissible value below, $S=338$, gives $-359$ under the same
+nearest-integer rounding rule, and $S=336$ gives $-356$, so among the
+admissible values (even $S\le341\tfrac13$, of which $340$ is the
+largest) only $S=340$ rounds to $-361$; the identification even survives
+one step past the bound, since the inadmissible $S=342$ and $S=344$
+(both excluded by nonnegativity) would give $-363$ and $-365$. Three
 further data points fix and test the scale under the identical rule; their
 evidentiary roles differ, so we state them once here to keep the count
 straight: the $D=9$ \emph{bound} value calibrates the scale (it is what pins
@@ -1654,7 +1673,9 @@ The $Q_6$ witness edge set satisfies:
     $240$ squares: the odd-square condition holds everywhere, and in
     particular the set is $C_4$-free. (Once odd-squareness has independently
     been verified, and given $|E|$, the split is forced rather than an
-    additional independent check: each edge of $Q_n$ lies in
+    additional independent check --- odd-squareness gives
+    $N_0=N_2=N_4=0$, so the two equations below account for every
+    square: each edge of $Q_n$ lies in
     exactly $n-1$ squares, so double counting gives
     $N_1+3N_3=(n-1)|E|$ and $N_1+N_3=\binom{n}{2}2^{n-2}$, whence
     $N_3=\bigl((n-1)|E|-\binom{n}{2}2^{n-2}\bigr)/2$. This applies equally to
@@ -2079,7 +2100,7 @@ Improvement over that witness & --- & $+2$\\
 \end{table}
 
 %% ============================================================
-\section{Structural Classification of $Q_7$ Solutions}\label{sec:structure}
+\section{Structural Classification of \texorpdfstring{$Q_7$}{Q7} Solutions}\label{sec:structure}
 \noindent\textbf{Scope.} Every universal statement in this section is over
 the released catalogue of $19\,866$ labelled $304$-edge solutions unless
 explicitly stated otherwise. The catalogue is demonstrably not exhaustive of
@@ -2300,7 +2321,9 @@ where it silently resumed the bundled finished checkpoint, so its
 ``re-run'' completed without performing any new search; the
 \texttt{--fresh} mode exists to close that gap.) This revision adds a
 lighter, certificate-based route that removes the need for any group sweep
-on the reader's side. The certificate \texttt{q7\_orbit\_witnesses.json}
+on the reader's side \emph{for verifying the assignment} (``at most
+$180$''); certifying exactness still requires one sweep --- the checker's
+\texttt{-{}-canonical} mode or the fresh census, as detailed below. The certificate \texttt{q7\_orbit\_witnesses.json}
 records two things. For every one of the $19\,866$ solutions, it stores
 an explicit group element mapping its orbit representative to it. For
 every orbit, it stores the lexicographically minimal incidence vector
@@ -3055,7 +3078,7 @@ $Q_8$'s $\{8,160,88\}$, so we do not claim a general regularity trend
 here.
 
 %% ============================================================
-\section{Computational Reproduction of the $\ex(Q_6,C_4)=132$ Lower Bound}\label{sec:q6}
+\section{Computational Reproduction of the \texorpdfstring{$\ex(Q_6,C_4)=132$}{ex(Q6,C4)=132} Lower Bound}\label{sec:q6}
 %% ============================================================
 
 Harborth and Nienborg~\cite{HN94} proved $\ex(Q_6,C_4)=132$ by combinatorial
@@ -3133,7 +3156,10 @@ provided for independent verification (SHA-256 in the released checksum
 manifest). The correspondence between each $x_i$ and its $Q_6$ edge was
 not originally recorded alongside the MPS file. We have since
 constructed an incidence-preserving identification
-(\texttt{q6\_ilp\_edge\_map.csv}: $x_i\leftrightarrow$ vertex pair) by matching the MPS's
+(\texttt{q6\_ilp\_edge\_map.csv}: $x_i\leftrightarrow$ vertex pair; both
+bijections --- variables onto the $192$ edges and constraints onto the
+$240$ squares --- are machine-checked by the bundled
+\texttt{verify\_q6\_ilp\_map.py}) by matching the MPS's
 variable--constraint incidence pattern against $Q_6$'s known
 edge--square incidence structure under one specific, standard
 enumeration convention (integer vertex labels $0,\ldots,63$; squares
@@ -3173,7 +3199,8 @@ feasible solution of value $132$, matching the released construction's edge
 count but not necessarily its edge set (the symmetry of $Q_6$ admits many
 optima), was found quickly, but the solver did not close the optimality gap:
 under a $240$-second limit the run ended at primal $-132$, dual bound $-140$
-(a $6.06\%$ gap), after $60\,146$ branch-and-bound nodes -- the dual bound
+(a $6.06\%$ gap; the MPS encodes the maximisation as minimising the
+negated edge count, so both figures are $-1$ times edge numbers), after $60\,146$ branch-and-bound nodes -- the dual bound
 still eight units from the primal.
 As this figure is implementation- and
 machine-dependent, it should be read as evidence that the gap does
@@ -3208,9 +3235,14 @@ principle, verify on the dual side.
     necessarily non-odd-square, and Remark~\ref{rem:defect} quantifies
     how far from odd-square it must be: for any $305$-edge set,
     $\sum_{v\in U}\deg(v)=305$ on \emph{each} side of the bipartition,
-    and an exhaustive dynamic programme over integer degree sequences
-    shows the minimum of $\sum_{v\in U}h(v)^2$ is then $456$, attained
-    only by the degree multiset $\{4^{15},5^{49}\}$; since $456>448$,
+    and a two-line convexity argument shows the minimum of
+    $\sum_{v\in U}h(v)^2$ is then $456$, attained only by the degree
+    multiset $\{4^{15},5^{49}\}$: the odd values $h(v)=2\deg(v)-7$ sum
+    to $2\cdot305-7\cdot64=162$ over $64$ vertices, strict convexity
+    forces them as equal as possible, i.e.\ $h\in\{1,3\}$ with
+    multiplicities $15$ and $49$ (any other odd multiset with that sum
+    has strictly larger sum of squares, by a two-element exchange), and
+    $15\cdot1+49\cdot9=456$; since $456>448$,
     the field identity fails strictly on \emph{both} sides, so each side
     carries a split deficit of at least two squares,
     $\sum_s\operatorname{spl}_U(s)\le670=\binom72\,2^{5}-2$.
@@ -3276,7 +3308,12 @@ principle, verify on the dual side.
     problem~86~\cite{EP86}, obtained by product lifts along hypercube
     automorphisms followed by local ILP repair, with $Q_9$ at $1\,505$ edges
     and $Q_{11}$ at $7\,164$; the author of the present paper carried out an
-    independent certificate-level check of that set by sparse cherry counting
+    independent certificate-level check of that set by sparse cherry
+    counting --- a \emph{cherry} is a two-edge path; $C_4$-freeness is
+    equivalent to no vertex pair being joined by two cherries (at most
+    one common $E$-neighbour), and ``sparse'' means the cherries are
+    enumerated from the edge lists rather than over all vertex pairs,
+    which is what keeps the check feasible at $n=15$ ---
     (see the disclosure below). Those are lower bounds on $\ex(Q_n,C_4)$, not
     odd-square witnesses, and no exactness is claimed for them; but
     $1\,505\le\ex(Q_9,C_4)$ sits only $31$ below the field bound
@@ -3312,6 +3349,12 @@ principle, verify on the dual side.
     \end{center}
     Starred entries are DPTV's base constructions (their Figs.~1--3), not
     outputs of the recursion, which they state from $d\ge5$.
+    The ``field bound'' row is Lemma~\ref{lem:quant} instantiated with the
+    same-parity pair $(a,b)$ straddling $\sqrt{n-1}$: $(0,2)$ for $n=2$,
+    $(1,3)$ for $n=3,5$, $(0,2)$ or $(2,4)$ (both give $S\le16$) for
+    $n=4$, and the pairs of Section~\ref{sec:oddsquare-exact} for
+    $n=6,7,8$; e.g.\ at $n=5$, $\Delta=128-4S\ge0$ gives $S\le32$, hence
+    $g(5)\le(80+32)/2=56$.
     The three agree wherever all three are known, and the recursion meets
     the field bound exactly up to $n=7$ and then falls short by $10$ at
     $n=8$. That shortfall is the quantitative content of DPTV's own remark
@@ -3414,7 +3457,8 @@ without AI assistance.
 \section*{Disclosure statement}
 No potential conflict of interest was reported by the author. One related
 involvement is disclosed for completeness: the author performed an independent
-certificate-level check, by sparse cherry counting, of the $Q_9$--$Q_{15}$
+certificate-level check, by sparse cherry counting (defined in
+Section~\ref{sec:open}), of the $Q_9$--$Q_{15}$
 $C_4$-free edge lists contributed by R.~Wrona to the Erd\H{o}s Problems
 discussion thread for problem~86~\cite{EP86}, confirming SHA-256 agreement,
 edge counts, validity of the hypercube edges, absence of loops and duplicates,
@@ -3425,8 +3469,9 @@ question above refer to the $n\ge9$ range those certificates occupy.
 
 \appendix
 %% ============================================================
-\section{Record of unsuccessful computational attempts\\
-  on $\ex(Q_7,C_4)=304$}\label{app:attempts}
+\section[Record of unsuccessful attempts at deciding ex(Q7,C4)=304]{Record
+  of unsuccessful attempts at deciding\\
+  \texorpdfstring{$\ex(Q_7,C_4)=304$}{ex(Q7,C4)=304}}\label{app:attempts}
 %% ============================================================
 
 This appendix preserves, verbatim and away from the main line of

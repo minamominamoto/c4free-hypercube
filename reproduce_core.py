@@ -132,6 +132,9 @@ def main(argv=None):
     step += 1
     run_step(step, "exact field integer programme", [PYTHON, ROOT / "solve_field_ip.py"])
     step += 1
+    run_step(step, "Q6 ILP variable/constraint bijections (verify_q6_ilp_map.py)",
+             [PYTHON, ROOT / "verify_q6_ilp_map.py"])
+    step += 1
     run_step(step, "cycle-space rank identity (n=3..8)",
              [PYTHON, ROOT / "cycle_space_rank.py"])
     step += 1
