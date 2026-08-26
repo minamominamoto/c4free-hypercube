@@ -129,6 +129,19 @@ def main():
         if name == 'C' and not reachable:
             ok = False
 
+    # Rank sweep n=2..9: the sequence 1,4,4,16,16,64,64,256 is stated in
+    # the paper's structural discussion of the incidence map; computed here
+    # with the same generic machinery so the full sequence is re-checkable
+    # from the released code (closes a re-checkability gap noted in review).
+    SWEEP_EXPECTED = [1, 4, 4, 16, 16, 64, 64, 256]
+    sweep = []
+    for m in range(2, 10):
+        _, cols_m, _ = build(m)
+        sweep.append(len(image_basis(cols_m)))
+    print(f'rank sweep n=2..9: {sweep} (expected {SWEEP_EXPECTED})')
+    if sweep != SWEEP_EXPECTED:
+        ok = False
+
     print('RESULT:', 'matches the paper' if ok else 'MISMATCH')
     return 0 if ok else 1
 

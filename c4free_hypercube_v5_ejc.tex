@@ -1,65 +1,27 @@
-\documentclass[12pt,a4paper]{article}
-\usepackage{amsmath,amssymb,amsthm}
-\usepackage{geometry}
-\usepackage{hyperref}
-\usepackage{url}
+\documentclass[12pt]{article}
+\usepackage[amsmath]{e-jc}
 \usepackage{booktabs}
 \usepackage{xcolor}
 \usepackage{enumitem}
 \usepackage{microtype}
-\geometry{margin=2.5cm}
-\hypersetup{colorlinks=true,linkcolor=blue,citecolor=blue,urlcolor=blue}
-\newtheorem{theorem}{Theorem}
-\newtheorem{proposition}[theorem]{Proposition}
-\newtheorem{corollary}[theorem]{Corollary}
-\newtheorem{lemma}[theorem]{Lemma}
-\newtheorem{conjecture}[theorem]{Conjecture}
-\theoremstyle{definition}
-\newtheorem{definition}[theorem]{Definition}
-\newtheorem{remark}[theorem]{Remark}
 \newcommand{\ex}{\mathrm{ex}}
+
+% E-JC metadata. Accepted/published dates are filled by the journal.
+\dateline{Aug 26, 2026}{TBD}{TBD}
+\MSC{05C35, 05C22, 05-04, 82D30}
+\Copyright{The author. Released under the CC BY license (International 4.0).}
 
 \title{\textbf{$C_4$-Free Subgraphs of the Hypercubes $Q_6$, $Q_7$, and $Q_8$:\\
 Odd Squares, Fully Frustrated Models, and Computational Structure}}
 \author{Minamo Minamoto\\[4pt]
 \small Independent\\
 \small \texttt{minamominamoto4f5683f6@gmail.com}}
-\date{March 2026 (revised August 2026)}
+\author{Minamo Minamoto}
+\authortext{}{Independent researcher, Japan (\email{minamominamoto4f5683f6@gmail.com}).}
 
 \begin{document}
 \maketitle
 
-\begin{center}
-\small This is a revision of a manuscript first circulated as
-arXiv:2603.29127 (v1--v4, March--May 2026); v1 appeared as
-``New Lower Bounds for $C_4$-Free Subgraphs of the Hypercubes $Q_7$ and
-$Q_8$'', and by v4 the title had become
-``New Lower Bounds for $C_4$-Free Subgraphs of the Hypercubes $Q_6$,
-$Q_7$, and $Q_8$: Constructions, Structure, and Computational
-Method.'' That earlier version announced $\ex(Q_8,C_4)\ge680$ and did
-not include the odd-square material of Section~\ref{sec:oddsquare};
-see the Acknowledgements for the circumstances of the revision.
-Three further claims of v1--v4 are withdrawn or corrected here, and are
-recorded as such rather than quietly dropped.
-(i)~Its Section~7 was titled ``Computational \emph{Proof} that
-$\ex(Q_6,C_4)=132$'' and asserted that standard MIP solvers verify the
-instance \emph{quickly}; we were unable to close the optimality gap
-(Section~\ref{sec:q6}), so that section is retitled and the upper bound
-$\ex(Q_6,C_4)\le132$ again rests solely on Harborth--Nienborg~\cite{HN94}.
-(ii)~Its abstract gave the pairwise Hamming range of the $Q_7$ catalogue as
-$36$--$260$; that came from a $5\,000$-pair sample, disclosed only in the body.
-Exhaustive computation over all $197\,319\,045$ pairs gives $6$--$274$
-(Section~\ref{sec:landscape}), so both endpoints were substantially wrong and
-the inference that the solutions lie far apart does not survive.
-(iii)~Its degree sequence for the $132$-edge $Q_6$ construction,
-$\{4^{32},5^{32}\}$, is arithmetically impossible --- the degree sum is $288$,
-i.e.\ $144$ edges --- and the correct sequence is $\{4^{56},5^{8}\}$
-(Section~\ref{sec:regularity}); the ``degree support $\{n-3,n-2,n-1\}$''
-regularity suggested there rested on that error and is withdrawn. The
-extrapolated Brass--Harborth--Nienborg entries for $n=4,5,6$ in v1--v4's
-value table are likewise replaced by explicit out-of-domain markers
-(Table~\ref{tab:values}).
-\end{center}
 \medskip
 
 \begin{abstract}
@@ -342,7 +304,41 @@ constructions. Earlier revisions carried this material in the
 abstract; the abstract now summarises, and this section is the
 authoritative expanded statement. Nothing here is new relative to
 the previous revision except where explicitly marked; the text is
-relocated, not retracted. One reading convention, stated once here
+relocated, not retracted.
+
+\subsection*{Relation to the earlier circulated versions}
+
+This is a revision of a manuscript first circulated as
+arXiv:2603.29127 (v1--v4, March--May 2026); v1 appeared as
+``New Lower Bounds for $C_4$-Free Subgraphs of the Hypercubes $Q_7$ and
+$Q_8$'', and by v4 the title had become
+``New Lower Bounds for $C_4$-Free Subgraphs of the Hypercubes $Q_6$,
+$Q_7$, and $Q_8$: Constructions, Structure, and Computational
+Method.'' That earlier version announced $\ex(Q_8,C_4)\ge680$ and did
+not include the odd-square material of Section~\ref{sec:oddsquare};
+see the Acknowledgements for the circumstances of the revision.
+Three further claims of v1--v4 are withdrawn or corrected here, and are
+recorded as such rather than quietly dropped.
+(i)~Its Section~7 was titled ``Computational \emph{Proof} that
+$\ex(Q_6,C_4)=132$'' and asserted that standard MIP solvers verify the
+instance \emph{quickly}; we were unable to close the optimality gap
+(Section~\ref{sec:q6}), so that section is retitled and the upper bound
+$\ex(Q_6,C_4)\le132$ again rests solely on Harborth--Nienborg~\cite{HN94}.
+(ii)~Its abstract gave the pairwise Hamming range of the $Q_7$ catalogue as
+$36$--$260$; that came from a $5\,000$-pair sample, disclosed only in the body.
+Exhaustive computation over all $197\,319\,045$ pairs gives $6$--$274$
+(Section~\ref{sec:landscape}), so both endpoints were substantially wrong and
+the inference that the solutions lie far apart does not survive.
+(iii)~Its degree sequence for the $132$-edge $Q_6$ construction,
+$\{4^{32},5^{32}\}$, is arithmetically impossible --- the degree sum is $288$,
+i.e.\ $144$ edges --- and the correct sequence is $\{4^{56},5^{8}\}$
+(Section~\ref{sec:regularity}); the ``degree support $\{n-3,n-2,n-1\}$''
+regularity suggested there rested on that error and is withdrawn. The
+extrapolated Brass--Harborth--Nienborg entries for $n=4,5,6$ in v1--v4's
+value table are likewise replaced by explicit out-of-domain markers
+(Table~\ref{tab:values}).
+
+ One reading convention, stated once here
 instead of piecemeal: several quantities reported in this paper (for
 example the square split in Proposition~\ref{prop:q6oddsquare}(ii), the
 $\operatorname{Tr}(A^4)$ value in Proposition~\ref{prop:rigid}(iii), and
