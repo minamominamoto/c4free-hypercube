@@ -124,6 +124,14 @@ Also rerun and byte-compare the superseded Q6 targeted-search logs (provenance/r
 python3 reproduce_core.py --experiments
 ```
 
+Certify "exactly 180 orbits" (the quick default path certifies the
+assignment, i.e. "at most 180"; exactness needs one of the two heavy
+routes — see README for details):
+
+```bash
+python3 q7_orbit_witness_check.py --canonical
+```
+
 Install optional dependencies and run the expensive Q7 structural analysis too:
 
 ```bash

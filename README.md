@@ -150,6 +150,17 @@ about 16 s, and `--canonical` about 400 s total (run here as three
 from scratch (`q7_orbit_witnesses_gen.py`) took 529 s over three
 checkpointed invocations.
 
+**Certifying "exactly 180 orbits".** The quick default checks certify the
+orbit *assignment* ("at most 180"). Exactness has two independent routes,
+run either as a distinct required step if you need the full theorem-level
+claim: `python3 q7_orbit_witness_check.py --canonical` (numpy;
+census-scale wall time; sliceable as `--orbits 0:60` etc. in time-limited
+environments) re-verifies each stored canonical form as the true orbit
+minimum, which with their pairwise distinctness proves exactness; or
+`python3 reproduce_core.py --structural`, which additionally reruns the
+census from scratch and requires byte-identity with the released
+artefact (and itself includes `--canonical`).
+
 Every C4-free claim is independently re-checkable with a dependency-free
 script (standard library only; no third-party packages, no network):
 

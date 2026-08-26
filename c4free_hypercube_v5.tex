@@ -104,8 +104,10 @@ independently of the census scan. For
 $Q_6$, the unrestricted value $\ex(Q_6,C_4)=132$ rests on
 Harborth--Nienborg's combinatorial upper bound, which we did not
 independently verify; the odd-square $g(6)=132$ is self-contained here.
-Every numerical claim in the mathematical results and certificate
-analyses is re-checkable from the released code and data; the provenance
+Every numerical claim in the certificates and in our own computational
+analyses is re-checkable from the released code and data (the one
+imported exact result --- the unrestricted $n=6$ upper bound --- is
+marked as external throughout); the provenance
 record separates such claims from purely historical statements, and it,
 the repository, and its SHA-256 manifests are collected in
 Section~\ref{sec:guide}. Edge lists and code:\\
@@ -151,9 +153,12 @@ For general $n\ge9$, the weaker bound
 $\tfrac{1}{2}(n+0.9\sqrt{n})\cdot2^{n-1}$ applies~\cite{BHN95}.
 A wording caution is useful for cross-checking the literature: LNSW26's
 discussion of this BHN expression contains a sentence calling it an ``at
-most'' bound, whereas BHN95's own statement gives both expressions as lower
-bounds on the maximum edge count, which settles the direction at the source;
-an ``at most'' reading is also internally untenable at $n=16$, where the
+most'' bound (the sentence persists in the published version's
+Introduction, which we checked directly), whereas BHN95's own statement
+gives both expressions as lower bounds on the maximum edge count, which
+settles the direction at the source. We flag this explicitly as a
+direction slip in that secondary description rather than an alternative
+theorem: an ``at most'' reading is internally untenable at $n=16$, where the
 tight $n=4^r$ form gives $(16+4)\cdot2^{14}=327\,680$, exceeding
 $(16+0.9\cdot4)\cdot2^{14}=321\,126.4$. We follow BHN95.
 Exact values have been determined for small $n$; Harborth and Nienborg~\cite{HN94}
@@ -181,9 +186,13 @@ report, in a single unelaborated sentence and with no accompanying
 spin configuration or machine-checkable certificate, having exhibited a
 $D=8$ ground state attaining Derrida et al.'s improved energy lower
 bound; they describe the method (simulated annealing with a cooling
-procedure) and state the corresponding bound value on their common integer
-scale ($-361$; in their text the attainment statement and this integer occur
-in two separate sentences, combined here),
+procedure) and state the corresponding bound value as $-361$ on the
+$D{=}9$ comparison scale they use for cross-dimension bound values --- a
+normalised per-spin energy multiplied by their $D{=}9$ factor of $768$,
+not a count of couplings or any other absolute integer of the $D{=}8$
+model itself; Section~\ref{sec:oddsquare} gives the full conversion (in
+their text the attainment statement and this integer occur in two
+separate sentences, combined here),
 but provide no graph-theoretic translation and no reproducible
 computational artifact. Combined with the
 signed-graph/odd-square correspondence and edge-count--field-sum
@@ -218,7 +227,10 @@ class: the acceptance step evaluates a floating-point exponential, so the
 byte-identity is an observed stability of CPython on IEEE-754 hardware with
 a standard \texttt{libm} (reproduced in our CPython~3.12 environment and,
 via an RNG-faithful independent re-implementation, by a reviewer), not a
-universal cross-platform guarantee; $682$ edges,
+universal cross-platform guarantee --- and it concerns only the byte-level
+identity of the \emph{regenerated} file: the existence of a $682$-edge
+odd-square subgraph is carried platform-independently by the released
+static certificate and its dependency-free verification; $682$ edges,
 $h|_U=\{0{:}1,2{:}84,4{:}43\}$, square histogram $\{1{:}301,3{:}1491\}$,
 released as \texttt{q8\_A\_witness.json}). It is a different edge set from the
 released witness, as expected; what is now reproducible is the existence, not
@@ -260,7 +272,13 @@ $8$ & MPR95 (attainment reported in energy units, no data) & $682$-edge translat
 
 \noindent Here ``short proof'' means Lemma~\ref{lem:quant}'s self-contained
 derivation of the optima DPTV tabulate; in no row are the numerical values
-themselves claimed as new.
+themselves claimed as new. One caveat travels with the $n=6$ row: DPTV79's
+Table~I could not be text-extracted from the scans we obtained, so the
+identification of its ``other solutions'' with our distributions A and B
+rests on the completeness of our own enumeration together with the
+surrounding prose, not on a direct transcription (disclosed in
+Section~\ref{sec:oddsquare}); the exhaustive realisability decision itself
+is independent of that reading.
 
 \noindent All three values are self-contained within the released
 materials: each upper bound follows from Lemma~\ref{lem:fieldbound} and
@@ -480,7 +498,9 @@ an explicit recursive scaling construction (their bond configurations
 for $H_5,H_6,H_7$, described in prose and figures, not released as a
 computer-readable edge list), while MPR95 report in a single sentence that they exhibited a $D=8$ ground
 state matching the improved energy bound, with a method description (simulated
-annealing) and the bound value ($-361$ on their integer comparison scale),
+annealing) and the bound value ($-361$ on the $D{=}9$ comparison scale
+they use for bound values across dimensions, not an absolute integer of
+the $D{=}8$ model; see Section~\ref{sec:oddsquare}),
 but no machine-checkable certificate: no spin configuration, no edge list,
 and no graph-theoretic translation -- an existence claim we can neither
 independently verify nor extend beyond matching its numerical value. The same holds at $n=6$, where DPTV79's own $D=6$
@@ -993,9 +1013,13 @@ LNSW26 with the exact values $g(n)=1,3,9,24,56,132$ for $n\le6$. (During
 source verification we obtained and read the LNSW26 preprint in full, and,
 on 26~August~2026, the published version's full text (ACM
 Trans.\ Comput.\ Theory \textbf{18}(1), Art.~6); the value list appears in
-neither, so this attribution rests on \cite{Emlek26} alone.) On that attribution the \emph{record} of $g(6)=132$ is
-already in LNSW26 and the value is not new here, while its historical \emph{attainment}
-is DPTV79's: their $D=6$ ground state has $60$ negative bonds out of $192$
+neither, so this attribution rests on \cite{Emlek26} alone; nor do
+LNSW26's own published theorems determine $g(6)$, since their upper and
+lower bounds close only at powers of $4$.) The attribution is therefore
+secondary-source only: \emph{if} it is right (say via a version or
+communication we have not seen), the record of $g(6)=132$ predates us in
+LNSW26; in any case we do not claim the value as new here, and its
+historical \emph{attainment} is DPTV79's: their $D=6$ ground state has $60$ negative bonds out of $192$
 (p.~622), i.e.\ $132$ positive edges, and MPR95 note that constructions
 saturating the improved bound exist for $D\le7$. What
 Lemma~\ref{lem:quant} adds at $n=6$ is a short self-contained derivation of a
@@ -1112,6 +1136,16 @@ $\sum_{v\in U}s_i(v)s_j(v)=0$ for every fixed $i\ne j$. Summing over all
 ordered pairs $i\ne j$ and adding the $n\cdot|U|$ diagonal contribution
 gives $\sum_{v\in U}h(v)^2=n\cdot2^{n-1}$.
 \end{proof}
+
+A scope note before the remark: the odd-square hypothesis enters this
+proof only square by square, through each individual sign product. The
+identity itself is exactly equivalent to the \emph{average} form of that
+condition --- by the remark below, a side $U$ satisfies
+$\sum_{v\in U}h(v)^2=n\cdot2^{n-1}$ if and only if
+$\sum_s\operatorname{spl}_U(s)=\binom n2\,2^{n-2}$ --- and this average
+route is how the $19\,477$ non-odd-square catalogue solutions satisfy it
+as well, forced by their shared degree sequence
+(Proposition~\ref{prop:rigid}(i)).
 
 \begin{remark}[Exact defect formula]\label{rem:defect}
 The bookkeeping in this proof runs without the odd-square hypothesis and
@@ -1376,8 +1410,10 @@ g(6)\le\frac{192+72}{2}=132 .
 (The exclusion of $S=74$ just performed is the one place among our three
 instances where the congruence is essential.) At $S=72$ we have $\Delta=16$. By Lemma~\ref{lem:quant} each vertex
 contributes a value in $\{0,8,24,48,\ldots\}$ (the set $4u(u-1)$,
-$u\in\mathbb{Z}$); since $16$ is not in that set, the only decomposition of
-$16$ is $8+8$, so exactly two vertices of $U$ have $h\in\{0,6\}$ and the
+$u\in\mathbb{Z}$); the admissible values not exceeding $16$ are $0$ and
+$8$ (the next, $24$, already exceeds it), and $16$ itself is not
+admissible, so the only way to write $16$ as a sum of admissible values
+is $8+8$: exactly two vertices of $U$ have $h\in\{0,6\}$ and the
 remaining $30$ have $h\in\{2,4\}$. The witness of
 Section~\ref{sec:oddsquareverify} attains $S=72$ with $h$-distribution
 $\{0{:}2,\,2{:}24,\,4{:}6\}$ on $U$, so the bound is tight and
@@ -1803,7 +1839,9 @@ per value $m\in\{0,1,2,3\}$; a $v\in U$ has $m(v)$ determined as soon as the
 last of its six neighbours in that order is assigned, at which point $m(v)$
 is tallied, and the branch is cut the moment any counter exceeds the
 target's multiplicity for that value. Global spin
-flip fixes every $h$, so the first $U^{c}$ spin may be pinned. The search finds a
+flip fixes every $h$, so the first $U^{c}$ spin may be pinned without
+loss of generality (each sign configuration has exactly one lift with the
+pinned value). The search finds a
 realisation for C ($501$ nodes visited) and exhausts the space for A
 ($655{,}359$ nodes) and B ($22{,}129{,}151$ nodes) without a realisation;
 Without the symmetry reduction the two non-realisable searches, which exhaust
@@ -2071,8 +2109,9 @@ Table~\ref{tab:types} lists all 20 types with frequencies and structural invaria
 
 \begin{table}[ht]
 \centering\small
-\caption{The 20 dimension-profile types of 304-edge $C_4$-free subgraphs of
-  $Q_7$, sorted by decreasing frequency. Each profile is the seven
+\caption{The 20 dimension-profile types occurring among the released
+  $19\,866$ 304-edge $C_4$-free subgraphs of $Q_7$, sorted by decreasing
+  frequency. Each profile is the seven
   per-direction edge counts written in non-increasing order -- a canonical
   form independent of how the seven directions are labelled, which is what
   makes profiles $\mathrm{Aut}(Q_7)$-invariants and lets the orbit
@@ -2227,7 +2266,10 @@ SHA-256 manifest. Two verification routes of different strength are
 bundled, and they should not be conflated. The lightweight
 \texttt{q7\_orbit\_census\_check.py} (standard library, under a second)
 re-verifies every census-derived number stated in
-Proposition~\ref{prop:orbits} from the released JSON alone: this checks
+Proposition~\ref{prop:orbits} from the released JSON alone --- including,
+for every orbit, that its length equals
+$|\mathrm{Aut}(Q_7)|/|\mathrm{Stab}|=645\,120/|\mathrm{Stab}|$, and that
+the lengths sum to the labelled total $34\,227\,200$: this checks
 the \emph{internal consistency of the finished artefact}, not the group
 action itself, so a reader can audit the stated figures without re-running
 anything. The strong route is \texttt{reproduce\_core.py --structural},
