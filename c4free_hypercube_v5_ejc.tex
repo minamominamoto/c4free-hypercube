@@ -34,10 +34,10 @@ obtain $\ex(Q_7,C_4)\ge304$ and $\ex(Q_8,C_4)\ge682$. Under the standard
 correspondence with fully frustrated signed hypercubes these values are
 already implicit in the statistical-physics literature: the field
 identity, the integer optimisation it feeds, and its optimal values go
-back to Derrida, Pomeau, Toulouse and Vannimenus (1979), who also
+back to Derrida, Pomeau, Toulouse and Vannimenus (DPTV, 1979), who also
 construct ground states for $D\le7$; the $D=8$ attainment was reported,
 without any released configuration, by Marinari, Parisi and Ritort
-(1995); and Laplante, Naserasr, Sunny and Wang treat the graph-theoretic
+(MPR, 1995); and Laplante, Naserasr, Sunny and Wang treat the graph-theoretic
 formulation directly. Our contribution is accordingly narrow and
 explicit: a short self-contained proof of the optima via a mod-$8$
 refinement of the classical two-point inequality; the certificates
@@ -62,7 +62,8 @@ these are \emph{all} orbits of $304$-edge solutions is open. This
 revision adds an orbit-witness certificate whose standard-library checker
 verifies the orbit \emph{assignment} in seconds (hence ``at most $180$
 orbits''); its \texttt{-{}-canonical} mode certifies ``exactly $180$''
-independently of the census scan. For
+independently of the full group-action scan that produced the
+decomposition. For
 $Q_6$, the unrestricted value $\ex(Q_6,C_4)=132$ rests on
 Harborth--Nienborg's combinatorial upper bound, which we did not
 independently verify; the odd-square $g(6)=132$ is self-contained here.
@@ -70,9 +71,8 @@ Every certified or deterministic numerical claim --- those backed by a
 released certificate or by a bundled deterministic computation --- is
 re-checkable from the released code and data; one-off historical
 observations and the one imported exact result (the unrestricted $n=6$
-upper bound) are marked as such throughout; the provenance
-record separates such claims from purely historical statements, and the
-released repository is accompanied by SHA-256 manifests. Edge lists and code:\\
+upper bound) are marked as such throughout, and the released repository
+is accompanied by SHA-256 manifests. Edge lists and code:\\
 \url{https://github.com/minamominamoto/c4free-hypercube}.
 \end{abstract}
 
