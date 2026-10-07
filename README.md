@@ -179,6 +179,16 @@ python3 verify.py
 ```
 
 `verify.py` reads each solution, checks that every edge is a valid Q_n edge
+with exactly two integer endpoints. Strings, floats, and JSON booleans are
+rejected rather than coerced to vertex IDs; both independent verifiers enforce
+this input contract. The lightweight input-regression suite also checks the
+released Q6/Q7 witnesses and runs without third-party dependencies:
+
+```bash
+python3 -m unittest discover -s tests -v
+```
+
+The full verifier checks each Q_n edge
 with no loops or duplicates and exactly the claimed edge count, certifies
 C4-freeness by **exhaustively enumerating all four-cycles** of Q_n, and
 (for the Q6 and Q8 odd-square witnesses) additionally checks the stronger

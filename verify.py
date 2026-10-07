@@ -89,9 +89,17 @@ def four_cycle_corners(n):
 
 
 def build_edge_set(edges):
+    """Normalize integer pairs without coercing malformed certificate data."""
+    if not isinstance(edges, (list, tuple)):
+        raise ValueError("edges must be a list or tuple of endpoint pairs")
     es = set()
-    for e in edges:
-        u, v = int(e[0]), int(e[1])
+    for i, e in enumerate(edges):
+        if not isinstance(e, (list, tuple)) or len(e) != 2:
+            raise ValueError("edge %d must contain exactly two endpoints" % i)
+        u, v = e
+        # bool is an int subclass, but JSON true/false are not vertex IDs.
+        if type(u) is not int or type(v) is not int:
+            raise ValueError("edge %d endpoints must be integers (not booleans)" % i)
         if u == v:
             raise ValueError("self-loop at vertex %d" % u)
         es.add((u, v) if u < v else (v, u))
@@ -147,7 +155,10 @@ def nonedge_violation_distribution(es, cube_edges, completion):
 
 
 def verify_solution(edges, n, expected_edges):
-    es = build_edge_set(edges)
+    try:
+        es = build_edge_set(edges)
+    except ValueError as exc:
+        return False, str(exc)
     if len(es) != expected_edges:
         return False, "edge count %d != %d" % (len(es), expected_edges)
     N = 1 << n
@@ -167,7 +178,10 @@ def verify_odd_square(edges, n, expected_edges):
     must meet the edge set in exactly 1 or 3 edges. This subsumes the
     plain C4-free check (a square with 4 edges present fails here too)
     and additionally rejects squares with 0 or 2 edges present."""
-    es = build_edge_set(edges)
+    try:
+        es = build_edge_set(edges)
+    except ValueError as exc:
+        return False, str(exc)
     if len(es) != expected_edges:
         return False, "edge count %d != %d" % (len(es), expected_edges)
     N = 1 << n
@@ -307,7 +321,7 @@ def main():
             elif len(sols) == nsol:
                 print("  [OK] all %d Q7 edge sets are pairwise distinct "
                       "across the catalogue" % len(q7_keys))
-        if n == 8 and ec == 680 and len(sols) >= 1:
+        if n == 8 and ec == 680 and len(sols) >= 1 and bad == 0:
             odd_ok, odd_msg = verify_odd_square(sols[0], 8, 680)
             if odd_ok:
                 print("  [OK] Q8 Solution A (first 680-edge record) is odd-square")

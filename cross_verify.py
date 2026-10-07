@@ -66,8 +66,16 @@ def load_edge_lists(path):
 def check_edges_valid(edges, n):
     """Every pair is a genuine Q_n edge (differ in exactly one bit),
     endpoints in range, no duplicate edges. Returns normalised set."""
+    # Keep this validation independent of verify.py, including its helpers.
+    if not isinstance(edges, (list, tuple)):
+        return None
     seen = set()
-    for u, v in edges:
+    for edge in edges:
+        if not isinstance(edge, (list, tuple)) or len(edge) != 2:
+            return None
+        u, v = edge
+        if type(u) is not int or type(v) is not int:
+            return None
         if not (0 <= u < (1 << n) and 0 <= v < (1 << n)):
             return None
         d = u ^ v
